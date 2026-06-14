@@ -15,6 +15,21 @@
           "summary": "No workflow directory exists."
         }
       ]
+    },
+    {
+      "groupId": "check-enforcement",
+      "deductionId": "missing-check-enforcement",
+      "applies": false
+    },
+    {
+      "groupId": "check-signal-quality",
+      "deductionId": "missing-check-signal-quality",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

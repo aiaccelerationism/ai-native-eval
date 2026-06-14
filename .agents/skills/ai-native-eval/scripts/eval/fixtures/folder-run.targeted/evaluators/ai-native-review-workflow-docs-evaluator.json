@@ -15,6 +15,21 @@
           "summary": "No review workflow documentation exists."
         }
       ]
+    },
+    {
+      "groupId": "role-and-gate-clarity",
+      "deductionId": "missing-role-and-gate-clarity",
+      "applies": false
+    },
+    {
+      "groupId": "workflow-discoverability",
+      "deductionId": "missing-workflow-discoverability",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

@@ -15,6 +15,21 @@
           "summary": "Setup docs list most local prerequisites."
         }
       ]
+    },
+    {
+      "groupId": "reset-and-recovery",
+      "deductionId": "missing-reset-and-recovery",
+      "applies": false
+    },
+    {
+      "groupId": "machine-local-boundaries",
+      "deductionId": "missing-machine-local-boundaries",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

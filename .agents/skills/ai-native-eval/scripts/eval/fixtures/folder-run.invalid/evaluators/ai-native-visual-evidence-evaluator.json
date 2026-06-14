@@ -1,4 +1,25 @@
 {
   "pluginId": "ai-native-visual-evidence-evaluator",
-  "deductions": []
+  "deductions": [
+    {
+      "groupId": "visual-proof-presence",
+      "deductionId": "missing-visual-proof-presence",
+      "applies": false
+    },
+    {
+      "groupId": "visual-proof-quality",
+      "deductionId": "missing-visual-proof-quality",
+      "applies": false
+    },
+    {
+      "groupId": "visual-proof-linkage",
+      "deductionId": "missing-visual-proof-linkage",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
+    }
+  ]
 }

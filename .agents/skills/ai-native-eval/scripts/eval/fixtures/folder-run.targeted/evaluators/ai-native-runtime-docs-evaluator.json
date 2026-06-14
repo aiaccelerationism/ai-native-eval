@@ -28,6 +28,16 @@
           "summary": "No troubleshooting section is present."
         }
       ]
+    },
+    {
+      "groupId": "runtime-reproducibility",
+      "deductionId": "missing-prerequisites",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

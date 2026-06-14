@@ -2,5 +2,26 @@
   "pluginId": "ai-native-local-runtime-command-evaluator",
   "confidence": "high",
   "reason": "The JSON plugin id is valid, but the file name should be rejected.",
-  "deductions": []
+  "deductions": [
+    {
+      "groupId": "runtime-entrypoints",
+      "deductionId": "missing-runtime-entrypoints",
+      "applies": false
+    },
+    {
+      "groupId": "scriptability",
+      "deductionId": "missing-scriptability",
+      "applies": false
+    },
+    {
+      "groupId": "runtime-command-validation",
+      "deductionId": "missing-runtime-command-validation",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
+    }
+  ]
 }

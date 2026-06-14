@@ -161,10 +161,11 @@ The report renderer and deterministic aggregation source live in the `ai-native-
 
 This repo evaluates itself and publishes a strict baseline report.
 
-- Score: `6.3 / 10`
-- Level: `6`
+- Score: `3.1 / 10`
+- Level: `3`
 - Confidence: `high`
 - Scope: foundation maturity plus AI Native Eval evaluator-system quality; `bmad-method-evaluator` is disabled for this self-evaluation.
+- Recent-change evidence: strict deductions apply because the baseline does not yet link each evaluator to proof from the latest five PR-equivalent substantive changes.
 - Run folder: `self-evaluations/foundation-20260614/run/`
 - Compact report: [self-evaluations/foundation-20260614/report.md](self-evaluations/foundation-20260614/report.md)
 

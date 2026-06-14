@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-domain-boundary-evaluator",
   "confidence": "high",
-  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement.",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": "docs/architecture.md; AGENTS.md",
@@ -25,6 +25,33 @@
       "recommendation": {
         "summary": "Add checks that prevent BMAD-specific assumptions from leaking into foundation scoring.",
         "priority": "medium"
+      }
+    },
+    {
+      "groupId": "boundary-definition",
+      "deductionId": "missing-boundary-definition",
+      "applies": false
+    },
+    {
+      "groupId": "boundary-change-control",
+      "deductionId": "missing-boundary-change-control",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
       }
     }
   ]

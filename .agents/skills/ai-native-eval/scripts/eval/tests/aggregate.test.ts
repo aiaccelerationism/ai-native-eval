@@ -551,6 +551,11 @@ test("folder validation reports all evaluator output errors", async () => {
   );
   assert.ok(
     result.errors.some((error) =>
+      error.includes("missing deduction judgment for group recent-change-follow-through")
+    )
+  );
+  assert.ok(
+    result.errors.some((error) =>
       error.includes("output plugin is not reachable")
     )
   );
@@ -818,9 +823,9 @@ test("targeted folder fixture proves expected pass and fail rubric matches", asy
 
   assert.equal(groupLost(readme, "repo-purpose"), 0);
   assert.equal(groupLost(readme, "first-run-path"), 0);
-  assert.equal(groupLost(readme, "next-step-routing"), 0.25);
+  assert.equal(groupLost(readme, "next-step-routing"), 0.125);
 
-  assert.equal(groupLost(testSurface, "test-command-coverage"), 0.2);
+  assert.equal(groupLost(testSurface, "test-command-coverage"), 0.1);
   assert.equal(groupLost(testSurface, "test-command-documentation"), 0);
   assert.equal(groupLost(testSurface, "test-result-actionability"), 0);
 

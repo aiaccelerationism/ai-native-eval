@@ -15,6 +15,21 @@
           "summary": "No docs or ADR directory exists."
         }
       ]
+    },
+    {
+      "groupId": "decision-rationale",
+      "deductionId": "missing-decision-rationale",
+      "applies": false
+    },
+    {
+      "groupId": "decision-linkage",
+      "deductionId": "missing-decision-linkage",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

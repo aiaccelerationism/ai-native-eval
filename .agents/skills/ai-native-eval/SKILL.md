@@ -31,9 +31,10 @@ Inspect evidence that is available in the current environment:
 - Repo files: `README.md`, `AGENTS.md`, `.agents/skills/**`, `docs/**`, `.github/workflows/**`, package scripts, test/E2E configs, deployment configs, architecture or decision records.
 - Git/worktree: current branch, dirty state, worktree list, branch naming conventions, thread/worktree tracking docs, conflict-avoidance guidance, subagent capacity guidance.
 - GitHub, when available: issues, labels, PR bodies, review comments, requested changes, check runs, workflow history, linked screenshots, traces, videos, reports, and artifacts.
+- Recent substantive change history: sample the latest five PR-equivalent changes for the repository and for affected evaluator domains. Prefer merged GitHub PRs; otherwise use merge commits, issue-linked task branches, release notes, or grouped commits that represent reviewable work. Skip trivial typo/version-only commits and move farther back until the sample has up to five real changes.
 - Quality evidence: lint, typecheck, unit/integration/E2E/build gates, production-like runtime commands, policy skips, review contracts, and acceptance proof.
 
-If access is missing, emit `missing` evidence nodes and lower confidence. Do not score unavailable GitHub/CI history as a factual failure unless the review scope explicitly requires it.
+If access is missing, emit `missing` evidence nodes and lower confidence. For ordinary non-history evidence, do not score unavailable GitHub/CI history as a factual failure unless the review scope explicitly requires it. For recent-change follow-through, unavailable GitHub access is not neutral: when issue, PR, review, check, artifact, or human-gate evidence is expected to live in GitHub, treat missing GitHub access as absent recent-change evidence and apply the relevant recent-change deduction.
 
 ## Workflow
 
@@ -48,15 +49,16 @@ Default steps:
 1. Determine scope, repo root, current commit, and available evidence surfaces.
 2. Read previous eval state if present.
 3. Resolve the effective eval config from built-in roots, optional person config, optional project config, and optional explicit override config.
-4. Write a run folder with `run.json` as the audit snapshot for this exact evaluation.
-5. Resolve installed evaluator plugins through direct child references from the run snapshot.
-6. Group resolved plugins into execution batches; default to a single agent batch unless evidence size, risk, or user request justifies fan-out.
-7. Write each enabled leaf evaluator's judgment to its own JSON file under the run folder.
-8. Validate the run folder against the run snapshot, installed evaluator manifests, and leaf skill rubrics before rendering.
-9. Carry forward unchanged leaf outputs on incremental runs.
-10. Aggregate recursively and deterministically only after validation passes.
-11. Produce a static HTML report and optional JSON report artifact.
-12. Persist append-only artifacts only when writing is allowed.
+4. Build the recent-change sample before scoring leaf evaluators. Use the latest five PR-equivalent substantive changes when available, record which evidence source was used, and note when fewer than five exist. If GitHub access is unavailable for a GitHub-hosted workflow, do not infer PR, issue, review, check, artifact, or human-gate compliance from local commits alone; score the missing GitHub evidence as absent recent-change follow-through.
+5. Write a run folder with `run.json` as the audit snapshot for this exact evaluation.
+6. Resolve installed evaluator plugins through direct child references from the run snapshot.
+7. Group resolved plugins into execution batches; default to a single agent batch unless evidence size, risk, or user request justifies fan-out.
+8. Write each enabled leaf evaluator's judgment to its own JSON file under the run folder.
+9. Validate the run folder against the run snapshot, installed evaluator manifests, and leaf skill rubrics before rendering.
+10. Carry forward unchanged leaf outputs on incremental runs.
+11. Aggregate recursively and deterministically only after validation passes.
+12. Produce a static HTML report and optional JSON report artifact.
+13. Persist append-only artifacts only when writing is allowed.
 
 ## Bundled Tool
 
@@ -137,6 +139,7 @@ Never manually choose a score from vibes. Scores come from the evaluation node t
 - Leaf evaluators should output judgments against checklist-style deduction rubrics. AI selects applicable deductions and supplies evidence/reasons; the bundled tool retrieves the rubric from the evaluator skill and calculates points deterministically.
 - A deduction group `budget` is the maximum same-group penalty. Applied deductions in the same group are capped at the group budget to prevent duplicate penalties.
 - Deduction groups must be able to deduct their full budget. Do not create fallback scoring where a required capability can be entirely missing but the group cannot deduct its full budget.
+- Built-in leaf evaluators reserve half of the leaf budget for recent change follow-through. Static docs, templates, scripts, or configuration can earn at most half credit when the latest five PR-equivalent substantive changes do not show humans and agents actually following the practice.
 - If a leaf is not `10.0 / 10`, it must have applied deductions explaining why not.
 - `pointsEarned` is a legacy/manual fallback only when `deductionGroups` are absent. Do not use it for new evaluator checklist scoring.
 - Parent score: weighted average of applicable child scores.
@@ -144,7 +147,7 @@ Never manually choose a score from vibes. Scores come from the evaluation node t
 - Overall score: aggregate the root tree; present HTML scores as `0.0 / 10`.
 - Confidence is separate from score. It reflects evidence coverage and must not secretly modify points.
 
-High scores require repeated evidence across docs, issues/PRs, CI/tests, artifacts, and workflow history. Recommend improvement actions that address the weakest high-leverage evidence gaps first.
+High scores require repeated evidence across docs, issues/PRs, CI/tests, artifacts, workflow history, and the recent five PR-equivalent substantive changes. Recommend improvement actions that address the weakest high-leverage evidence gaps first.
 
 ## Folder Output Contract
 

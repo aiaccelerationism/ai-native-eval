@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-eval-plugin-boundary-integrity-evaluator",
   "confidence": "high",
-  "reason": "The plugin graph uses direct-child manifests, configured additional roots, and disabled subtree validation, but external-package discovery is still out of scope. Applied deductions: incomplete-hot-plug-config.",
+  "reason": "The plugin graph uses direct-child manifests, configured additional roots, and disabled subtree validation, but external-package discovery is still out of scope. Applied deductions: incomplete-hot-plug-config. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": "docs/architecture.md; .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts",
@@ -61,6 +61,23 @@
       "deductionId": "incomplete-disabled-subtree-integrity",
       "applies": false,
       "reason": "Tests cover disabled roots, disabled non-ai-native roots, and output rejection under disabled subtrees."
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
     }
   ]
 }
