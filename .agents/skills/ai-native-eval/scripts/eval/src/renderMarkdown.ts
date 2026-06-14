@@ -36,6 +36,24 @@ function renderEvaluationContext(lines: string[], report: EvaluationReport): voi
   if (context.targetRef) lines.push(`- Target ref: ${context.targetRef}`);
   if (context.phase) lines.push(`- Phase: ${context.phase}`);
   if (context.trigger) lines.push(`- Trigger: ${context.trigger}`);
+  if (context.triggerMetadata) {
+    lines.push(`- Trigger mode: ${context.triggerMetadata.mode}`);
+    if (context.triggerMetadata.source) {
+      lines.push(`- Trigger source: ${context.triggerMetadata.source}`);
+    }
+    if (context.triggerMetadata.event) {
+      lines.push(`- Trigger event: ${context.triggerMetadata.event}`);
+    }
+    if (context.triggerMetadata.threshold !== undefined) {
+      lines.push(`- Trigger threshold: ${context.triggerMetadata.threshold}`);
+    }
+    if (context.triggerMetadata.maxIterations !== undefined) {
+      lines.push(`- Trigger max iterations: ${context.triggerMetadata.maxIterations}`);
+    }
+    lines.push(
+      "- Trigger owner: external systems own scheduling, enforcement, and iteration loops."
+    );
+  }
   if (context.targetSurfaces?.length) {
     lines.push(`- Target surfaces: ${formatInlineList(context.targetSurfaces)}`);
   }

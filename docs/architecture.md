@@ -54,6 +54,10 @@ stages without changing the core tool. Common built-in meanings include:
 - `target`: `repo`, `issue`, `pull_request`, `workflow_run`, `agent_thread`, `user_turn`, or project-specific values.
 - `phase`: lifecycle stage such as `intake`, `opened`, `review`, `pre_merge`, `post_merge`, or `closeout`.
 - `trigger`: who or what initiated the run, such as `user`, `agent`, `github`, `schedule`, or `manual`.
+- `triggerMetadata.mode`: how the run is being used, such as `one_shot`, `turn_inline`, `self_iteration`, `periodic`, or `external_event`.
+- `triggerMetadata.source`: the external owner that initiated the run, such as `user`, `agent`, `github`, `scheduler`, `wrapper`, or a project-specific source.
+- `triggerMetadata.event`: an optional external event name such as `pull_request.opened` or `weekly.health`.
+- `triggerMetadata.threshold` and `triggerMetadata.maxIterations`: optional values for external self-iteration wrappers. The core tool records them but does not execute the loop.
 - `targetSurfaces`: evidence areas emphasized by the run.
 - `outputIntents`: artifact, markdown, comment, advisory, blocking, score update, or project-specific outputs.
 - `affectsOverallScore`: whether a targeted run should update repository maturity state.
@@ -64,6 +68,14 @@ evaluator skill owns. Legacy global `additionalRoots`, `disabled`, and
 `contextRoutes` remain readable for compatibility but are reported as deprecated
 warnings. The orchestrator may know the six lifecycle entry roots, but evaluator
 packs still own lifecycle-specific rubrics, direct children, and evidence rules.
+
+Trigger modes are integration metadata, not a central runtime registry. The
+orchestrator may default explicit non-periodic targets to `one_shot` and
+explicit periodic targets to `periodic`, then pass trigger metadata through to
+the selected lifecycle evaluator. Each lifecycle evaluator owns its supported
+trigger modes and settings under `evaluators[pluginId].settings.triggers`.
+External systems own scheduling, webhooks, per-turn hooks, GitHub comments,
+blocking policy, repair loops, and reruns.
 
 Unknown contexts should not fall back to a heavy baseline by default. The safe
 fallback is a targeted advisory run with no public posting and no overall score

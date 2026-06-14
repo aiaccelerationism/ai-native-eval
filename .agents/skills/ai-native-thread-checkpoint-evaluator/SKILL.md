@@ -38,6 +38,15 @@ Configure this evaluator under `evaluators["ai-native-thread-checkpoint-evaluato
 
 Supported phases are `checkpoint`, `handoff`, and `closeout`. If a thread target is clear but phase is absent, assume `checkpoint`.
 
+Supported trigger modes are `one_shot`, `turn_inline`, and `self_iteration`.
+The default trigger mode is `one_shot` when a user asks to evaluate a thread.
+`turn_inline` evaluates the current user/agent interaction as thread evidence
+without escalating to a full repository review. `self_iteration` may emit
+threshold metadata and repair guidance for thread quality, but an external
+wrapper owns repeated reruns and stop conditions. Store thread trigger settings
+under
+`evaluators["ai-native-thread-checkpoint-evaluator"].settings.triggers`.
+
 ## Evidence
 
 Inspect the agent thread summary, user decisions, tool evidence, skill activation, AI self-assessment, human follow-through, closeout notes, and links to issue/PR artifacts.

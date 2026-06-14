@@ -38,6 +38,15 @@ Configure this evaluator under `evaluators["ai-native-periodic-health-evaluator"
 
 Supported phases are `scheduled`, `ad_hoc`, and `follow_up`. If periodic target is clear but phase is absent, assume `ad_hoc`.
 
+Supported trigger modes are `periodic`, `one_shot`, and `external_event`.
+The default trigger mode is `periodic` when the target is scheduled or periodic
+health. Use `one_shot` for ad hoc health scans requested by a user.
+`external_event` may represent post-merge, release, incident, or project-specific
+health triggers supplied by CI or another integration. Store periodic trigger
+settings under
+`evaluators["ai-native-periodic-health-evaluator"].settings.triggers`; this
+evaluator does not own the scheduler itself.
+
 ## Evidence
 
 Inspect recent repository evidence, stale findings, known issue cards, recurrence-prevention artifacts, persisted reports, and current foundation health signals.

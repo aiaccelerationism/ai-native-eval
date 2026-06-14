@@ -22,7 +22,9 @@ import type {
   EvaluationContext,
   EvaluationNodeInput,
   EvaluationReport,
-  ReportUiLanguage
+  ReportUiLanguage,
+  TriggerMetadata,
+  TriggerMode
 } from "./types.js";
 
 async function main(): Promise<void> {
@@ -266,9 +268,9 @@ function readOption(args: string[], name: string): string | undefined {
 function usage(): void {
   console.error(`Usage:
   ai-native-eval score <evaluation-tree.json>
-  ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-TW] [--review-type event] [--target pull_request] [--phase opened] [--target-surface pr]...
-  ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-TW] [--changed-file <path>]... [--review-type event] [--target pull_request]
-  ai-native-eval init-run <repo-root> [--out <run-folder>] [--config <path>] [--project-config <path>] [--person-config <path>] [--review-type event] [--target pull_request] [--target-ref PR-123] [--phase opened] [--trigger user] [--target-surface pr]...
+  ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-TW] [--review-type event] [--target pull_request] [--phase opened] [--trigger-mode one_shot] [--target-surface pr]...
+  ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-TW] [--changed-file <path>]... [--review-type event] [--target pull_request] [--trigger-mode one_shot]
+  ai-native-eval init-run <repo-root> [--out <run-folder>] [--config <path>] [--project-config <path>] [--person-config <path>] [--review-type event] [--target pull_request] [--target-ref PR-123] [--phase opened] [--trigger user] [--trigger-mode external_event] [--trigger-source github] [--trigger-event pull_request.opened] [--threshold 0.85] [--max-iterations 3] [--target-surface pr]...
   ai-native-eval validate-folder <run-folder> [--skills-dir .agents/skills]
   ai-native-eval render-folder <run-folder> [--out <report.html>] [--json-out <report.json>] [--markdown-out <report.md>] [--skills-dir .agents/skills]
 
@@ -297,6 +299,7 @@ function readEvaluationContext(
   const targetRef = readOption(args, "--target-ref");
   const phase = readOption(args, "--phase");
   const trigger = readOption(args, "--trigger");
+  const triggerMetadata = readTriggerMetadata(args, target, existing?.triggerMetadata);
   const assumption = readOption(args, "--assumption");
   const targetSurfaces = readRepeatedOption(args, "--target-surface");
   const outputIntents = readRepeatedOption(args, "--output-intent");
@@ -308,6 +311,7 @@ function readEvaluationContext(
     !targetRef &&
     !phase &&
     !trigger &&
+    !triggerMetadata &&
     !assumption &&
     targetSurfaces.length === 0 &&
     outputIntents.length === 0 &&
@@ -322,11 +326,85 @@ function readEvaluationContext(
     ...(targetRef ? { targetRef } : {}),
     ...(phase ? { phase } : {}),
     ...(trigger ? { trigger } : {}),
+    ...(triggerMetadata ? { triggerMetadata } : {}),
     ...(targetSurfaces.length > 0 ? { targetSurfaces } : {}),
     ...(outputIntents.length > 0 ? { outputIntents } : {}),
     ...(affectsOverallScore !== undefined ? { affectsOverallScore } : {}),
     ...(assumption ? { assumption } : {})
   };
+}
+
+function readTriggerMetadata(
+  args: string[],
+  target: string | undefined,
+  existing?: TriggerMetadata
+): TriggerMetadata | undefined {
+  const explicitMode = readOption(args, "--trigger-mode");
+  const source = readOption(args, "--trigger-source");
+  const event = readOption(args, "--trigger-event");
+  const threshold = readNumberOption(args, "--threshold");
+  const maxIterations = readIntegerOption(args, "--max-iterations");
+  const mode = explicitMode
+    ? parseTriggerMode(explicitMode)
+    : defaultTriggerModeForTarget(target);
+  if (
+    !existing &&
+    !mode &&
+    !source &&
+    !event &&
+    threshold === undefined &&
+    maxIterations === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    ...(existing ?? { mode: mode ?? "one_shot" }),
+    ...(mode ? { mode } : {}),
+    ...(source ? { source } : {}),
+    ...(event ? { event } : {}),
+    ...(threshold !== undefined ? { threshold } : {}),
+    ...(maxIterations !== undefined ? { maxIterations } : {})
+  };
+}
+
+function defaultTriggerModeForTarget(target: string | undefined): TriggerMode | undefined {
+  if (!target) return undefined;
+  return ["periodic", "schedule", "scheduled"].includes(target)
+    ? "periodic"
+    : "one_shot";
+}
+
+function parseTriggerMode(value: string): TriggerMode {
+  const modes = new Set<TriggerMode>([
+    "one_shot",
+    "turn_inline",
+    "self_iteration",
+    "periodic",
+    "external_event"
+  ]);
+  if (!modes.has(value as TriggerMode)) {
+    throw new Error(
+      `--trigger-mode must be one of ${Array.from(modes).join(", ")}`
+    );
+  }
+  return value as TriggerMode;
+}
+
+function readNumberOption(args: string[], name: string): number | undefined {
+  const value = readOption(args, name);
+  if (value === undefined) return undefined;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) throw new Error(`${name} must be a number`);
+  return parsed;
+}
+
+function readIntegerOption(args: string[], name: string): number | undefined {
+  const parsed = readNumberOption(args, name);
+  if (parsed === undefined) return undefined;
+  if (!Number.isInteger(parsed) || parsed < 0) {
+    throw new Error(`${name} must be a non-negative integer`);
+  }
+  return parsed;
 }
 
 function readBooleanOption(args: string[], name: string): boolean | undefined {

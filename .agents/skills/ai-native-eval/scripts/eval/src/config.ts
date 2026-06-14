@@ -12,7 +12,8 @@ import type {
   ResolvedDisabledPlugin,
   ResolvedEvaluatorConfig,
   ResolvedContextRoute,
-  ResolvedRootPlugin
+  ResolvedRootPlugin,
+  TriggerMode
 } from "./types.js";
 
 export const builtInRootPluginIds = ["ai-native-repo-maturity-evaluator"] as const;
@@ -114,7 +115,11 @@ export async function resolveEffectiveConfig(input: {
 
 export async function initRun(input: InitRunInput): Promise<string> {
   const generatedAt = input.generatedAt ?? new Date().toISOString();
-  const effectiveConfig = await resolveEffectiveConfig(input);
+  const baseEvaluationContext = normalizeEvaluationContext(input.evaluationContext);
+  const effectiveConfig = await resolveEffectiveConfig({
+    ...input,
+    evaluationContext: baseEvaluationContext
+  });
   const rootPluginIds = effectiveConfig.roots.map((root) => root.pluginId);
   const appliedScope =
     input.scope ??
@@ -123,13 +128,13 @@ export async function initRun(input: InitRunInput): Promise<string> {
     ...new Set(effectiveConfig.appliedContextRoutes?.flatMap((route) => route.outputIntents ?? []) ?? [])
   ];
   const affectsOverallScore =
-    input.evaluationContext?.affectsOverallScore ??
+    baseEvaluationContext?.affectsOverallScore ??
     [...(effectiveConfig.appliedContextRoutes ?? [])]
       .reverse()
       .find((route) => route.affectsOverallScore !== undefined)?.affectsOverallScore;
-  const evaluationContext = input.evaluationContext
+  const evaluationContext = baseEvaluationContext
     ? {
-        ...input.evaluationContext,
+        ...baseEvaluationContext,
         ...(appliedOutputIntents.length > 0 ? { outputIntents: appliedOutputIntents } : {}),
         ...(affectsOverallScore !== undefined ? { affectsOverallScore } : {})
       }
@@ -204,6 +209,35 @@ function rootPluginIdForContext(context: EvaluationContext | undefined): string 
     builtInContextRootPluginIds[target as keyof typeof builtInContextRootPluginIds] ??
     target
   );
+}
+
+function normalizeEvaluationContext(
+  context: EvaluationContext | undefined
+): EvaluationContext | undefined {
+  if (!context) return undefined;
+  const triggerMode =
+    context.triggerMetadata?.mode ?? defaultTriggerModeForContext(context);
+  return {
+    ...context,
+    ...(triggerMode
+      ? {
+          triggerMetadata: {
+            mode: triggerMode,
+            ...context.triggerMetadata
+          }
+        }
+      : {})
+  };
+}
+
+function defaultTriggerModeForContext(
+  context: EvaluationContext
+): TriggerMode | undefined {
+  if (context.triggerMetadata?.mode) return context.triggerMetadata.mode;
+  if (!context.target) return undefined;
+  return ["periodic", "schedule", "scheduled"].includes(context.target)
+    ? "periodic"
+    : "one_shot";
 }
 
 function applyConfigRoots(

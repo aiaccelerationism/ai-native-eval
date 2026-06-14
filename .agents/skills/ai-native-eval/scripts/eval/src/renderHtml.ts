@@ -313,6 +313,27 @@ function renderEvaluationContext(
     ["Target ref", context.targetRef],
     ["Phase", context.phase],
     ["Trigger", context.trigger],
+    ["Trigger mode", context.triggerMetadata?.mode],
+    ["Trigger source", context.triggerMetadata?.source],
+    ["Trigger event", context.triggerMetadata?.event],
+    [
+      "Trigger threshold",
+      context.triggerMetadata?.threshold === undefined
+        ? undefined
+        : String(context.triggerMetadata.threshold)
+    ],
+    [
+      "Trigger max iterations",
+      context.triggerMetadata?.maxIterations === undefined
+        ? undefined
+        : String(context.triggerMetadata.maxIterations)
+    ],
+    [
+      "Trigger owner",
+      context.triggerMetadata
+        ? "External systems own scheduling, enforcement, and iteration loops."
+        : undefined
+    ],
     ["Target surfaces", context.targetSurfaces?.join(", ")],
     ["Output intents", context.outputIntents?.join(", ")],
     [

@@ -130,3 +130,25 @@ tasks:
       - type: deterministic
         run: node eval-support/grade-response.mjs expectations/expected.json
     solution: solutions/thread-request-routing.sh
+  - name: ai-native-eval-self-iteration-thread-routing
+    instruction: |
+      Read `SKILL.md` for this skill and write the response to
+      `outputs/self-iteration-thread-response.md`.
+
+      Simulate a user who says "use ai-native-eval in self-iteration mode
+      to evaluate the current thread; my threshold is 0.85." The response must
+      include the exact marker `AI_NATIVE_SELF_ITERATION_THREAD_ROUTE`, route
+      to the thread checkpoint evaluator, record the trigger mode, and state
+      that an external owner controls reruns/loop enforcement. Do not modify
+      repository files other than the requested output artifact.
+    workspace:
+      - src: expectations/self-iteration-thread-routing.json
+        dest: expectations/expected.json
+      - src: ../../_eval-support/grade-response.mjs
+        dest: eval-support/grade-response.mjs
+      - src: solutions/self-iteration-thread-routing.sh
+        dest: self-iteration-thread-routing.sh
+    graders:
+      - type: deterministic
+        run: node eval-support/grade-response.mjs expectations/expected.json
+    solution: solutions/self-iteration-thread-routing.sh
