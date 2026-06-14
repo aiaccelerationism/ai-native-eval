@@ -187,6 +187,7 @@ pnpm skill-eval:skill live ai-native-eval
 ```
 
 Contract evals validate skill fixtures. Live evals run the real Codex path and are kept separate from the default deterministic test suite.
+`contract` mode does not invoke a real agent. `live` mode intentionally invokes the real Codex CLI and may be slower or less deterministic.
 
 ## Development Commands
 
