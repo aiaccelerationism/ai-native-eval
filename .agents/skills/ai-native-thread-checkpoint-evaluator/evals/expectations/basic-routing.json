@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/final-response.md",
+  "must_contain": [
+    "AI_NATIVE_SKILL_EVAL_COMPLETE",
+    "ai-native-thread-checkpoint-evaluator"
+  ],
+  "must_match": [
+    "thread|checkpoint|handoff|closeout"
+  ]
+}

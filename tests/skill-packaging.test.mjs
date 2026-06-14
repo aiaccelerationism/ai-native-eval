@@ -40,6 +40,12 @@ test("evaluator skills are standalone SKILL.md-first plugins", async () => {
 test("fine-grained evaluator pack covers workflow surfaces", async () => {
   const requiredEvaluatorDirs = [
     "ai-native-foundation-evaluator",
+    "ai-native-repo-maturity-evaluator",
+    "ai-native-pr-lifecycle-evaluator",
+    "ai-native-issue-lifecycle-evaluator",
+    "ai-native-thread-checkpoint-evaluator",
+    "ai-native-turn-guardrail-evaluator",
+    "ai-native-periodic-health-evaluator",
     "ai-native-eval-self-evaluator",
     "ai-native-eval-rubric-quality-evaluator",
     "ai-native-eval-aggregation-integrity-evaluator",
@@ -84,6 +90,63 @@ test("fine-grained evaluator pack covers workflow surfaces", async () => {
   }
 
   const parentExpectations = [
+    [
+      "ai-native-repo-maturity-evaluator",
+      [
+        "ai-native-foundation-evaluator",
+        "bmad-method-evaluator"
+      ]
+    ],
+    [
+      "ai-native-pr-lifecycle-evaluator",
+      [
+        "ai-native-pr-readiness-evaluator",
+        "ai-native-ci-required-checks-evaluator",
+        "ai-native-review-contract-evaluator",
+        "ai-native-acceptance-proof-evaluator",
+        "ai-native-artifact-traceability-evaluator",
+        "ai-native-quality-gate-skip-policy-evaluator",
+        "ai-native-thread-closeout-evaluator"
+      ]
+    ],
+    [
+      "ai-native-issue-lifecycle-evaluator",
+      [
+        "ai-native-issue-readiness-evaluator",
+        "ai-native-decision-context-evaluator",
+        "ai-native-skill-activation-depth-evaluator",
+        "ai-native-acceptance-proof-evaluator"
+      ]
+    ],
+    [
+      "ai-native-thread-checkpoint-evaluator",
+      [
+        "ai-native-agent-thread-participation-evaluator",
+        "ai-native-human-ai-collaboration-trace-evaluator",
+        "ai-native-human-follow-through-evaluator",
+        "ai-native-ai-self-assessment-loop-evaluator",
+        "ai-native-thread-closeout-evaluator"
+      ]
+    ],
+    [
+      "ai-native-turn-guardrail-evaluator",
+      [
+        "ai-native-skill-activation-depth-evaluator",
+        "ai-native-human-follow-through-evaluator",
+        "ai-native-known-issue-awareness-evaluator",
+        "ai-native-repo-thread-bootstrap-evaluator"
+      ]
+    ],
+    [
+      "ai-native-periodic-health-evaluator",
+      [
+        "ai-native-foundation-evaluator",
+        "ai-native-known-issue-awareness-evaluator",
+        "ai-native-recurrence-prevention-evaluator",
+        "ai-native-evidence-evaluator",
+        "ai-native-artifact-traceability-evaluator"
+      ]
+    ],
     [
       "ai-native-eval-self-evaluator",
       [
@@ -354,7 +417,7 @@ test("every skill owns a skillgrade eval case", async () => {
     .filter((name) => !name.startsWith("_"))
     .sort();
 
-  assert.equal(skillNames.length, 68);
+  assert.equal(skillNames.length, 74);
 
   for (const skill of skillNames) {
     const evalYamlPath = `.agents/skills/${skill}/evals/eval.yaml`;
@@ -376,8 +439,9 @@ test("every skill owns a skillgrade eval case", async () => {
 });
 
 test("root skill eval runner separates contract and real-agent live modes", async () => {
-  const [packageBody, runnerBody, wrapperBody, readmeBody] = await Promise.all([
+  const [packageBody, evalPackageBody, runnerBody, wrapperBody, readmeBody] = await Promise.all([
     readFile("package.json", "utf8"),
+    readFile(".agents/skills/ai-native-eval/scripts/eval/package.json", "utf8"),
     readFile("tools/skill-eval.sh", "utf8"),
     readFile(".agents/skills/_eval-support/bin/codex", "utf8"),
     readFile("README.md", "utf8")
@@ -385,6 +449,8 @@ test("root skill eval runner separates contract and real-agent live modes", asyn
 
   assert.match(packageBody, /"skill-eval:contract": "tools\/skill-eval\.sh contract"/);
   assert.match(packageBody, /"skill-eval:live": "tools\/skill-eval\.sh live"/);
+  assert.match(packageBody, /"test:human": "pnpm --dir \.agents\/skills\/ai-native-eval\/scripts\/eval test:human"/);
+  assert.match(evalPackageBody, /"test:human": "pnpm build && RUN_REAL_CODEX_E2E=1 node --test dist\/tests\/real-agent\.e2e\.js"/);
   assert.match(runnerBody, /--validate --ci --provider=local/);
   assert.match(runnerBody, /--agent=codex --provider=local --trials=1/);
   assert.match(runnerBody, /mindepth 3 -maxdepth 3/);

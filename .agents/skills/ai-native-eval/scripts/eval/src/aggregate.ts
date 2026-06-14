@@ -24,6 +24,7 @@ export function buildReport(input: {
   language?: string;
   uiLanguage?: EvaluationReport["uiLanguage"];
   scope?: string;
+  evaluationContext?: EvaluationReport["evaluationContext"];
   root: EvaluationNodeInput;
   pluginResolution?: EvaluationReport["pluginResolution"];
   runConfig?: EvaluationReport["runConfig"];
@@ -38,6 +39,7 @@ export function buildReport(input: {
     language: input.language,
     uiLanguage: input.uiLanguage,
     scope: input.scope ?? "repository",
+    evaluationContext: input.evaluationContext,
     root,
     summary: summarize(root),
     pluginResolution: input.pluginResolution,

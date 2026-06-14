@@ -56,6 +56,12 @@ pnpm skill-eval:live
 
 Runs skill evals through the real local Codex CLI. This is intentionally slower and less deterministic than contract mode.
 
+```sh
+pnpm test:human
+```
+
+Runs the real-agent human E2E path. This invokes a real Codex agent against a fixture repository, requires it to use the local `ai-native-eval` skill, generate fresh evaluator outputs, validate the run folder, render the HTML report, and open the report with Playwright. Use this when a change affects user-facing flows, agent-facing routing, lifecycle evaluator entrypoints, generated reports, or anything a human developer would otherwise manually test.
+
 ## Self-Evaluation Commands
 
 The committed self-evaluation baseline lives under `self-evaluations/foundation-20260614/`.
@@ -93,6 +99,51 @@ For ordinary repository evaluations, the default generated output is a copyable 
 ```
 
 `init-run <repo-root>` creates `.ai-native-eval/artifacts/<timestamp>-<commit>/run` when `--out` is omitted. `render-folder` writes `report.html`, `report.md`, `report.json`, `snapshot.json`, and `manifest.json` beside `run/` when the input path is a bundle run folder.
+
+Targeted runs can record evaluation context for routing and auditability:
+
+```sh
+pnpm --dir .agents/skills/ai-native-eval/scripts/eval exec ai-native-eval init-run . \
+  --review-type event \
+  --target pull_request \
+  --target-ref PR-123 \
+  --phase opened \
+  --trigger user \
+  --target-surface pr \
+  --output-intent advisory \
+  --affects-overall-score false
+```
+
+The context is stored in `run.json`, carried into rendered reports, snapshots,
+and manifests, and selects a lifecycle evaluator root such as
+`ai-native-pr-lifecycle-evaluator`.
+
+Project config should scope evaluator-specific behavior by plugin id:
+
+```json
+{
+  "schemaVersion": 1,
+  "evaluators": {
+    "ai-native-pr-lifecycle-evaluator": {
+      "enabled": true,
+      "additionalChildren": [],
+      "disabledChildren": [
+        {
+          "pluginId": "ai-native-thread-closeout-evaluator",
+          "reason": "Closeout is checked only after merge."
+        }
+      ],
+      "settings": {
+        "defaultPhase": "opened",
+        "outputMode": "advisory"
+      }
+    }
+  }
+}
+```
+
+Legacy global `additionalRoots`, `disabled`, and `contextRoutes` are still read
+for compatibility, but generated reports show non-fatal deprecation warnings.
 
 ## CI
 

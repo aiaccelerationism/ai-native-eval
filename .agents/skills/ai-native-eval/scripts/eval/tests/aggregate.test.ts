@@ -606,6 +606,7 @@ test("initializes an audited run config snapshot from built-in and project confi
         builtInRootPluginIds: string[];
         roots: Array<{ pluginId: string; origin: string; reason?: string }>;
         disabled: Array<{ pluginId: string; reason: string; source: string }>;
+        warnings: Array<{ code: string; source: string; message: string }>;
       };
       reproducibility: { configHash?: string };
     };
@@ -613,12 +614,7 @@ test("initializes an audited run config snapshot from built-in and project confi
     assert.deepEqual(run.effectiveConfig.builtInRootPluginIds, [
       ...builtInRootPluginIds
     ]);
-    assert.ok(
-      run.rootPluginIds.includes("ai-native-foundation-evaluator")
-    );
-    assert.ok(
-      run.rootPluginIds.includes("bmad-method-evaluator")
-    );
+    assert.ok(run.rootPluginIds.includes("ai-native-repo-maturity-evaluator"));
     assert.ok(
       run.rootPluginIds.includes("ai-native-local-runtime-command-evaluator")
     );
@@ -634,7 +630,118 @@ test("initializes an audited run config snapshot from built-in and project confi
       )?.source,
       "project"
     );
+    assert.ok(
+      run.effectiveConfig.warnings.some(
+        (warning) => warning.code === "deprecated-additionalRoots"
+      )
+    );
+    assert.ok(
+      run.effectiveConfig.warnings.some(
+        (warning) => warning.code === "deprecated-disabled"
+      )
+    );
     assert.match(run.reproducibility.configHash ?? "", /^[a-f0-9]{64}$/);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("context routes add roots and audit targeted evaluation intent", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-context-route-"));
+  try {
+    const repoRoot = join(tempRoot, "repo");
+    const runFolder = join(tempRoot, "run");
+    const projectConfigPath = join(tempRoot, "project-config.json");
+    await writeFile(
+      projectConfigPath,
+      JSON.stringify(
+        {
+          contextRoutes: [
+            {
+              id: "pr-opened-advisory",
+              description: "Targeted PR opened advisory route.",
+              match: {
+                reviewType: "event",
+                target: "pull_request",
+                phase: "opened",
+                targetSurface: "pr"
+              },
+              scope: "PR opened targeted review",
+              additionalRoots: [
+                {
+                  pluginId: "ai-native-pr-readiness-evaluator",
+                  reason: "PR opened route checks PR readiness."
+                }
+              ],
+              disabled: [
+                {
+                  pluginId: "bmad-method-evaluator",
+                  reason: "BMAD is not part of this PR opened route."
+                }
+              ],
+              outputIntents: ["advisory", "markdown"],
+              affectsOverallScore: false
+            }
+          ]
+        },
+        null,
+        2
+      )
+    );
+
+    const runPath = await initRun({
+      repoRoot,
+      runFolder,
+      projectConfigPath,
+      reportId: "context-route-test",
+      generatedAt: "2026-06-13T00:00:00.000Z",
+      repoCommit: "abc123",
+      evaluationContext: {
+        reviewType: "event",
+        target: "pull_request",
+        targetRef: "PR-123",
+        phase: "opened",
+        trigger: "user",
+        targetSurfaces: ["pr"]
+      }
+    });
+    const run = JSON.parse(await readFile(runPath, "utf8")) as {
+      reviewType: string;
+      scope: string;
+      evaluationContext: {
+        reviewType: string;
+        target: string;
+        targetRef: string;
+        outputIntents: string[];
+        affectsOverallScore: boolean;
+      };
+      rootPluginIds: string[];
+      effectiveConfig: {
+        appliedContextRoutes: Array<{ id: string; source: string }>;
+        disabled: Array<{ pluginId: string; source: string }>;
+      };
+    };
+
+    assert.equal(run.reviewType, "event");
+    assert.equal(run.scope, "PR opened targeted review");
+    assert.deepEqual(run.evaluationContext.outputIntents, ["advisory", "markdown"]);
+    assert.equal(run.evaluationContext.affectsOverallScore, false);
+    assert.equal(run.evaluationContext.targetRef, "PR-123");
+    assert.equal(run.rootPluginIds[0], "ai-native-pr-lifecycle-evaluator");
+    assert.ok(run.rootPluginIds.includes("ai-native-pr-readiness-evaluator"));
+    assert.deepEqual(
+      run.effectiveConfig.appliedContextRoutes.map((route) => ({
+        id: route.id,
+        source: route.source
+      })),
+      [{ id: "pr-opened-advisory", source: "project" }]
+    );
+    assert.equal(
+      run.effectiveConfig.disabled.find(
+        (item) => item.pluginId === "bmad-method-evaluator"
+      )?.source,
+      "project"
+    );
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
@@ -671,6 +778,72 @@ test("init-run defaults to a repo-local timestamped artifact bundle", async () =
   }
 });
 
+test("init-run accepts open-ended evaluation context CLI flags", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-cli-context-"));
+  try {
+    const repoRoot = join(tempRoot, "repo");
+    const runFolder = join(tempRoot, "run");
+    await mkdir(repoRoot, { recursive: true });
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        "dist/src/cli.js",
+        "init-run",
+        repoRoot,
+        "--out",
+        runFolder,
+        "--repo-commit",
+        "abcdef1234567890",
+        "--review-type",
+        "turn",
+        "--target",
+        "user_turn",
+        "--target-ref",
+        "thread-7:turn-3",
+        "--phase",
+        "after_user_query",
+        "--trigger",
+        "agent",
+        "--target-surface",
+        "thread",
+        "--output-intent",
+        "advisory",
+        "--affects-overall-score",
+        "false",
+        "--assumption",
+        "Treating this as a lightweight turn guardrail check."
+      ],
+      { cwd: process.cwd(), encoding: "utf8" }
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    const run = JSON.parse(await readFile(result.stdout.trim(), "utf8")) as {
+      reviewType: string;
+      rootPluginIds: string[];
+      evaluationContext: {
+        reviewType: string;
+        target: string;
+        targetRef: string;
+        phase: string;
+        trigger: string;
+        targetSurfaces: string[];
+        outputIntents: string[];
+        affectsOverallScore: boolean;
+        assumption: string;
+      };
+    };
+    assert.equal(run.reviewType, "turn");
+    assert.deepEqual(run.rootPluginIds, ["ai-native-turn-guardrail-evaluator"]);
+    assert.equal(run.evaluationContext.phase, "after_user_query");
+    assert.deepEqual(run.evaluationContext.targetSurfaces, ["thread"]);
+    assert.deepEqual(run.evaluationContext.outputIntents, ["advisory"]);
+    assert.equal(run.evaluationContext.affectsOverallScore, false);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
 test("disabled root remains visible in the report without requiring leaf outputs", async () => {
   const validation = await validateFolderReport({
     runFolder: "fixtures/folder-run.disabled-root",
@@ -702,6 +875,141 @@ test("disabled root remains visible in the report without requiring leaf outputs
   assert.match(html, /Run Configuration/);
   assert.match(html, /This project has no visible product workflow in scope/);
   assert.match(html, /node-badge disabled/);
+});
+
+test("per-evaluator config can add and disable children under the selected pack", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-evaluator-config-"));
+  try {
+    const runFolder = join(tempRoot, "run");
+    await mkdir(join(runFolder, "evaluators"), { recursive: true });
+    const disabledChildren = [
+      "ai-native-pr-readiness-evaluator",
+      "ai-native-ci-required-checks-evaluator",
+      "ai-native-review-contract-evaluator",
+      "ai-native-acceptance-proof-evaluator",
+      "ai-native-artifact-traceability-evaluator",
+      "ai-native-quality-gate-skip-policy-evaluator",
+      "ai-native-thread-closeout-evaluator",
+      "ai-native-local-runtime-command-evaluator"
+    ].map((pluginId) => ({
+      pluginId,
+      reason: "Disabled for evaluator config test."
+    }));
+    await writeFile(
+      join(runFolder, "run.json"),
+      JSON.stringify(
+        {
+          reportId: "per-evaluator-config-test",
+          generatedAt: "2026-06-13T00:00:00.000Z",
+          scope: "per evaluator config test",
+          evaluationContext: {
+            reviewType: "event",
+            target: "pull_request",
+            phase: "opened"
+          },
+          rootPluginIds: ["ai-native-pr-lifecycle-evaluator"],
+          effectiveConfig: {
+            schemaVersion: 1,
+            configSources: [{ kind: "project", found: true }],
+            builtInRootPluginIds: ["ai-native-pr-lifecycle-evaluator"],
+            roots: [
+              {
+                pluginId: "ai-native-pr-lifecycle-evaluator",
+                origin: "built-in",
+                source: "built-in"
+              }
+            ],
+            evaluatorConfigs: [
+              {
+                pluginId: "ai-native-pr-lifecycle-evaluator",
+                source: "project",
+                enabled: true,
+                additionalChildren: [
+                  {
+                    pluginId: "ai-native-local-runtime-command-evaluator",
+                    weight: 0.25,
+                    required: false,
+                    reason: "Project wants runtime command evidence in PR checks.",
+                    source: "project"
+                  }
+                ],
+                disabledChildren: disabledChildren.map((child) => ({
+                  ...child,
+                  source: "project"
+                })),
+                settings: {
+                  defaultPhase: "opened"
+                }
+              }
+            ],
+            disabled: [],
+            warnings: []
+          }
+        },
+        null,
+        2
+      )
+    );
+
+    const validation = await validateFolderReport({
+      runFolder,
+      skillsDir: "../../../"
+    });
+    assert.deepEqual(validation.errors, []);
+
+    const report = await buildReportFromFolder({
+      runFolder,
+      skillsDir: "../../../"
+    });
+    const html = renderHtmlReport(report);
+    const added = findNode(report.root, "ai-native-local-runtime-command-evaluator");
+    assert.equal(added.status, "not_applicable");
+    assert.equal(added.disabledSource, "project");
+    assert.match(html, /Evaluator configs/);
+    assert.match(html, /ai-native-local-runtime-command-evaluator/);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("folder reports preserve evaluation context in rendered artifacts", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-folder-context-"));
+  try {
+    const runFolder = join(tempRoot, "run");
+    await cp("fixtures/folder-run.valid", runFolder, { recursive: true });
+    const runJsonPath = join(runFolder, "run.json");
+    const run = JSON.parse(await readFile(runJsonPath, "utf8"));
+    run.evaluationContext = {
+      reviewType: "periodic",
+      target: "repo",
+      phase: "weekly",
+      trigger: "schedule",
+      outputIntents: ["artifact"],
+      affectsOverallScore: true
+    };
+    await writeFile(runJsonPath, `${JSON.stringify(run, null, 2)}\n`);
+
+    const report = await buildReportFromFolder({
+      runFolder,
+      skillsDir: "../../../"
+    });
+    const markdown = renderMarkdownReport(report);
+    const html = renderHtmlReport(report);
+    const manifest = buildIncrementalManifest({
+      manifestId: report.reportId,
+      generatedAt: report.generatedAt,
+      evaluationContext: report.evaluationContext,
+      changedFiles: []
+    });
+
+    assert.equal(report.evaluationContext?.reviewType, "periodic");
+    assert.match(markdown, /Evaluation Context/);
+    assert.match(markdown, /Review type: periodic/);
+    assert.match(html, /Evaluation Context/);
+    assert.equal(manifest.evaluationContext?.phase, "weekly");
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
 });
 
 test("folder validation can load disabled non-ai-native evaluator roots", async () => {

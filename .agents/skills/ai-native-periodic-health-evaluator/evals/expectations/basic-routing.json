@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/final-response.md",
+  "must_contain": [
+    "AI_NATIVE_SKILL_EVAL_COMPLETE",
+    "ai-native-periodic-health-evaluator"
+  ],
+  "must_match": [
+    "periodic|scheduled|health|drift"
+  ]
+}

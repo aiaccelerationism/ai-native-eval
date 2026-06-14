@@ -17,12 +17,36 @@ export function renderMarkdownReport(report: EvaluationReport): string {
     lines.push(`- Repo commit: \`${report.reproducibility.repoCommit}\``);
   }
   lines.push("");
+  renderEvaluationContext(lines, report);
   renderPluginResolution(lines, report);
   renderRunConfig(lines, report);
   lines.push("## Evaluation Tree");
   lines.push("");
   renderNode(lines, report.root, 0);
   return `${lines.join("\n")}\n`;
+}
+
+function renderEvaluationContext(lines: string[], report: EvaluationReport): void {
+  const context = report.evaluationContext;
+  if (!context) return;
+  lines.push("## Evaluation Context");
+  lines.push("");
+  lines.push(`- Review type: ${context.reviewType}`);
+  if (context.target) lines.push(`- Target: ${context.target}`);
+  if (context.targetRef) lines.push(`- Target ref: ${context.targetRef}`);
+  if (context.phase) lines.push(`- Phase: ${context.phase}`);
+  if (context.trigger) lines.push(`- Trigger: ${context.trigger}`);
+  if (context.targetSurfaces?.length) {
+    lines.push(`- Target surfaces: ${formatInlineList(context.targetSurfaces)}`);
+  }
+  if (context.outputIntents?.length) {
+    lines.push(`- Output intents: ${formatInlineList(context.outputIntents)}`);
+  }
+  if (context.affectsOverallScore !== undefined) {
+    lines.push(`- Affects overall score: ${context.affectsOverallScore}`);
+  }
+  if (context.assumption) lines.push(`- Assumption: ${context.assumption}`);
+  lines.push("");
 }
 
 function renderPluginResolution(lines: string[], report: EvaluationReport): void {
@@ -50,6 +74,36 @@ function renderRunConfig(lines: string[], report: EvaluationReport): void {
     lines.push("- Disabled plugins:");
     for (const item of config.disabled) {
       lines.push(`  - \`${item.pluginId}\` (${item.source}): ${item.reason}`);
+    }
+  }
+  if (config.appliedContextRoutes?.length) {
+    lines.push("- Applied context routes:");
+    for (const route of config.appliedContextRoutes) {
+      const detail = route.description ? `: ${route.description}` : "";
+      lines.push(`  - \`${route.id}\` (${route.source})${detail}`);
+    }
+  }
+  if (config.evaluatorConfigs?.length) {
+    lines.push("- Evaluator configs:");
+    for (const evaluatorConfig of config.evaluatorConfigs) {
+      const enabled = evaluatorConfig.enabled === false ? "disabled" : "enabled";
+      lines.push(`  - \`${evaluatorConfig.pluginId}\` (${evaluatorConfig.source}, ${enabled})`);
+      if (evaluatorConfig.additionalChildren?.length) {
+        lines.push(
+          `    - Additional children: ${formatInlineList(evaluatorConfig.additionalChildren.map((child) => child.pluginId))}`
+        );
+      }
+      if (evaluatorConfig.disabledChildren?.length) {
+        lines.push(
+          `    - Disabled children: ${formatInlineList(evaluatorConfig.disabledChildren.map((child) => child.pluginId))}`
+        );
+      }
+    }
+  }
+  if (config.warnings?.length) {
+    lines.push("- Config warnings:");
+    for (const warning of config.warnings) {
+      lines.push(`  - ${warning.code} (${warning.source}): ${warning.message}`);
     }
   }
   lines.push("");

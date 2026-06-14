@@ -18,6 +18,7 @@ Traditional repo checks tell you whether code builds. `ai-native-eval` asks whet
 - **Why not 10/10**: see exactly which evidence-backed deductions kept the repo from a perfect score.
 - **Agent repair loop**: turn recommendations into tasks an agent can execute.
 - **Lifecycle coverage**: evaluate docs, agent instructions, issues, PRs, CI, tests, runtime commands, review artifacts, and historical evidence.
+- **Targeted lifecycle checks**: route issue, PR, thread, turn, periodic, or project-specific evaluation contexts without always running a full repository review.
 - **Deterministic aggregation**: final scores are computed from evaluator rubrics.
 - **Pluggable evaluators**: add built-in, BMAD, or project-specific evaluator packs.
 
@@ -58,10 +59,16 @@ The report gives humans and agents the same review surface:
 
 ## Built-In Evaluator Packs
 
-`ai-native-eval` ships with evaluator packs for general AI-native repo readiness and BMAD Method adoption.
+`ai-native-eval` ships with lifecycle entry packs plus reusable evaluator packs for repo foundation and BMAD Method adoption.
 
 | Pack | Purpose |
 | --- | --- |
+| `ai-native-repo-maturity-evaluator` | Full repository baseline and incremental repository-level review. |
+| `ai-native-pr-lifecycle-evaluator` | Pull request opened, review, pre-merge, post-merge, and closeout evaluation. |
+| `ai-native-issue-lifecycle-evaluator` | Issue intake, planning, follow-up, and handoff evaluation. |
+| `ai-native-thread-checkpoint-evaluator` | Agent thread checkpoint, handoff, collaboration trace, and closeout evaluation. |
+| `ai-native-turn-guardrail-evaluator` | Single user turn or agent response guardrail evaluation. |
+| `ai-native-periodic-health-evaluator` | Scheduled or ad hoc repository health and drift evaluation. |
 | `ai-native-foundation-evaluator` | General AI-native repo foundation: operability, docs, agent readiness, GitHub workflow, CI/test gates, product UX evidence, architecture, and evidence discipline. |
 | `bmad-method-evaluator` | BMAD Method adoption and artifact maturity. |
 
@@ -72,15 +79,16 @@ A repo can use the built-in packs, add project-specific evaluator packs, or disa
 The eval flow is designed to be repeatable and auditable.
 
 1. Resolve scope, repo root, current commit, and available evidence.
-2. Read previous eval state if present.
-3. Resolve effective config from built-in roots, optional user config, project config, and explicit run overrides.
-4. Write a run folder with `run.json` as the audit snapshot.
-5. Resolve installed evaluator plugins through direct child references.
-6. Group evaluators into execution batches when useful.
-7. Write each enabled leaf evaluator's judgment to its own JSON file.
-8. Validate the folder against the run snapshot, installed manifests, and leaf rubrics.
-9. Aggregate normalized evaluator nodes deterministically.
-10. Render static HTML and optional Markdown/JSON artifacts.
+2. Determine the evaluation context: full baseline, incremental run, issue/PR event, thread checkpoint, user turn, periodic scan, or project-specific lifecycle.
+3. Read previous eval state if present.
+4. Resolve effective config from the selected lifecycle root, optional user config, project config, explicit run overrides, and evaluator-specific config under `evaluators[pluginId]`.
+5. Write a run folder with `run.json` as the audit snapshot.
+6. Resolve installed evaluator plugins through direct child references.
+7. Group evaluators into execution batches when useful.
+8. Write each enabled leaf evaluator's judgment to its own JSON file.
+9. Validate the folder against the run snapshot, installed manifests, and leaf rubrics.
+10. Aggregate normalized evaluator nodes deterministically.
+11. Render static HTML and optional Markdown/JSON artifacts.
 
 Validation catches inconsistent evaluator outputs before rendering, so broken or incomplete runs do not quietly become polished reports.
 
@@ -144,6 +152,12 @@ ai-native-eval/
             fixtures/
             tests/
       ai-native-foundation-evaluator/
+      ai-native-repo-maturity-evaluator/
+      ai-native-pr-lifecycle-evaluator/
+      ai-native-issue-lifecycle-evaluator/
+      ai-native-thread-checkpoint-evaluator/
+      ai-native-turn-guardrail-evaluator/
+      ai-native-periodic-health-evaluator/
       bmad-method-evaluator/
       _eval-support/
         bin/codex
@@ -218,6 +232,7 @@ pnpm score:example
 pnpm persist:example
 pnpm self-eval:validate
 pnpm self-eval:render
+pnpm test:human
 ```
 
 ## Contributing
