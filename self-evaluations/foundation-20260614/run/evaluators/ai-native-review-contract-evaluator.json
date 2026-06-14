@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-review-contract-evaluator",
+  "confidence": "high",
+  "reason": "The review contract is documented and surfaced through the PR template; follow-through tracking is still policy-level.",
+  "evidence": [
+    {
+      "source": "docs/reviewer-contract.md",
+      "locator": "Severity and Review Gates",
+      "summary": "Reviewers have a durable contract for approval and finding severity."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "review-followthrough",
+      "deductionId": "incomplete-review-followthrough",
+      "applies": true,
+      "reason": "Follow-through expectations exist, but there is no mechanism for tracking unresolved findings, waived findings, or linked fixes.",
+      "evidence": [
+        {
+          "source": "docs/reviewer-contract.md",
+          "locator": "Follow-Through",
+          "summary": "Follow-through is policy-level."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a review finding tracking convention or checklist for PRs.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

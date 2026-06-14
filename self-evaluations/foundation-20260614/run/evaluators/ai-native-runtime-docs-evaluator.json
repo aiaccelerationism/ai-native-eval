@@ -1,0 +1,13 @@
+{
+  "pluginId": "ai-native-runtime-docs-evaluator",
+  "confidence": "high",
+  "reason": "Runtime docs now include CI gates, self-eval validation, rendering, and freshness-check behavior.",
+  "evidence": [
+    {
+      "source": "docs/runtime.md",
+      "locator": "Core Commands and Failure Handling",
+      "summary": "Runtime documentation is machine-repeatable and points to expected failure handling."
+    }
+  ],
+  "deductions": []
+}

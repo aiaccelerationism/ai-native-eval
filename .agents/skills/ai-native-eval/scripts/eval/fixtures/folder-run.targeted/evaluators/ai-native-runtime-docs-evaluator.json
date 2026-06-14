@@ -1,0 +1,33 @@
+{
+  "pluginId": "ai-native-runtime-docs-evaluator",
+  "confidence": "medium",
+  "reason": "Runtime basics are documented, while richer modes and failure handling are absent.",
+  "deductions": [
+    {
+      "groupId": "runtime-command-coverage",
+      "deductionId": "missing-important-runtime-mode",
+      "applies": true,
+      "reason": "README documents start/test basics, but no smoke, reset, production, or E2E runtime mode.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "Runtime",
+          "summary": "Only node src/index.js is documented as runtime execution."
+        }
+      ]
+    },
+    {
+      "groupId": "runtime-failure-handling",
+      "deductionId": "missing-failure-handling",
+      "applies": true,
+      "reason": "No failure handling, troubleshooting, or recovery guidance exists.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "entire file",
+          "summary": "No troubleshooting section is present."
+        }
+      ]
+    }
+  ]
+}

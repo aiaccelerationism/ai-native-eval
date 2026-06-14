@@ -1,0 +1,48 @@
+{
+  "pluginId": "ai-native-thread-closeout-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-continuation-quality, incomplete-thread-locality.",
+  "evidence": [
+    {
+      "source": "AGENTS.md",
+      "locator": "Thread Closeout",
+      "summary": "Final answers must summarize thread-local remaining work and continuation prompts."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "continuation-quality",
+      "deductionId": "incomplete-continuation-quality",
+      "applies": true,
+      "reason": "Closeout instructions require continuation prompts, but there is no template that captures branch, PR, validation, self-eval artifacts, and remaining evaluator gaps consistently.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Thread Closeout",
+          "summary": "Closeout is prose-level."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a closeout template for PR/self-eval work.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "thread-locality",
+      "deductionId": "incomplete-thread-locality",
+      "applies": true,
+      "reason": "Thread-locality is documented, but no artifact prevents future agents from confusing global project backlog with current thread leftovers.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Thread Closeout",
+          "summary": "Thread-local remaining work is instruction-only."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record thread-local continuation state in PR body or handoff notes.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

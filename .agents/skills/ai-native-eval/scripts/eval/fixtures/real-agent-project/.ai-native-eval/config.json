@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "disabled": [
+    {
+      "pluginId": "ai-native-docs-evaluator",
+      "reason": "Real-agent E2E focuses on repo operability."
+    },
+    {
+      "pluginId": "ai-native-agent-readiness-evaluator",
+      "reason": "Real-agent E2E focuses on repo operability."
+    },
+    {
+      "pluginId": "ai-native-github-evaluator",
+      "reason": "Real-agent E2E fixture has no GitHub history."
+    },
+    {
+      "pluginId": "ai-native-ci-test-evaluator",
+      "reason": "Real-agent E2E fixture has no CI history."
+    },
+    {
+      "pluginId": "ai-native-product-ux-evidence-evaluator",
+      "reason": "Real-agent E2E fixture has no visible product work."
+    },
+    {
+      "pluginId": "ai-native-architecture-evaluator",
+      "reason": "Real-agent E2E fixture is intentionally tiny."
+    },
+    {
+      "pluginId": "ai-native-evidence-evaluator",
+      "reason": "Real-agent E2E focuses on first-run report generation."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-recurrence-prevention-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-miss-capture, incomplete-durable-prevention, incomplete-feedback-loop.",
+  "evidence": [
+    {
+      "source": "docs/evidence.md; .agents/skills/**/evals/eval.yaml",
+      "locator": "Recurrence Prevention and skill evals",
+      "summary": "The project prefers tests/evals/skill updates for durable misses."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "miss-capture",
+      "deductionId": "missing-miss-capture",
+      "applies": true,
+      "reason": "There is no durable miss ledger recording previous AI/review/tool misses and their prevention artifact.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md",
+          "locator": "Recurrence Prevention",
+          "summary": "The process exists but no ledger exists."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a miss ledger when durable failures are discovered.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "durable-prevention",
+      "deductionId": "incomplete-durable-prevention",
+      "applies": true,
+      "reason": "The repo has many tests and evals, but there is no explicit policy requiring every repeated miss to become a specific test/eval/skill update before closeout.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md",
+          "locator": "Recurrence Prevention",
+          "summary": "Preferred order is documented but not enforced."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add PR checklist enforcement for recurrence-prevention follow-up.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "feedback-loop",
+      "deductionId": "incomplete-feedback-loop",
+      "applies": true,
+      "reason": "No workflow ties self-eval findings back into issues, tasks, or future baseline refreshes.",
+      "evidence": [
+        {
+          "source": ".ai-native-eval/artifacts/reports/self-eval-20260614-foundation.json",
+          "locator": "self-eval report",
+          "summary": "Findings exist in report but are not linked to follow-up tracking."
+        }
+      ],
+      "recommendation": {
+        "summary": "Create follow-up issues for major self-eval deductions.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

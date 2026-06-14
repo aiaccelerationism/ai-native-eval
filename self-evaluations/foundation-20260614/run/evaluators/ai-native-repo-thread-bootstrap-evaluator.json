@@ -1,0 +1,48 @@
+{
+  "pluginId": "ai-native-repo-thread-bootstrap-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-bootstrap-context, incomplete-thread-safety.",
+  "evidence": [
+    {
+      "source": "AGENTS.md",
+      "locator": "Required Reading and Runtime And Test Commands",
+      "summary": "New agent threads can orient to scope and command surfaces."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "bootstrap-context",
+      "deductionId": "incomplete-bootstrap-context",
+      "applies": true,
+      "reason": "AGENTS.md gives bootstrap context, but there is no bootstrap script or checklist command that confirms branch, dirty state, dependency state, and self-eval artifact status.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Required Reading and Runtime And Test Commands",
+          "summary": "Bootstrap context is prose-driven."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a lightweight bootstrap/check command for new eval threads.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "thread-safety",
+      "deductionId": "incomplete-thread-safety",
+      "applies": true,
+      "reason": "Thread safety rules exist, but no artifact records thread-local open work, active PR, or handoff state for continuation.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Thread Closeout",
+          "summary": "Closeout is documented but not persisted."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a handoff template or local run note convention for long-lived work.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

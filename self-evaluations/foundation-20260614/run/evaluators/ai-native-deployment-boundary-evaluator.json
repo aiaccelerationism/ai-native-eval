@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-deployment-boundary-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-deployment-mode-boundaries, missing-deploy-command-surface, incomplete-deployment-validation.",
+  "evidence": [
+    {
+      "source": "docs/architecture.md; README.md",
+      "locator": "Current Non-Goals and Repo Layout",
+      "summary": "The repo declares no hosted service or database runtime."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "deployment-mode-boundaries",
+      "deductionId": "incomplete-deployment-mode-boundaries",
+      "applies": true,
+      "reason": "The repo documents local skill/tool scope, but does not document release, installation, or update modes for consumers using the skill pack from other projects.",
+      "evidence": [
+        {
+          "source": "README.md; docs/architecture.md",
+          "locator": "Repo Layout and Current Non-Goals",
+          "summary": "Local boundaries are clear; distribution boundaries are thin."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document supported install/update paths for Codex skill consumers.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "deploy-command-surface",
+      "deductionId": "missing-deploy-command-surface",
+      "applies": true,
+      "reason": "There is no release/package/deploy command surface for publishing or validating installable skill pack versions.",
+      "evidence": [
+        {
+          "source": "package.json",
+          "locator": "scripts",
+          "summary": "No release or install validation command beyond tests exists."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a release validation command when publishing versions.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "deployment-validation",
+      "deductionId": "incomplete-deployment-validation",
+      "applies": true,
+      "reason": "Packaging tests validate shape, but no release artifact or installation smoke report is generated for consumers.",
+      "evidence": [
+        {
+          "source": "tests/skill-packaging.test.mjs",
+          "locator": "packaging tests",
+          "summary": "Packaging shape is tested locally."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add consumer install smoke validation before releases.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

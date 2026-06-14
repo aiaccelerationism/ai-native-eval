@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-readme-onboarding-evaluator",
+  "confidence": "medium",
+  "reason": "README intentionally passes basic purpose and first-run setup, but lacks agent/contribution next-step routing.",
+  "evidence": [
+    {
+      "source": "README.md",
+      "locator": "entire file",
+      "summary": "README includes purpose, setup, test, runtime command, and expected output."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "next-step-routing",
+      "deductionId": "missing-next-step-routing",
+      "applies": true,
+      "reason": "README does not route agents to task docs, skills, contribution workflow, issues, or review expectations.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "entire file",
+          "summary": "README contains setup/runtime basics but no agent workflow or contribution routing."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a short next-step section linking contribution workflow, issue expectations, and agent guidance.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

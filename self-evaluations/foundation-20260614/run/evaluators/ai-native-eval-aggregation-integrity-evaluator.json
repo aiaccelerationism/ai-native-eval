@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-eval-aggregation-integrity-evaluator",
+  "confidence": "high",
+  "reason": "The deterministic tool owns aggregation, folder validation, and config snapshots, but legacy score fallback and config-source ordering still need stricter proof. Applied deductions: incomplete-deterministic-score-path, unproven-deterministic-repeatability, incomplete-config-auditability.",
+  "evidence": [
+    {
+      "source": ".agents/skills/ai-native-eval/scripts/eval/src/aggregate.ts; .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts",
+      "locator": "buildReport and validateFolderReport",
+      "summary": "The tool validates folders and calculates normalized report scores from evaluator nodes."
+    },
+    {
+      "source": ".agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts",
+      "locator": "deterministic aggregation and folder validation tests",
+      "summary": "Tests cover nested aggregation, deduction scoring, disabled outputs, filename mismatches, and folder rendering."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "deterministic-score-path",
+      "deductionId": "incomplete-deterministic-score-path",
+      "applies": true,
+      "reason": "New evaluator outputs use rubric judgments, but the tool still keeps a legacy pointsEarned path for already-normalized tree JSON, so the guardrail relies on skill guidance and folder validation for new leaf outputs.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/SKILL.md; .agents/skills/ai-native-eval/scripts/eval/src/aggregate.ts",
+          "locator": "Scoring and legacy/manual fallback",
+          "summary": "The skill says pointsEarned is legacy/manual fallback only, while the aggregator still supports legacy inputs when deductionGroups are absent."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add an explicit validation mode that rejects legacy score fields for folder-based evaluator outputs.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "deterministic-score-path",
+      "deductionId": "unproven-deterministic-repeatability",
+      "applies": true,
+      "reason": "Tests cover deterministic calculations, but there is no snapshot-style repeatability test proving byte-stable report JSON or markdown from the same self-evaluation folder across repeated renders.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts; tools/check-self-eval-fresh.mjs",
+          "locator": "tool tests and self-eval freshness check",
+          "summary": "Freshness checks protect the committed report, but the test suite does not explicitly compare repeated render outputs from identical inputs."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a repeat-render test for the committed self-evaluation folder or a representative fixture folder.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "validation-gate-integrity",
+      "deductionId": "missing-validation-gate-integrity",
+      "applies": false,
+      "reason": "render-folder validates before rendering and tests reject invalid outputs, disabled outputs, unreachable outputs, and filename mismatches."
+    },
+    {
+      "groupId": "validation-gate-integrity",
+      "deductionId": "incomplete-validation-gate-integrity",
+      "applies": false,
+      "reason": "Folder validation covers the major output-contract classes needed for the current evaluator-system model."
+    },
+    {
+      "groupId": "config-auditability",
+      "deductionId": "incomplete-config-auditability",
+      "applies": true,
+      "reason": "Run snapshots record config sources and hashes, but config source ordering is produced through parallel config reads and is not yet explicitly tested as a stable audit contract.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/src/config.ts; self-evaluations/foundation-20260614/run/run.json",
+          "locator": "resolveEffectiveConfig and configSources",
+          "summary": "Config sources are recorded, but there is no dedicated test asserting stable source ordering in run snapshots."
+        }
+      ],
+      "recommendation": {
+        "summary": "Make config source ordering explicit and add a test for project/person/explicit source order.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

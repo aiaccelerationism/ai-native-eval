@@ -1,0 +1,123 @@
+{
+  "reportId": "plugin-resolved-example",
+  "generatedAt": "2026-06-13T00:00:00.000Z",
+  "language": "zh-TW",
+  "uiLanguage": "en",
+  "scope": "example repository plugin-resolved evaluation",
+  "pluginResolution": {
+    "rootPluginIds": ["repo-operability"],
+    "resolvedPluginIds": [
+      "repo-operability",
+      "runtime-reproducibility",
+      "runtime-command",
+      "runtime-command-failure-handling"
+    ],
+    "missingPluginIds": []
+  },
+  "executionBatches": [
+    {
+      "batchId": "batch-runtime-001",
+      "runner": "single-agent",
+      "pluginIds": [
+        "runtime-reproducibility",
+        "runtime-command",
+        "runtime-command-failure-handling"
+      ],
+      "scope": {
+        "changedFiles": ["README.md"],
+        "evidenceSurfaces": ["docs", "runtime"]
+      }
+    }
+  ],
+  "evaluatorRuns": [
+    {
+      "evaluatorId": "runtime-command",
+      "pluginId": "runtime-command",
+      "runnerBatchId": "batch-runtime-001",
+      "nodeId": "repo-operability.runtime-reproducibility.runtime-command",
+      "status": "pass",
+      "confidence": "high",
+      "pointsAvailable": 1,
+      "pointsEarned": 1
+    },
+    {
+      "evaluatorId": "runtime-command-failure-handling",
+      "pluginId": "runtime-command-failure-handling",
+      "runnerBatchId": "batch-runtime-001",
+      "nodeId": "repo-operability.runtime-reproducibility.runtime-command.failure-handling",
+      "status": "partial",
+      "confidence": "medium",
+      "pointsAvailable": 1,
+      "pointsEarned": 0.5
+    }
+  ],
+  "reproducibility": {
+    "repoUrl": "https://github.com/example/ai-native-eval",
+    "repoCommit": "example",
+    "configHash": "plugin-example-config",
+    "evaluatorLockHash": "plugin-example-lock",
+    "scoringModelVersion": "tree-v1"
+  },
+  "root": {
+    "id": "root",
+    "label": "Repo AI-native maturity",
+    "kind": "eval",
+    "children": [
+      {
+        "id": "repo-operability",
+        "label": "Repo operability",
+        "kind": "evaluator",
+        "dimension": "repo_operability",
+        "pluginId": "repo-operability",
+        "children": [
+          {
+            "id": "repo-operability.runtime-reproducibility",
+            "label": "Runtime reproducibility",
+            "kind": "evaluator",
+            "dimension": "repo_operability",
+            "pluginId": "runtime-reproducibility",
+            "runnerBatchId": "batch-runtime-001",
+            "children": [
+              {
+                "id": "repo-operability.runtime-reproducibility.runtime-command",
+                "label": "Runtime command",
+                "kind": "evaluator",
+                "dimension": "repo_operability",
+                "pluginId": "runtime-command",
+                "runnerBatchId": "batch-runtime-001",
+                "status": "pass",
+                "confidence": "high",
+                "pointsAvailable": 1,
+                "evidence": [
+                  {
+                    "source": "README.md",
+                    "locator": "runtime section",
+                    "summary": "本機 runtime 指令已文件化。"
+                  }
+                ]
+              },
+              {
+                "id": "repo-operability.runtime-reproducibility.runtime-command.failure-handling",
+                "label": "Runtime command failure handling",
+                "kind": "evaluator",
+                "dimension": "repo_operability",
+                "pluginId": "runtime-command-failure-handling",
+                "runnerBatchId": "batch-runtime-001",
+                "status": "partial",
+                "confidence": "medium",
+                "pointsAvailable": 1,
+                "reason": "runtime-command plugin 只知道自己的 direct child；失敗處理細節由 child plugin 自己評分。",
+                "recommendations": [
+                  {
+                    "summary": "補上常見啟動失敗、預期 port、health check 與復原方式。",
+                    "priority": "medium"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

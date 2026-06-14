@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-acceptance-proof-evaluator",
+  "confidence": "high",
+  "reason": "Self-evaluation acceptance proof is now backed by validate/render/check commands and a PR template validation surface; issue linkage remains partial.",
+  "evidence": [
+    {
+      "source": "docs/foundation-self-evaluation.md; docs/runtime.md",
+      "locator": "Acceptance Criteria and Self-Evaluation Commands",
+      "summary": "The baseline defines concrete acceptance criteria and commands."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "acceptance-criteria-linkage",
+      "deductionId": "incomplete-acceptance-criteria-linkage",
+      "applies": true,
+      "reason": "Self-evaluation acceptance criteria exist, but they are not linked to an issue/spec or enforced through a PR template.",
+      "evidence": [
+        {
+          "source": "docs/foundation-self-evaluation.md",
+          "locator": "Acceptance Criteria",
+          "summary": "Acceptance criteria are documented in repo docs."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link future self-eval baselines to issue/spec acceptance criteria.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

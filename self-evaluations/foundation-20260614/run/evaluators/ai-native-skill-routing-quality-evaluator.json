@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-skill-routing-quality-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-routing-validation.",
+  "evidence": [
+    {
+      "source": ".agents/skills/**/SKILL.md; .agents/skills/**/evals/eval.yaml",
+      "locator": "skill metadata and eval cases",
+      "summary": "Skill routing and basic eval coverage are present across installed skills."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "routing-validation",
+      "deductionId": "incomplete-routing-validation",
+      "applies": true,
+      "reason": "Every skill has a basic eval, but most evals only test basic routing completion and do not verify domain-specific deduction quality or realistic evaluator output.",
+      "evidence": [
+        {
+          "source": ".agents/skills/**/evals/eval.yaml",
+          "locator": "basic-routing evals",
+          "summary": "Skill evals exist but are mostly shallow routing checks."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add deeper eval cases for representative evaluator judgments and failure modes.",
+        "priority": "high"
+      }
+    }
+  ]
+}

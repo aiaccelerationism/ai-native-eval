@@ -1,0 +1,50 @@
+## Summary
+
+- 
+
+## Scope
+
+- What changed:
+- What is intentionally not done:
+- Affected skills/evaluators:
+- Affected report or self-evaluation artifacts:
+
+## Review Surface
+
+- [ ] Skill contracts or evaluator rubrics changed
+- [ ] Eval tool behavior changed
+- [ ] Report rendering changed
+- [ ] Self-evaluation run/report changed
+- [ ] Documentation only
+- [ ] No user-visible/report-visible behavior changed
+
+## Validation
+
+- [ ] `pnpm test`
+- [ ] `pnpm self-eval:validate`
+- [ ] `pnpm self-eval:check`
+- [ ] `pnpm self-eval:render` if self-evaluation artifacts changed
+- [ ] `pnpm skill-eval:contract` if skill behavior changed
+- [ ] Browser E2E if report UI changed
+- [ ] Live agent eval if real-agent behavior changed
+
+Commands run:
+
+```text
+
+```
+
+## Gate Skips
+
+List any skipped gate and why it is safe to skip for this PR.
+
+```text
+
+```
+
+## Evidence
+
+Link or name any relevant report, screenshot, trace, eval run, issue, or review artifact.
+
+- 
+

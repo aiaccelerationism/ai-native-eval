@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-ux-mock-contract-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-mock-before-implementation, incomplete-state-and-parity-contract, missing-mock-traceability.",
+  "evidence": [
+    {
+      "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .agents/skills/ai-native-eval/scripts/eval/src/renderHtml.ts",
+      "locator": "report browser E2E and renderer",
+      "summary": "The report UI is validated through rendered HTML."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "mock-before-implementation",
+      "deductionId": "missing-mock-before-implementation",
+      "applies": true,
+      "reason": "No approved UX mock, screenshot baseline, or design artifact exists before report UI implementation changes.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/src/renderHtml.ts",
+          "locator": "renderer source",
+          "summary": "UI exists as implementation first."
+        }
+      ],
+      "recommendation": {
+        "summary": "Create a lightweight report mock or screenshot baseline before major UI changes.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "state-and-parity-contract",
+      "deductionId": "incomplete-state-and-parity-contract",
+      "applies": true,
+      "reason": "Report state behavior is tested, but there is no mock-to-implementation parity contract for layout, hierarchy, or interactions.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts",
+          "locator": "browser E2E",
+          "summary": "Browser checks basic UI, not mock parity."
+        }
+      ],
+      "recommendation": {
+        "summary": "Define parity expectations between approved report mock and renderer output.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "mock-traceability",
+      "deductionId": "missing-mock-traceability",
+      "applies": true,
+      "reason": "There is no mock artifact to trace report sections or visual states back to.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md",
+          "locator": "Evidence Surfaces",
+          "summary": "Visual proof is recognized, but mock traceability is absent."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add traceable mock or screenshot artifacts for report UI.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

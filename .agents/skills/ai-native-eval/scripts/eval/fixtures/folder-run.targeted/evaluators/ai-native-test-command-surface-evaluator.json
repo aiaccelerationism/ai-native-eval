@@ -1,0 +1,36 @@
+{
+  "pluginId": "ai-native-test-command-surface-evaluator",
+  "confidence": "medium",
+  "reason": "The tiny project intentionally has a working npm test command, but lacks broader validation surfaces.",
+  "evidence": [
+    {
+      "source": "package.json",
+      "locator": "scripts.test",
+      "summary": "A project-owned npm test command exists."
+    },
+    {
+      "source": "test/basic.test.js",
+      "locator": "node:test",
+      "summary": "A minimal test verifies the runtime marker."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "test-command-coverage",
+      "deductionId": "incomplete-test-command-coverage",
+      "applies": true,
+      "reason": "Only npm test exists; lint, typecheck, build, smoke, and E2E command surfaces are absent.",
+      "evidence": [
+        {
+          "source": "package.json",
+          "locator": "scripts",
+          "summary": "Only start and test scripts are defined."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add lint/build/smoke/E2E command surfaces as the project matures.",
+        "priority": "high"
+      }
+    }
+  ]
+}

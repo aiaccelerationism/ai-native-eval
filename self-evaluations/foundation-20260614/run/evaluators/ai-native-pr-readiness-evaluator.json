@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-pr-readiness-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-pr-scope-and-context, incomplete-pr-proof, incomplete-human-and-review-gates.",
+  "evidence": [
+    {
+      "source": "docs/reviewer-contract.md; AGENTS.md",
+      "locator": "Required Review Surface and Review Contract",
+      "summary": "PR content expectations are clear in docs."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "pr-proof",
+      "deductionId": "incomplete-pr-proof",
+      "applies": true,
+      "reason": "The PR template and CI now request proof commands, but the repository still lacks branch protection evidence proving those checks are required before merge.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md; .github/workflows/ci.yml",
+          "locator": "Validation and deterministic gates",
+          "summary": "PR authors have structured validation fields and CI executes core gates."
+        }
+      ],
+      "recommendation": {
+        "summary": "Enable required CI checks and keep PR proof fields complete.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

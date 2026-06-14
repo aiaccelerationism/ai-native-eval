@@ -1,0 +1,103 @@
+{
+  "reportId": "example-report",
+  "generatedAt": "2026-06-13T00:00:00.000Z",
+  "language": "zh-TW",
+  "uiLanguage": "en",
+  "scope": "example repository",
+  "reproducibility": {
+    "repoUrl": "https://github.com/example/ai-native-eval",
+    "repoCommit": "example",
+    "configHash": "example-config",
+    "evaluatorLockHash": "example-lock",
+    "scoringModelVersion": "tree-v1"
+  },
+  "root": {
+    "id": "root",
+    "label": "Repo AI-native maturity",
+    "kind": "eval",
+    "children": [
+      {
+        "id": "docs",
+        "label": "Documentation evaluator",
+        "kind": "evaluator",
+        "dimension": "documentation_onboarding",
+        "weight": 1,
+        "children": [
+          {
+            "id": "docs.runtime",
+            "label": "Runtime docs rule group",
+            "kind": "rule_group",
+            "weight": 1,
+            "children": [
+              {
+                "id": "docs.runtime.command-exists",
+                "label": "Local runtime command is documented",
+                "kind": "rule",
+                "dimension": "documentation_onboarding",
+                "status": "pass",
+                "confidence": "high",
+                "pointsAvailable": 0.8,
+                "evidence": [
+                  {
+                    "source": "README.md",
+                    "locator": "runtime section",
+                    "summary": "README 已記錄本機 runtime 啟動指令。"
+                  }
+                ],
+                "references": [
+                  {
+                    "label": "Runtime command checklist",
+                    "source": "ai-native-eval references",
+                    "url": "https://github.com/example/ai-native-eval/blob/main/.agents/skills/ai-native-docs-evaluator/SKILL.md",
+                    "summary": "補齊指令、預期輸出與失敗處理方式。"
+                  }
+                ]
+              },
+              {
+                "id": "docs.runtime.failure-handling",
+                "label": "Runtime failure handling is documented",
+                "kind": "rule",
+                "dimension": "documentation_onboarding",
+                "status": "partial",
+                "confidence": "medium",
+                "pointsAvailable": 0.6,
+                "reason": "目前 README 有記錄啟動指令，但缺少常見失敗情境與復原方式。",
+                "recommendations": [
+                  {
+                    "summary": "補上預期 port、health check，以及常見啟動失敗的排除步驟。",
+                    "priority": "medium"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "github",
+        "label": "GitHub workflow evaluator",
+        "kind": "evaluator",
+        "dimension": "issue_readiness",
+        "weight": 1.2,
+        "children": [
+          {
+            "id": "github.issue.acceptance",
+            "label": "Issues include acceptance criteria",
+            "kind": "rule",
+            "dimension": "issue_readiness",
+            "status": "missing",
+            "confidence": "low",
+            "pointsAvailable": 1.2,
+            "reason": "這個範例沒有可用的 GitHub issue 證據，因此只能標記為缺失證據。",
+            "recommendations": [
+              {
+                "summary": "連接 GitHub issue 證據，或在本機限定評估中明確將此 evaluator 排除。",
+                "priority": "high"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

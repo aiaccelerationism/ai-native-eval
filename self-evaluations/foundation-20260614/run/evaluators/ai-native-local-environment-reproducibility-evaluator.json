@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-local-environment-reproducibility-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-environment-setup, missing-reset-and-recovery, incomplete-machine-local-boundaries.",
+  "evidence": [
+    {
+      "source": "docs/runtime.md; .gitignore",
+      "locator": "Prerequisites and generated output ignores",
+      "summary": "Install and generated artifact boundaries are documented."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "environment-setup",
+      "deductionId": "incomplete-environment-setup",
+      "applies": true,
+      "reason": "Dependency setup is documented, but there is no environment doctor/preflight command to check Node, pnpm, Codex CLI, nested tool dependencies, and Playwright readiness.",
+      "evidence": [
+        {
+          "source": "docs/runtime.md",
+          "locator": "Prerequisites",
+          "summary": "Prerequisites are documented as prose."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a project-owned preflight command for local evaluator development.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "reset-and-recovery",
+      "deductionId": "missing-reset-and-recovery",
+      "applies": true,
+      "reason": "The repo has no reset or cleanup command for generated eval output, skill eval runs, nested dist output, or local browser artifacts.",
+      "evidence": [
+        {
+          "source": "package.json",
+          "locator": ".scripts",
+          "summary": "No reset/cleanup script exists."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a cleanup/reset command and document when agents should use it.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "machine-local-boundaries",
+      "deductionId": "incomplete-machine-local-boundaries",
+      "applies": true,
+      "reason": "Machine-local generated output is partly ignored, but committed self-evaluation artifacts rely on an allowlist and there is no guard that prevents accidental unrelated generated artifacts from being committed.",
+      "evidence": [
+        {
+          "source": ".gitignore; docs/evidence.md",
+          "locator": "self-evaluation artifact policy",
+          "summary": "Generated output boundaries are mostly policy-level."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a packaging/status check that fails on unexpected generated artifacts.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

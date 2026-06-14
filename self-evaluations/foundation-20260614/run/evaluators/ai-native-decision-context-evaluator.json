@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-decision-context-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-source-of-truth-clarity, missing-decision-rationale, incomplete-decision-linkage.",
+  "evidence": [
+    {
+      "source": "docs/architecture.md; docs/foundation-self-evaluation.md",
+      "locator": "Current Non-Goals and Current Baseline",
+      "summary": "Key boundaries and the self-evaluation scope are written down."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "source-of-truth-clarity",
+      "deductionId": "incomplete-source-of-truth-clarity",
+      "applies": true,
+      "reason": "Source-of-truth docs exist, but there is no decision index that tells agents which doc wins when README, AGENTS, skill instructions, and report artifacts conflict.",
+      "evidence": [
+        {
+          "source": "README.md; AGENTS.md; docs/architecture.md",
+          "locator": "repo guidance",
+          "summary": "Multiple source-of-truth docs exist."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a source-of-truth precedence section for agent instructions, tool behavior, and self-eval artifacts.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "decision-rationale",
+      "deductionId": "missing-decision-rationale",
+      "applies": true,
+      "reason": "The repo has no dated ADR or decision log for major choices such as folder-first reports, JSON sidecars, built-in roots, or self-evaluation scope.",
+      "evidence": [
+        {
+          "source": "docs/architecture.md; docs/foundation-self-evaluation.md",
+          "locator": "Current Non-Goals and baseline scope",
+          "summary": "Rationale exists as prose but not as durable decision records."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add docs/decisions/ records for the major eval architecture decisions.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "decision-linkage",
+      "deductionId": "incomplete-decision-linkage",
+      "applies": true,
+      "reason": "The self-evaluation report links artifacts, but decisions are not linked to approving PRs/issues or review outcomes.",
+      "evidence": [
+        {
+          "source": "docs/foundation-self-evaluation.md",
+          "locator": "Current Baseline",
+          "summary": "Baseline paths are listed without PR or issue linkage."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link future baseline changes to the approving PR and decision record.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

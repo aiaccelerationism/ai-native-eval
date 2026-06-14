@@ -1,0 +1,20 @@
+{
+  "pluginId": "ai-native-e2e-artifact-proof-evaluator",
+  "confidence": "low",
+  "reason": "No E2E artifact proof exists.",
+  "deductions": [
+    {
+      "groupId": "e2e-proof-presence",
+      "deductionId": "missing-e2e-proof-presence",
+      "applies": true,
+      "reason": "The tiny project has no E2E screenshots, traces, videos, or reports.",
+      "evidence": [
+        {
+          "source": "repository scan",
+          "locator": "test artifacts absent",
+          "summary": "No E2E artifact directory exists."
+        }
+      ]
+    }
+  ]
+}

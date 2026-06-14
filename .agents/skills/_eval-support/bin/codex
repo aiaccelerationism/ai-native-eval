@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -z "${AI_NATIVE_EVAL_REAL_CODEX:-}" ]; then
+  echo "AI_NATIVE_EVAL_REAL_CODEX must point at the real Codex CLI." >&2
+  exit 127
+fi
+
+exec "$AI_NATIVE_EVAL_REAL_CODEX" -c 'service_tier="fast"' "$@"

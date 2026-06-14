@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-domain-boundary-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement.",
+  "evidence": [
+    {
+      "source": "docs/architecture.md; AGENTS.md",
+      "locator": "Current Non-Goals and Current Scope",
+      "summary": "Domain boundaries and non-goals are documented."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "boundary-enforcement",
+      "deductionId": "incomplete-boundary-enforcement",
+      "applies": true,
+      "reason": "Domain boundaries are documented, but enforcement is mostly through review and packaging tests rather than automated policy checks.",
+      "evidence": [
+        {
+          "source": "docs/architecture.md; tests/skill-packaging.test.mjs",
+          "locator": "Current Non-Goals and packaging tests",
+          "summary": "Boundaries are clear but only partially automated."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add checks that prevent BMAD-specific assumptions from leaking into foundation scoring.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

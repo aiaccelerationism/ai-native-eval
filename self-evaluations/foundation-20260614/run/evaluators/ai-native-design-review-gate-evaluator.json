@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-design-review-gate-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-review-gate-presence, missing-verdict-contract, incomplete-review-evidence.",
+  "evidence": [
+    {
+      "source": "docs/reviewer-contract.md",
+      "locator": "Review Gates",
+      "summary": "Review gates are command and review-surface focused."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "review-gate-presence",
+      "deductionId": "missing-review-gate-presence",
+      "applies": true,
+      "reason": "Visible report UI changes do not require a PASS/WARN/BLOCK design review gate.",
+      "evidence": [
+        {
+          "source": "docs/reviewer-contract.md",
+          "locator": "Review Gates",
+          "summary": "No design verdict gate exists."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a design review gate for report UI changes.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "verdict-contract",
+      "deductionId": "missing-verdict-contract",
+      "applies": true,
+      "reason": "There is no design review verdict contract describing what PASS, WARN, or BLOCK means for report UI.",
+      "evidence": [
+        {
+          "source": "docs/reviewer-contract.md",
+          "locator": "Severity",
+          "summary": "General review severity exists; design verdict does not."
+        }
+      ],
+      "recommendation": {
+        "summary": "Define design review verdict semantics.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "review-evidence",
+      "deductionId": "incomplete-review-evidence",
+      "applies": true,
+      "reason": "Browser E2E exists, but screenshot/design review evidence is not required for visible changes.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts",
+          "locator": "browser E2E",
+          "summary": "Test exists without design evidence requirement."
+        }
+      ],
+      "recommendation": {
+        "summary": "Require screenshots or browser artifacts on report UI PRs.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

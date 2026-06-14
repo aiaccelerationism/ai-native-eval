@@ -1,0 +1,17 @@
+{
+  "pluginId": "ai-native-local-runtime-command-evaluator",
+  "confidence": "high",
+  "deductions": [
+    {
+      "groupId": "observed-gaps",
+      "deductionId": "evidence-backed-deduction",
+      "applies": true,
+      "reason": "This generic deduction should be rejected."
+    },
+    {
+      "groupId": "runtime-entrypoints",
+      "deductionId": "incomplete-runtime-entrypoints",
+      "applies": true
+    }
+  ]
+}

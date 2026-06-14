@@ -1,0 +1,26 @@
+{
+  "name": "ai-native-eval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm test:tool",
+    "test:tool": "pnpm build && node --test dist/tests/aggregate.test.js",
+    "test:browser": "pnpm build && node --test dist/tests/report-browser.e2e.js",
+    "test:agent": "pnpm build && RUN_REAL_CODEX_E2E=1 node --test dist/tests/real-agent.e2e.js",
+    "render:example": "pnpm build && node dist/src/cli.js render fixtures/evaluation-tree.example.json --out .ai-native-eval/artifacts/reports/example-report.html",
+    "render-folder:example": "pnpm build && node dist/src/cli.js render-folder fixtures/folder-run.valid --out .ai-native-eval/artifacts/reports/folder-report.html --skills-dir ../../../",
+    "validate-folder:example": "pnpm build && node dist/src/cli.js validate-folder fixtures/folder-run.valid --skills-dir ../../../",
+    "persist:example": "pnpm build && node dist/src/cli.js persist fixtures/evaluation-tree.example.json --changed-file README.md --changed-file docs/blueprint.md",
+    "score:example": "pnpm build && node dist/src/cli.js score fixtures/evaluation-tree.example.json"
+  },
+  "bin": {
+    "ai-native-eval": "dist/src/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "playwright": "^1.60.0",
+    "typescript": "^5.8.0"
+  }
+}

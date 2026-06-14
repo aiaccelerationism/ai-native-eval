@@ -1,0 +1,20 @@
+{
+  "pluginId": "ai-native-local-environment-reproducibility-evaluator",
+  "confidence": "medium",
+  "reason": "Local environment setup is documented with minor gaps.",
+  "deductions": [
+    {
+      "groupId": "environment-setup",
+      "deductionId": "incomplete-environment-setup",
+      "applies": true,
+      "reason": "Setup guidance exists but omits one fresh-machine prerequisite.",
+      "evidence": [
+        {
+          "source": "docs/setup.md",
+          "locator": "local environment",
+          "summary": "Setup docs list most local prerequisites."
+        }
+      ]
+    }
+  ]
+}

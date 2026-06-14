@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "runId": "self-eval-20260614-foundation",
+  "reportId": "self-eval-20260614-foundation",
+  "reviewType": "baseline",
+  "generatedAt": "2026-06-14T06:42:37.499Z",
+  "language": "en",
+  "uiLanguage": "en",
+  "scope": "ai-native-eval foundation and evaluator-system self-evaluation",
+  "configSources": [
+    {
+      "kind": "built-in",
+      "found": true
+    },
+    {
+      "kind": "person",
+      "found": false
+    },
+    {
+      "kind": "explicit",
+      "found": false
+    },
+    {
+      "kind": "project",
+      "path": ".ai-native-eval/config.json",
+      "found": true
+    }
+  ],
+  "effectiveConfig": {
+    "schemaVersion": 1,
+    "configSources": [
+      {
+        "kind": "built-in",
+        "found": true
+      },
+      {
+        "kind": "person",
+        "found": false
+      },
+      {
+        "kind": "explicit",
+        "found": false
+      },
+      {
+        "kind": "project",
+        "path": ".ai-native-eval/config.json",
+        "found": true
+      }
+    ],
+    "builtInRootPluginIds": [
+      "ai-native-foundation-evaluator",
+      "bmad-method-evaluator"
+    ],
+    "roots": [
+      {
+        "pluginId": "ai-native-foundation-evaluator",
+        "origin": "built-in",
+        "source": "built-in"
+      },
+      {
+        "pluginId": "bmad-method-evaluator",
+        "origin": "built-in",
+        "source": "built-in"
+      },
+      {
+        "pluginId": "ai-native-eval-self-evaluator",
+        "origin": "additional",
+        "reason": "This repository is the AI Native Eval evaluator system, so it dogfoods evaluator-system-specific checks for rubric quality, deterministic aggregation, and plugin-boundary integrity.",
+        "source": "project"
+      }
+    ],
+    "disabled": [
+      {
+        "pluginId": "bmad-method-evaluator",
+        "reason": "This baseline evaluates ai-native foundation maturity and AI Native Eval system quality; BMAD adoption is out of scope for this repository self-evaluation.",
+        "source": "project"
+      }
+    ]
+  },
+  "rootPluginIds": [
+    "ai-native-foundation-evaluator",
+    "bmad-method-evaluator",
+    "ai-native-eval-self-evaluator"
+  ],
+  "reproducibility": {
+    "repoCommit": "working-tree-self-eval-20260614",
+    "configHash": "3c0a0ab757b43a82bd1565ccbf967ae52b9edb75cc440ccb1c24921f0c649d9c",
+    "scoringModelVersion": "folder-first-config-v1"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-visual-evidence-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-visual-proof-presence, missing-visual-proof-quality, incomplete-visual-proof-linkage.",
+  "evidence": [
+    {
+      "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html",
+      "locator": "browser E2E and report artifact",
+      "summary": "The report has a browser E2E path and a static HTML artifact."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "visual-proof-presence",
+      "deductionId": "incomplete-visual-proof-presence",
+      "applies": true,
+      "reason": "The project has a static HTML report and browser test, but no committed or linked screenshot/trace for the self-eval baseline.",
+      "evidence": [
+        {
+          "source": ".ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html",
+          "locator": "HTML report",
+          "summary": "HTML is inspectable but not visual proof."
+        }
+      ],
+      "recommendation": {
+        "summary": "Attach a screenshot or trace to report UI changes.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "visual-proof-quality",
+      "deductionId": "missing-visual-proof-quality",
+      "applies": true,
+      "reason": "No visual artifact proves desktop/mobile layout, expanded tree states, or copy prompt affordances.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts",
+          "locator": "browser E2E",
+          "summary": "The browser test exercises basic UI without persisted visual evidence."
+        }
+      ],
+      "recommendation": {
+        "summary": "Persist screenshot evidence for key report states.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "visual-proof-linkage",
+      "deductionId": "incomplete-visual-proof-linkage",
+      "applies": true,
+      "reason": "The report artifact is linked from README, but visual proof is not linked to PRs, tests, or self-eval artifacts.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "Foundation Self-Evaluation",
+          "summary": "Report paths are linked; visual proof paths are absent."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link visual proof artifacts from README or PRs when UI changes.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

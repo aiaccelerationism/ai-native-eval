@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-readme-onboarding-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-next-step-routing.",
+  "evidence": [
+    {
+      "source": "README.md",
+      "locator": "First Skill, Repo Layout, Reports, Skill Evaluations",
+      "summary": "README gives a new agent the main conceptual and command entrypoints."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "next-step-routing",
+      "deductionId": "incomplete-next-step-routing",
+      "applies": true,
+      "reason": "README names commands and skills, but does not route new contributors by task type such as changing evaluator rubrics, report UI, CI, or self-evaluation artifacts.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "Repo Layout and Reports",
+          "summary": "README explains structure but has limited task-based routing."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a short task-to-file/command routing table for common contributor goals.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

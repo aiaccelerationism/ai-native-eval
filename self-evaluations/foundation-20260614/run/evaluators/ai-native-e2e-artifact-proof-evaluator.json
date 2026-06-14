@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-e2e-artifact-proof-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-e2e-proof-presence, missing-artifact-quality, incomplete-proof-reproducibility.",
+  "evidence": [
+    {
+      "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .agents/skills/ai-native-eval/scripts/eval/tests/real-agent.e2e.ts",
+      "locator": "Playwright and real-agent tests",
+      "summary": "The repo contains E2E tests for the report and real agent path."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "e2e-proof-presence",
+      "deductionId": "incomplete-e2e-proof-presence",
+      "applies": true,
+      "reason": "Browser and real-agent E2E tests exist, but the committed baseline does not include fresh screenshot, trace, or video proof from those tests.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html",
+          "locator": "browser E2E and report",
+          "summary": "E2E capability exists, but artifacts are not persisted."
+        }
+      ],
+      "recommendation": {
+        "summary": "Attach browser artifacts to PRs that change report UI or self-eval presentation.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "artifact-quality",
+      "deductionId": "missing-artifact-quality",
+      "applies": true,
+      "reason": "The baseline commits HTML/JSON but no visual trace, screenshot, or video artifact that proves the page rendered correctly in a browser.",
+      "evidence": [
+        {
+          "source": ".ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html",
+          "locator": "static report",
+          "summary": "Static HTML is not visual proof by itself."
+        }
+      ],
+      "recommendation": {
+        "summary": "Persist or attach a screenshot/trace for baseline report validation.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "proof-reproducibility",
+      "deductionId": "incomplete-proof-reproducibility",
+      "applies": true,
+      "reason": "Playwright can reproduce the report E2E, but the baseline report itself does not name the browser run artifact or command output.",
+      "evidence": [
+        {
+          "source": "docs/foundation-self-evaluation.md",
+          "locator": "Regeneration",
+          "summary": "Regeneration commands are listed without artifact links."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link self-eval report artifacts to the exact browser proof command/result.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

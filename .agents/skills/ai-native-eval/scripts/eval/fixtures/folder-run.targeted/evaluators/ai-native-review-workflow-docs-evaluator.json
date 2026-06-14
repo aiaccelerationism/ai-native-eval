@@ -1,0 +1,20 @@
+{
+  "pluginId": "ai-native-review-workflow-docs-evaluator",
+  "confidence": "low",
+  "reason": "No review workflow docs exist.",
+  "deductions": [
+    {
+      "groupId": "workflow-coverage",
+      "deductionId": "missing-workflow-coverage",
+      "applies": true,
+      "reason": "The repository does not explain issue-to-PR-to-review workflow.",
+      "evidence": [
+        {
+          "source": "repository scan",
+          "locator": "docs absent",
+          "summary": "No review workflow documentation exists."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "pluginId": "ai-native-decision-context-evaluator",
+  "confidence": "low",
+  "reason": "No decision docs exist in the tiny project.",
+  "deductions": [
+    {
+      "groupId": "source-of-truth-clarity",
+      "deductionId": "missing-source-of-truth-clarity",
+      "applies": true,
+      "reason": "The repository has no decision source beyond README.",
+      "evidence": [
+        {
+          "source": "repository scan",
+          "locator": "docs absent",
+          "summary": "No docs or ADR directory exists."
+        }
+      ]
+    }
+  ]
+}

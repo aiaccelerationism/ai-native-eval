@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/final-response.md",
+  "must_contain": [
+    "AI_NATIVE_SKILL_EVAL_COMPLETE",
+    "ai-native-eval-plugin-boundary-integrity-evaluator"
+  ],
+  "must_match": [
+    "plugin|boundary|direct|child|hot|config|subtree"
+  ]
+}

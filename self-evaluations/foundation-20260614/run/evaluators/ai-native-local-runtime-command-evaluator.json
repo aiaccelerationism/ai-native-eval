@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-local-runtime-command-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-runtime-command-validation.",
+  "evidence": [
+    {
+      "source": "package.json; docs/runtime.md",
+      "locator": "scripts and Core Commands",
+      "summary": "Project-owned commands cover the main deterministic runtime and report paths."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "runtime-command-validation",
+      "deductionId": "incomplete-runtime-command-validation",
+      "applies": true,
+      "reason": "Runtime commands are scriptable, but there is no dedicated smoke command that validates the self-evaluation report from a clean checkout without relying on reviewer memory.",
+      "evidence": [
+        {
+          "source": "package.json; docs/runtime.md",
+          "locator": "self-eval scripts",
+          "summary": "Build, test, validate, and render commands exist, but no single smoke command checks the whole baseline artifact path."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a root smoke command that validates and renders the committed self-evaluation report from scratch.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

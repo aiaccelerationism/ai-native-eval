@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-data-portability-boundary-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-data-boundary-definition, incomplete-portability-path, incomplete-data-validation-proof.",
+  "evidence": [
+    {
+      "source": "README.md; docs/evidence.md",
+      "locator": "Persistence Target and Self-Evaluation Artifacts",
+      "summary": "Eval state and reports are file artifacts."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "data-boundary-definition",
+      "deductionId": "incomplete-data-boundary-definition",
+      "applies": true,
+      "reason": "JSON/HTML report artifacts and run folders are documented, but there is no formal schema/version compatibility contract for external consumers.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md; .agents/skills/ai-native-eval/scripts/eval/src/types.ts",
+          "locator": "artifact policy and types",
+          "summary": "Data structures are typed but not versioned as a public contract."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document report JSON schema compatibility expectations.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "portability-path",
+      "deductionId": "incomplete-portability-path",
+      "applies": true,
+      "reason": "Artifacts are file-based and portable, but no migration path exists for future schema changes.",
+      "evidence": [
+        {
+          "source": ".ai-native-eval/artifacts/reports/self-eval-20260614-foundation.json",
+          "locator": "report JSON",
+          "summary": "Report JSON exists without migration policy."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add migration rules before changing persisted report schema.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "data-validation-proof",
+      "deductionId": "incomplete-data-validation-proof",
+      "applies": true,
+      "reason": "Folder validation proves evaluator inputs, but committed report JSON itself is not validated by a standalone schema command.",
+      "evidence": [
+        {
+          "source": "package.json",
+          "locator": "self-eval scripts",
+          "summary": "self-eval render emits JSON but does not separately validate report schema."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add report JSON schema validation if external consumers rely on it.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

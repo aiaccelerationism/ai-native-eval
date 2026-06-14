@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Native Eval"
+  short_description: "Evaluate a repository's AI-native development maturity."
+  default_prompt: "Evaluate this repository's AI-native eval using docs, issues, PRs, CI, tests, and persisted evidence."

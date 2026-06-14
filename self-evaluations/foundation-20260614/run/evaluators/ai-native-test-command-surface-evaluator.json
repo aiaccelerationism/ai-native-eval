@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-test-command-surface-evaluator",
+  "confidence": "high",
+  "reason": "Root commands now include deterministic tests, self-eval validate/render/check, and contract evals; live/browser commands remain intentionally explicit.",
+  "evidence": [
+    {
+      "source": "package.json; .agents/skills/ai-native-eval/scripts/eval/package.json; docs/runtime.md",
+      "locator": "scripts",
+      "summary": "Root and nested tool scripts cover deterministic and real-agent test layers."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "test-command-coverage",
+      "deductionId": "incomplete-test-command-coverage",
+      "applies": true,
+      "reason": "The repo has strong deterministic tests, browser E2E, and contract evals, but no separate lint command and live-agent tests are not part of an explicit root command surface.",
+      "evidence": [
+        {
+          "source": "package.json; .agents/skills/ai-native-eval/scripts/eval/package.json",
+          "locator": "scripts",
+          "summary": "Test layers exist but are unevenly exposed at root."
+        }
+      ],
+      "recommendation": {
+        "summary": "Expose root commands for browser and real-agent test layers or document why they remain nested.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "ai-native-eval",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval build",
+    "skill-eval:contract": "tools/skill-eval.sh contract",
+    "skill-eval:live": "tools/skill-eval.sh live",
+    "skill-eval:skill": "tools/skill-eval.sh skill",
+    "test": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval install --frozen-lockfile && node --test tests/*.test.mjs && pnpm --dir .agents/skills/ai-native-eval/scripts/eval test",
+    "render:example": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval render:example",
+    "persist:example": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval persist:example",
+    "score:example": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval score:example",
+    "self-eval:validate": "pnpm build && node .agents/skills/ai-native-eval/scripts/eval/dist/src/cli.js validate-folder self-evaluations/foundation-20260614/run --skills-dir .agents/skills",
+    "self-eval:render": "pnpm build && node .agents/skills/ai-native-eval/scripts/eval/dist/src/cli.js render-folder self-evaluations/foundation-20260614/run --markdown-out self-evaluations/foundation-20260614/report.md --skills-dir .agents/skills",
+    "self-eval:check": "node tools/check-self-eval-fresh.mjs"
+  },
+  "devDependencies": {
+    "skillgrade": "^0.1.6"
+  }
+}

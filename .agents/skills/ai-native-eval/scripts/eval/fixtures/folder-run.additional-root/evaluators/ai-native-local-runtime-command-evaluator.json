@@ -1,0 +1,6 @@
+{
+  "pluginId": "ai-native-local-runtime-command-evaluator",
+  "confidence": "high",
+  "reason": "Runtime command surface is complete for this focused fixture.",
+  "deductions": []
+}

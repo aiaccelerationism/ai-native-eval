@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-issue-readiness-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-issue-context, missing-acceptance-and-review, missing-skill-and-artifact-coverage.",
+  "evidence": [
+    {
+      "source": "docs/reviewer-contract.md; AGENTS.md",
+      "locator": "Required Review Surface",
+      "summary": "Review scope is documented, but issue intake artifacts are not part of the repo."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "skill-and-artifact-coverage",
+      "deductionId": "incomplete-skill-and-artifact-coverage",
+      "applies": true,
+      "reason": "The evaluator change issue template asks for affected skills and evidence, but it is only one issue template and does not yet cover every issue type the repo may need.",
+      "evidence": [
+        {
+          "source": ".github/ISSUE_TEMPLATE/evaluator-change.yml",
+          "locator": "Affected skills and Expected evidence",
+          "summary": "Issue intake now captures skills, acceptance criteria, evidence, and reviewer expectations."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add more issue templates when non-evaluator work types become common.",
+        "priority": "low"
+      }
+    }
+  ]
+}

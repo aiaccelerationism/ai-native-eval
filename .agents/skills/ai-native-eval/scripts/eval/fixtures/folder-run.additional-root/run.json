@@ -1,0 +1,30 @@
+{
+  "reportId": "folder-run-additional-root",
+  "generatedAt": "2026-06-13T00:00:00.000Z",
+  "language": "zh-TW",
+  "uiLanguage": "en",
+  "scope": "additional root fixture",
+  "rootPluginIds": ["ai-native-local-runtime-command-evaluator"],
+  "effectiveConfig": {
+    "schemaVersion": 1,
+    "configSources": [
+      { "kind": "built-in", "found": true },
+      { "kind": "project", "path": ".ai-native-eval/config.json", "found": true }
+    ],
+    "builtInRootPluginIds": [],
+    "roots": [
+      {
+        "pluginId": "ai-native-local-runtime-command-evaluator",
+        "origin": "additional",
+        "reason": "Project wants a focused runtime command review.",
+        "source": "project"
+      }
+    ],
+    "disabled": []
+  },
+  "reproducibility": {
+    "repoUrl": "https://github.com/example/repo",
+    "repoCommit": "example",
+    "configHash": "additional-root"
+  }
+}

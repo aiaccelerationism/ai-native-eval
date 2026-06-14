@@ -1,0 +1,41 @@
+{
+  "pluginId": "ai-native-local-environment-reproducibility-evaluator",
+  "confidence": "low",
+  "reason": "The tiny project has a simple package install path but no durable local environment recovery model.",
+  "deductions": [
+    {
+      "groupId": "environment-setup",
+      "deductionId": "incomplete-environment-setup",
+      "applies": true,
+      "reason": "README gives basic npm setup, but no Node version, env, service, or fresh-machine assumptions.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "Setup",
+          "summary": "Only npm install and npm test are documented."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document Node version and local environment assumptions.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "reset-and-recovery",
+      "deductionId": "missing-reset-and-recovery",
+      "applies": true,
+      "reason": "No reset, cleanup, or recovery command exists.",
+      "evidence": [
+        {
+          "source": "package.json",
+          "locator": "scripts",
+          "summary": "No reset/down/recovery scripts are defined."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add reset or cleanup guidance when local state exists.",
+        "priority": "low"
+      }
+    }
+  ]
+}

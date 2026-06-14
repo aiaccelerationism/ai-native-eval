@@ -1,0 +1,872 @@
+import assert from "node:assert/strict";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { spawnSync } from "node:child_process";
+import test from "node:test";
+import { buildReport } from "../src/aggregate.js";
+import { builtInRootPluginIds, initRun } from "../src/config.js";
+import {
+  buildReportFromFolder,
+  validateFolderReport
+} from "../src/folderReport.js";
+import {
+  artifactPaths,
+  buildIncrementalManifest,
+  createRunId,
+  mergeCarriedForwardTree
+} from "../src/persistence.js";
+import { resolvePluginGraph } from "../src/plugins.js";
+import { renderHtmlReport } from "../src/renderHtml.js";
+import { renderMarkdownReport } from "../src/renderMarkdown.js";
+import type {
+  EvaluationNodeInput,
+  EvaluationReport,
+  EvaluatorPluginManifest
+} from "../src/types.js";
+
+test("aggregates an arbitrarily nested evaluation tree deterministically", async () => {
+  const fixture = JSON.parse(
+    await readFile("fixtures/evaluation-tree.example.json", "utf8")
+  ) as { root: EvaluationNodeInput };
+
+  const first = buildReport({ root: fixture.root, generatedAt: "fixed" });
+  const second = buildReport({ root: fixture.root, generatedAt: "fixed" });
+
+  assert.deepEqual(first.summary, second.summary);
+  assert.equal(first.summary.level0To10, 3);
+  assert.equal(first.summary.score0To100, 34);
+  assert.equal(first.root.children[0]?.children[0]?.children[1]?.score0To10, 5);
+});
+
+test("supports user weight changes without changing evaluator outputs", () => {
+  const root: EvaluationNodeInput = {
+    id: "root",
+    label: "Root",
+    children: [
+      {
+        id: "important",
+        label: "Important evaluator",
+        weight: 3,
+        children: [
+          {
+            id: "important.rule",
+            label: "Important rule",
+            dimension: "important",
+            status: "pass",
+            pointsAvailable: 1
+          }
+        ]
+      },
+      {
+        id: "less-important",
+        label: "Less important evaluator",
+        weight: 1,
+        children: [
+          {
+            id: "less.rule",
+            label: "Less rule",
+            dimension: "less",
+            status: "fail",
+            pointsAvailable: 1
+          }
+        ]
+      }
+    ]
+  };
+
+  const report = buildReport({ root, generatedAt: "fixed" });
+  assert.equal(report.summary.score0To100, 75);
+  assert.equal(report.summary.level0To10, 7);
+});
+
+test("renders drill-down HTML report with evidence and recommendations", async () => {
+  const fixture = JSON.parse(
+    await readFile("fixtures/evaluation-tree.example.json", "utf8")
+  ) as {
+    root: EvaluationNodeInput;
+    language?: string;
+    uiLanguage?: EvaluationReport["uiLanguage"];
+  };
+  const report = buildReport({
+    root: fixture.root,
+    generatedAt: "fixed",
+    language: fixture.language,
+    uiLanguage: fixture.uiLanguage
+  });
+  const html = renderHtmlReport(report);
+
+  assert.match(html, /AI Native Eval Report/);
+  assert.match(html, /AI Native 段位報告/);
+  assert.match(html, /data-language-select/);
+  assert.match(html, /<option value="en" selected>English<\/option>/);
+  assert.match(html, /data-i18n="evaluationTree"/);
+  assert.match(html, /3\.4 \/ 10/);
+  assert.doesNotMatch(html, /Dimension Breakdown/);
+  assert.doesNotMatch(html, /Lost Points/);
+  assert.match(html, /Runtime docs rule group/);
+  assert.match(html, /目前 README 有記錄啟動指令/);
+  assert.match(html, /README\.md/);
+  assert.match(html, /https:\/\/github\.com\/example\/ai-native-eval\/blob\/main\/README\.md/);
+  assert.match(html, /Recommended Actions/);
+  assert.match(html, /Copy agent prompt/);
+  assert.match(html, /Fix the AI-native eval finding represented by this evaluation subtree/);
+  assert.match(html, /Runtime failure handling is documented/);
+});
+
+test("resolves evaluator plugins through direct child references only", async () => {
+  const fixture = JSON.parse(
+    await readFile("fixtures/evaluator-plugin-manifests.example.json", "utf8")
+  ) as {
+    rootPluginIds: string[];
+    manifests: EvaluatorPluginManifest[];
+  };
+
+  const root = fixture.manifests.find(
+    (manifest) => manifest.pluginId === "repo-operability"
+  );
+  assert.deepEqual(root?.directChildren?.map((child) => child.pluginId), [
+    "runtime-reproducibility"
+  ]);
+  assert.equal(
+    root?.directChildren?.some(
+      (child) => child.pluginId === "runtime-command-failure-handling"
+    ),
+    false
+  );
+
+  const resolution = resolvePluginGraph(fixture);
+  assert.deepEqual(resolution.rootPluginIds, ["repo-operability"]);
+  assert.deepEqual(resolution.missingPluginIds, []);
+  assert.deepEqual(resolution.resolvedPluginIds, [
+    "repo-operability",
+    "runtime-reproducibility",
+    "runtime-command",
+    "runtime-command-failure-handling"
+  ]);
+});
+
+test("renders plugin-resolved reports while preserving per-evaluator run records", async () => {
+  const fixture = JSON.parse(
+    await readFile("fixtures/evaluator-plugin-resolved.example.json", "utf8")
+  ) as {
+    root: EvaluationNodeInput;
+    language?: string;
+    uiLanguage?: EvaluationReport["uiLanguage"];
+    scope?: string;
+    pluginResolution?: EvaluationReport["pluginResolution"];
+    executionBatches?: EvaluationReport["executionBatches"];
+    evaluatorRuns?: EvaluationReport["evaluatorRuns"];
+    reproducibility?: EvaluationReport["reproducibility"];
+  };
+  const report = buildReport({
+    root: fixture.root,
+    generatedAt: "fixed",
+    language: fixture.language,
+    uiLanguage: fixture.uiLanguage,
+    scope: fixture.scope,
+    pluginResolution: fixture.pluginResolution,
+    executionBatches: fixture.executionBatches,
+    evaluatorRuns: fixture.evaluatorRuns,
+    reproducibility: fixture.reproducibility
+  });
+  const html = renderHtmlReport(report);
+
+  assert.match(html, /Runtime reproducibility/);
+  assert.match(html, /Runtime command failure handling/);
+  assert.match(html, /direct child/);
+  assert.deepEqual(report.pluginResolution?.rootPluginIds, ["repo-operability"]);
+  assert.equal(report.executionBatches?.[0]?.runner, "single-agent");
+  assert.deepEqual(report.executionBatches?.[0]?.pluginIds, [
+    "runtime-reproducibility",
+    "runtime-command",
+    "runtime-command-failure-handling"
+  ]);
+  assert.equal(report.evaluatorRuns?.length, 2);
+  assert.equal(report.summary.score0To100, 75);
+});
+
+test("deduction groups score leaves deterministically without fallback points", () => {
+  const report = buildReport({
+    generatedAt: "fixed",
+    root: {
+      id: "root",
+      label: "Root",
+      children: [
+        {
+          id: "perfect",
+          label: "Perfect checklist",
+          status: "pass",
+          pointsAvailable: 1,
+          deductionGroups: [
+            {
+              id: "coverage",
+              label: "Coverage",
+              budget: 1,
+              deductions: [
+                {
+                  id: "missing-coverage",
+                  label: "Missing coverage",
+                  points: 1,
+                  applies: false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "partial",
+          label: "Partial checklist",
+          pointsAvailable: 1,
+          deductionGroups: [
+            {
+              id: "execution-evidence",
+              label: "Execution evidence",
+              budget: 0.6,
+              deductions: [
+                {
+                  id: "no-record",
+                  label: "No durable record",
+                  points: 0.6,
+                  applies: true,
+                  reason: "No durable execution record was found."
+                },
+                {
+                  id: "not-linked",
+                  label: "Record is not linked",
+                  points: 0.2,
+                  applies: true,
+                  reason: "The execution note is not linked from review evidence."
+                }
+              ]
+            },
+            {
+              id: "reviewability",
+              label: "Reviewability",
+              budget: 0.2,
+              deductions: [
+                {
+                  id: "weak-review-proof",
+                  label: "Weak review proof",
+                  points: 0.2,
+                  applies: true,
+                  reason: "Reviewer proof is present but not specific."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  });
+
+  const perfect = report.root.children[0];
+  const partial = report.root.children[1];
+  assert.equal(perfect?.score0To10, 10);
+  assert.equal(perfect?.pointsEarned, 1);
+  assert.equal(partial?.pointsEarned, 0.2);
+  assert.equal(partial?.score0To10, 2);
+  assert.equal(partial?.deductionGroups?.[0]?.pointsLost, 0.6);
+  assert.equal(partial?.deductionGroups?.[0]?.capped, true);
+  assert.equal(partial?.deductionGroups?.[1]?.pointsLost, 0.2);
+});
+
+test("deduction group validation prevents fallback scoring gaps", () => {
+  assert.throws(
+    () =>
+      buildReport({
+        root: {
+          id: "root",
+          label: "Root",
+          pointsAvailable: 1,
+          deductionGroups: [
+            {
+              id: "bad-budget",
+              label: "Bad budget",
+              budget: 0.6,
+              deductions: [
+                {
+                  id: "only-small-deduction",
+                  label: "Only small deduction",
+                  points: 0.3,
+                  applies: false
+                }
+              ]
+            }
+          ]
+        }
+      }),
+    /less than budget/
+  );
+
+  assert.throws(
+    () =>
+      buildReport({
+        root: {
+          id: "root",
+          label: "Root",
+          pointsAvailable: 1,
+          deductionGroups: [
+            {
+              id: "too-much-budget-a",
+              label: "Too much budget A",
+              budget: 0.7,
+              deductions: [
+                {
+                  id: "missing-a",
+                  label: "Missing A",
+                  points: 0.7,
+                  applies: false
+                }
+              ]
+            },
+            {
+              id: "too-much-budget-b",
+              label: "Too much budget B",
+              budget: 0.4,
+              deductions: [
+                {
+                  id: "missing-b",
+                  label: "Missing B",
+                  points: 0.4,
+                  applies: false
+                }
+              ]
+            }
+          ]
+        }
+      }),
+    /exceed pointsAvailable/
+  );
+
+  assert.throws(
+    () =>
+      buildReport({
+        root: {
+          id: "root",
+          label: "Root",
+          pointsAvailable: 1,
+          deductionGroups: [
+            {
+              id: "missing-reason",
+              label: "Missing reason",
+              budget: 1,
+              deductions: [
+                {
+                  id: "applied-without-reason",
+                  label: "Applied without reason",
+                  points: 1,
+                  applies: true
+                }
+              ]
+            }
+          ]
+        }
+      }),
+    /requires a reason/
+  );
+});
+
+test("renders applied deductions as why-not-10 evidence", () => {
+  const report = buildReport({
+    generatedAt: "fixed",
+    root: {
+      id: "root",
+      label: "Root",
+      pointsAvailable: 1,
+      deductionGroups: [
+        {
+          id: "execution-evidence",
+          label: "Execution evidence",
+          budget: 0.6,
+          deductions: [
+            {
+              id: "no-record",
+              label: "No durable record",
+              points: 0.6,
+              applies: true,
+              reason: "No durable execution record was found.",
+              evidence: [
+                {
+                  source: "docs/plan.md",
+                  locator: "capacity section",
+                  summary: "Capacity evidence exists but is not linked."
+                }
+              ],
+              recommendation: {
+                summary: "Record capacity checks in task plans."
+              }
+            },
+            {
+              id: "not-linked",
+              label: "Record is not linked",
+              points: 0.2,
+              applies: true,
+              reason: "The execution note is not linked from review evidence."
+            }
+          ]
+        }
+      ]
+    }
+  });
+  const html = renderHtmlReport(report);
+
+  assert.match(html, /Why Not 10\/10/);
+  assert.match(html, /deduction-detail-label">Reason/);
+  assert.match(html, /deduction-detail-label">Evidence/);
+  assert.match(html, /deduction-detail-label">Recommendation/);
+  assert.match(html, /No durable execution record was found/);
+  assert.match(html, /docs\/plan\.md capacity section/);
+  assert.match(html, /Capped at 0\.6/);
+  assert.match(html, /Record capacity checks in task plans/);
+  assert.doesNotMatch(html, /No durable execution record was found\\. Evidence:/);
+  assert.doesNotMatch(html, /score0To5/);
+});
+
+test("renders compact markdown reports with deductions and config", async () => {
+  const report = await buildReportFromFolder({
+    runFolder: "fixtures/folder-run.disabled-root",
+    skillsDir: "../../../"
+  });
+  const markdown = renderMarkdownReport(report);
+
+  assert.match(markdown, /^# AI Native Eval Report/);
+  assert.match(markdown, /Score: n\/a/);
+  assert.match(markdown, /Disabled plugins:/);
+  assert.match(markdown, /ai-native-product-ux-evidence-evaluator/);
+  assert.match(markdown, /Disabled: This project has no visible product workflow in scope/);
+  assert.doesNotMatch(markdown, /<script/);
+});
+
+test("builds reports from per-leaf evaluator output folders", async () => {
+  const report = await buildReportFromFolder({
+    runFolder: "fixtures/folder-run.valid",
+    skillsDir: "../../../"
+  });
+  const html = renderHtmlReport(report);
+
+  assert.equal(report.reportId, "folder-run-valid");
+  assert.equal(report.pluginResolution?.rootPluginIds[0], "ai-native-repo-operability-evaluator");
+  assert.match(html, /Local runtime command evaluator/);
+  assert.match(html, /Incomplete runtime entrypoints/);
+  assert.match(html, /Reason/);
+  assert.match(html, /Evidence/);
+});
+
+test("render-folder can write validated JSON and markdown reports", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-render-folder-"));
+  try {
+    const jsonPath = join(tempRoot, "report.json");
+    const markdownPath = join(tempRoot, "report.md");
+    const result = spawnSync(
+      process.execPath,
+      [
+        "dist/src/cli.js",
+        "render-folder",
+        "fixtures/folder-run.valid",
+        "--json-out",
+        jsonPath,
+        "--markdown-out",
+        markdownPath,
+        "--skills-dir",
+        "../../../"
+      ],
+      { cwd: process.cwd(), encoding: "utf8" }
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    const report = JSON.parse(await readFile(jsonPath, "utf8")) as EvaluationReport;
+    const expected = await buildReportFromFolder({
+      runFolder: "fixtures/folder-run.valid",
+      skillsDir: "../../../"
+    });
+    assert.equal(report.reportId, "folder-run-valid");
+    assert.deepEqual(report.summary, expected.summary);
+    const markdown = await readFile(markdownPath, "utf8");
+    assert.match(markdown, /Local runtime command evaluator/);
+    assert.match(markdown, /Incomplete runtime entrypoints/);
+    assert.doesNotMatch(markdown, /<style/);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("folder validation reports all evaluator output errors", async () => {
+  const result = await validateFolderReport({
+    runFolder: "fixtures/folder-run.invalid",
+    skillsDir: "../../../"
+  });
+
+  assert.ok(result.errors.length >= 4);
+  assert.ok(
+    result.errors.some((error) => error.includes("unknown deduction groupId observed-gaps"))
+  );
+  assert.ok(
+    result.errors.some((error) =>
+      error.includes("applied deduction runtime-entrypoints/incomplete-runtime-entrypoints requires reason")
+    )
+  );
+  assert.ok(
+    result.errors.some((error) =>
+      error.includes("missing output for required leaf evaluator")
+    )
+  );
+  assert.ok(
+    result.errors.some((error) =>
+      error.includes("output plugin is not reachable")
+    )
+  );
+});
+
+test("initializes an audited run config snapshot from built-in and project config", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-init-"));
+  try {
+    const repoRoot = join(tempRoot, "repo");
+    const runFolder = join(tempRoot, "run");
+    const projectConfigPath = join(tempRoot, "project-config.json");
+    await writeFile(
+      projectConfigPath,
+      JSON.stringify(
+        {
+          additionalRoots: [
+            {
+              pluginId: "ai-native-local-runtime-command-evaluator",
+              reason: "Focused runtime review."
+            }
+          ],
+          disabled: [
+            {
+              pluginId: "ai-native-product-ux-evidence-evaluator",
+              reason: "No visible product work in scope."
+            }
+          ]
+        },
+        null,
+        2
+      )
+    );
+
+    const runPath = await initRun({
+      repoRoot,
+      runFolder,
+      projectConfigPath,
+      reportId: "config-snapshot-test",
+      generatedAt: "2026-06-13T00:00:00.000Z",
+      language: "zh-TW",
+      uiLanguage: "en",
+      scope: "config snapshot test",
+      repoCommit: "abc123"
+    });
+    const run = JSON.parse(await readFile(runPath, "utf8")) as {
+      rootPluginIds: string[];
+      effectiveConfig: {
+        builtInRootPluginIds: string[];
+        roots: Array<{ pluginId: string; origin: string; reason?: string }>;
+        disabled: Array<{ pluginId: string; reason: string; source: string }>;
+      };
+      reproducibility: { configHash?: string };
+    };
+
+    assert.deepEqual(run.effectiveConfig.builtInRootPluginIds, [
+      ...builtInRootPluginIds
+    ]);
+    assert.ok(
+      run.rootPluginIds.includes("ai-native-foundation-evaluator")
+    );
+    assert.ok(
+      run.rootPluginIds.includes("bmad-method-evaluator")
+    );
+    assert.ok(
+      run.rootPluginIds.includes("ai-native-local-runtime-command-evaluator")
+    );
+    assert.equal(
+      run.effectiveConfig.roots.find(
+        (root) => root.pluginId === "ai-native-local-runtime-command-evaluator"
+      )?.origin,
+      "additional"
+    );
+    assert.equal(
+      run.effectiveConfig.disabled.find(
+        (item) => item.pluginId === "ai-native-product-ux-evidence-evaluator"
+      )?.source,
+      "project"
+    );
+    assert.match(run.reproducibility.configHash ?? "", /^[a-f0-9]{64}$/);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("disabled root remains visible in the report without requiring leaf outputs", async () => {
+  const validation = await validateFolderReport({
+    runFolder: "fixtures/folder-run.disabled-root",
+    skillsDir: "../../../"
+  });
+  assert.deepEqual(validation.errors, []);
+
+  const report = await buildReportFromFolder({
+    runFolder: "fixtures/folder-run.disabled-root",
+    skillsDir: "../../../"
+  });
+  const html = renderHtmlReport(report);
+  const disabledNode = findNode(
+    report.root,
+    "ai-native-product-ux-evidence-evaluator"
+  );
+
+  assert.equal(disabledNode.status, "not_applicable");
+  assert.equal(disabledNode.pointsAvailable, 0);
+  assert.equal(disabledNode.disabledSource, "project");
+  assert.equal(disabledNode.children.length, 0);
+  assert.deepEqual(report.pluginResolution?.disabledPluginIds, [
+    "ai-native-product-ux-evidence-evaluator",
+    "ai-native-product-design-readiness-evaluator",
+    "ai-native-ux-mock-contract-evaluator",
+    "ai-native-design-review-gate-evaluator",
+    "ai-native-visual-evidence-evaluator"
+  ]);
+  assert.match(html, /Run Configuration/);
+  assert.match(html, /This project has no visible product workflow in scope/);
+  assert.match(html, /node-badge disabled/);
+});
+
+test("folder validation can load disabled non-ai-native evaluator roots", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-disabled-bmad-"));
+  try {
+    const runFolder = join(tempRoot, "run");
+    await mkdir(runFolder, { recursive: true });
+    await writeFile(
+      join(runFolder, "run.json"),
+      JSON.stringify(
+        {
+          reportId: "disabled-bmad-test",
+          generatedAt: "2026-06-14T00:00:00.000Z",
+          scope: "disabled bmad validation",
+          rootPluginIds: ["bmad-method-evaluator"],
+          effectiveConfig: {
+            schemaVersion: 1,
+            configSources: [{ kind: "built-in", found: true }],
+            builtInRootPluginIds: ["bmad-method-evaluator"],
+            roots: [
+              {
+                pluginId: "bmad-method-evaluator",
+                origin: "built-in",
+                source: "built-in"
+              }
+            ],
+            disabled: [
+              {
+                pluginId: "bmad-method-evaluator",
+                reason: "Not in scope for this test.",
+                source: "explicit"
+              }
+            ]
+          }
+        },
+        null,
+        2
+      )
+    );
+    await mkdir(join(runFolder, "evaluators"), { recursive: true });
+
+    const validation = await validateFolderReport({
+      runFolder,
+      skillsDir: "../../../"
+    });
+    assert.deepEqual(validation.errors, []);
+
+    const report = await buildReportFromFolder({
+      runFolder,
+      skillsDir: "../../../"
+    });
+    assert.equal(report.root.children[0]?.pluginId, "bmad-method-evaluator");
+    assert.equal(report.root.children[0]?.status, "not_applicable");
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("folder validation rejects outputs under disabled subtrees", async () => {
+  const result = await validateFolderReport({
+    runFolder: "fixtures/folder-run.disabled-output",
+    skillsDir: "../../../"
+  });
+
+  assert.ok(
+    result.errors.some((error) =>
+      error.includes(
+        "output exists under disabled subtree ai-native-product-ux-evidence-evaluator"
+      )
+    )
+  );
+});
+
+test("additional roots are audited in config and marked in the report", async () => {
+  const report = await buildReportFromFolder({
+    runFolder: "fixtures/folder-run.additional-root",
+    skillsDir: "../../../"
+  });
+  const html = renderHtmlReport(report);
+  const node = findNode(report.root, "ai-native-local-runtime-command-evaluator");
+
+  assert.equal(node.origin, "additional");
+  assert.equal(report.summary.score0To100, 100);
+  assert.match(html, /Project wants a focused runtime command review/);
+  assert.match(html, /node-badge additional/);
+  assert.match(html, /Additional/);
+});
+
+test("folder validation rejects evaluator filename and plugin id mismatches", async () => {
+  const result = await validateFolderReport({
+    runFolder: "fixtures/folder-run.filename-mismatch",
+    skillsDir: "../../../"
+  });
+
+  assert.ok(
+    result.errors.some((error) =>
+      error.includes(
+        "filename pluginId not-the-runtime-plugin does not match output pluginId ai-native-local-runtime-command-evaluator"
+      )
+    )
+  );
+});
+
+test("targeted folder fixture proves expected pass and fail rubric matches", async () => {
+  const report = await buildReportFromFolder({
+    runFolder: "fixtures/folder-run.targeted",
+    skillsDir: "../../../"
+  });
+  const html = renderHtmlReport(report);
+
+  const runtime = findNode(report.root, "ai-native-local-runtime-command-evaluator");
+  const readme = findNode(report.root, "ai-native-readme-onboarding-evaluator");
+  const testSurface = findNode(report.root, "ai-native-test-command-surface-evaluator");
+
+  assert.equal(groupLost(runtime, "runtime-entrypoints"), 0);
+  assert.equal(groupLost(runtime, "scriptability"), 0);
+  assert.equal(groupLost(runtime, "runtime-command-validation"), 0);
+  assert.equal(runtime.score0To10, 10);
+
+  assert.equal(groupLost(readme, "repo-purpose"), 0);
+  assert.equal(groupLost(readme, "first-run-path"), 0);
+  assert.equal(groupLost(readme, "next-step-routing"), 0.25);
+
+  assert.equal(groupLost(testSurface, "test-command-coverage"), 0.2);
+  assert.equal(groupLost(testSurface, "test-command-documentation"), 0);
+  assert.equal(groupLost(testSurface, "test-result-actionability"), 0);
+
+  assert.match(html, /Missing next-step routing/);
+  assert.match(html, /Incomplete test command coverage/);
+  assert.doesNotMatch(html, /Evidence-backed deduction/);
+});
+
+test("creates append-only artifact paths and incremental manifests", () => {
+  const runId = createRunId({
+    generatedAt: "2026-06-13T12:00:00.000Z",
+    headCommit: "abcdef1234567890"
+  });
+  assert.equal(runId, "20260613T120000Z-abcdef123456");
+
+  const paths = artifactPaths(runId);
+  assert.equal(
+    paths.reportHtmlPath,
+    ".ai-native-eval/artifacts/reports/20260613T120000Z-abcdef123456-level-report.html"
+  );
+  assert.equal(
+    paths.snapshotPath,
+    ".ai-native-eval/artifacts/snapshots/20260613T120000Z-abcdef123456-snapshot.json"
+  );
+
+  const manifest = buildIncrementalManifest({
+    manifestId: runId,
+    generatedAt: "2026-06-13T12:00:00.000Z",
+    baseCommit: "base",
+    headCommit: "head",
+    changedFiles: ["docs/blueprint.md", ".github/workflows/test.yml", "src/index.ts"]
+  });
+  assert.deepEqual(manifest.changedEvidenceSurfaces, ["ci", "docs", "source"]);
+});
+
+function findNode(
+  node: EvaluationReport["root"],
+  pluginId: string
+): EvaluationReport["root"] {
+  const found = findNodeOrUndefined(node, pluginId);
+  if (!found) throw new Error(`Could not find node for plugin ${pluginId}`);
+  return found;
+}
+
+function findNodeOrUndefined(
+  node: EvaluationReport["root"],
+  pluginId: string
+): EvaluationReport["root"] | undefined {
+  if (node.pluginId === pluginId) return node;
+  for (const child of node.children) {
+    const found = findNodeOrUndefined(child, pluginId);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+function groupLost(node: EvaluationReport["root"], groupId: string): number {
+  const group = node.deductionGroups?.find((candidate) => candidate.id === groupId);
+  if (!group) throw new Error(`Could not find group ${groupId} on ${node.id}`);
+  return group.pointsLost;
+}
+
+test("merges updated subtrees while carrying forward unchanged nodes", () => {
+  const previousRoot: EvaluationNodeInput = {
+    id: "root",
+    label: "Root",
+    children: [
+      {
+        id: "docs",
+        label: "Docs",
+        children: [
+          {
+            id: "docs.runtime",
+            label: "Runtime docs",
+            dimension: "documentation_onboarding",
+            status: "partial",
+            pointsAvailable: 1
+          }
+        ]
+      },
+      {
+        id: "github",
+        label: "GitHub",
+        dimension: "issue_readiness",
+        status: "missing",
+        pointsAvailable: 1
+      }
+    ]
+  };
+
+  const updatedDocs: EvaluationNodeInput = {
+    id: "docs",
+    label: "Docs",
+    children: [
+      {
+        id: "docs.runtime",
+        label: "Runtime docs",
+        dimension: "documentation_onboarding",
+        status: "pass",
+        pointsAvailable: 1
+      }
+    ]
+  };
+
+  const merged = mergeCarriedForwardTree({
+    previousRoot,
+    updatedNodes: [updatedDocs],
+    previousSnapshotId: "snapshot-a"
+  });
+
+  assert.deepEqual(merged.carriedForwardNodeIds, ["github", "root"]);
+  assert.equal(merged.root.children?.[0]?.carriedForwardFrom, undefined);
+  assert.equal(merged.root.children?.[1]?.carriedForwardFrom, "snapshot-a");
+
+  const report = buildReport({ root: merged.root, generatedAt: "fixed" });
+  assert.equal(report.summary.dimensions.find((d) => d.dimension === "documentation_onboarding")?.score0To10, 10);
+  assert.equal(report.summary.dimensions.find((d) => d.dimension === "issue_readiness")?.score0To10, 0);
+});

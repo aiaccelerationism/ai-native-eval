@@ -1,0 +1,13 @@
+{
+  "pluginId": "ai-native-review-workflow-docs-evaluator",
+  "confidence": "high",
+  "reason": "Review workflow documentation is now backed by a PR template and CI gate list, so review expectations are visible during PR authoring.",
+  "evidence": [
+    {
+      "source": "AGENTS.md; docs/reviewer-contract.md",
+      "locator": "Review Contract and Review Gates",
+      "summary": "Agent and reviewer expectations are documented."
+    }
+  ],
+  "deductions": []
+}

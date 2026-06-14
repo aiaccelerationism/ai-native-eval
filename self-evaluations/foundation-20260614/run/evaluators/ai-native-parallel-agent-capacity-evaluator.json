@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-parallel-agent-capacity-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-capacity-policy, missing-batch-planning, incomplete-over-fanout-recovery.",
+  "evidence": [
+    {
+      "source": "AGENTS.md",
+      "locator": "Parallel Agent Capacity",
+      "summary": "Capacity policy and max_threads guidance are explicit."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "capacity-policy",
+      "deductionId": "incomplete-capacity-policy",
+      "applies": true,
+      "reason": "Capacity guidance exists, but no command or config check verifies the local max_threads setting before fan-out.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Parallel Agent Capacity",
+          "summary": "max_threads guidance is documented as prose."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a preflight or planning checklist that records actual max_threads when fan-out is planned.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "batch-planning",
+      "deductionId": "missing-batch-planning",
+      "applies": true,
+      "reason": "Execution batches are represented in the eval model, but this self-evaluation run does not persist a concrete capacity/batch plan artifact beyond the generated run folder.",
+      "evidence": [
+        {
+          "source": ".ai-native-eval/artifacts/runs/self-eval-20260614-foundation/run.json",
+          "locator": "run snapshot",
+          "summary": "Run config exists without capacity planning record."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record execution batch choices and capacity constraints in large self-eval runs.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "over-fanout-recovery",
+      "deductionId": "incomplete-over-fanout-recovery",
+      "applies": true,
+      "reason": "The repo explains when fan-out is justified, but does not describe recovery when too many agent tasks are spawned or partial evaluator outputs fail.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Parallel Agent Capacity",
+          "summary": "No over-fanout repair flow is documented."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document how to reduce, resume, or repair oversized evaluator fan-out runs.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-eval-rubric-quality-evaluator",
+  "confidence": "medium",
+  "reason": "AI Native Eval now has structured leaf rubrics with full group budgets and validation tests, but the meta-rubric layer is new and not yet backed by real historical repair cycles. Applied deductions: incomplete-rubric-operability, unlinked-rubric-operability-proof, incomplete-repair-guidance.",
+  "evidence": [
+    {
+      "source": ".agents/skills/*-evaluator/SKILL.md; tests/skill-packaging.test.mjs",
+      "locator": "Deduction Groups and leaf rubric tests",
+      "summary": "Leaf evaluator skills define deduction groups and packaging tests require budget and rubric structure."
+    },
+    {
+      "source": ".agents/skills/ai-native-eval-rubric-quality-evaluator/SKILL.md",
+      "locator": "AI Native Eval Rubric Quality Evaluator",
+      "summary": "The evaluator-system-specific rubric quality evaluator is newly introduced in this change."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "rubric-operability",
+      "deductionId": "incomplete-rubric-operability",
+      "applies": true,
+      "reason": "The repo has structured deduction groups, but several evaluator rubrics were generated from common templates and have not yet been calibrated against real false-positive or false-negative evaluation examples.",
+      "evidence": [
+        {
+          "source": ".agents/skills/*-evaluator/SKILL.md; self-evaluations/foundation-20260614/run/evaluators/*.json",
+          "locator": "deduction groups and committed evaluator outputs",
+          "summary": "Rubrics are present and used, but the baseline does not include calibration cases showing where each rubric was tightened from observed misses."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add calibration examples for high-impact evaluator rubrics, especially cases where a deduction should and should not apply.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "rubric-operability",
+      "deductionId": "unlinked-rubric-operability-proof",
+      "applies": true,
+      "reason": "Tests prove the presence of rubric structure, but they do not yet prove that representative evaluator outputs exercise every important rubric branch.",
+      "evidence": [
+        {
+          "source": "tests/skill-packaging.test.mjs; .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts",
+          "locator": "rubric structure and folder validation tests",
+          "summary": "Tests validate rubric shape and selected folder fixtures, not broad branch coverage for all evaluator rubrics."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add targeted fixture outputs for representative pass, partial, fail, and invalid-deduction paths across the most important rubrics.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "deduction-budget-completeness",
+      "deductionId": "missing-budget-completeness",
+      "applies": false,
+      "reason": "The tool validates that deduction groups cannot have fallback gaps, and skill packaging tests require full group budget language."
+    },
+    {
+      "groupId": "deduction-budget-completeness",
+      "deductionId": "overlapping-budget-risk",
+      "applies": false,
+      "reason": "Rubric groups use capped budgets, and current validation prevents the fallback-score failure this project previously identified."
+    },
+    {
+      "groupId": "repair-guidance-quality",
+      "deductionId": "incomplete-repair-guidance",
+      "applies": true,
+      "reason": "Applied deductions include recommendations, but the report does not yet connect all recommendations to a durable issue/task creation or targeted repair workflow.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/report.md; .agents/skills/ai-native-eval/scripts/eval/src/renderMarkdown.ts",
+          "locator": "Why not 10/10 and markdown report",
+          "summary": "Reports list recommendations, but the repo has no workflow that converts self-eval deductions into tracked follow-up work."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a follow-up workflow for converting important self-eval deductions into issues or task specs.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

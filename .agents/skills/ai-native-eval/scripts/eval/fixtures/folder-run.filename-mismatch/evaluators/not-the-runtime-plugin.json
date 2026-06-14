@@ -1,0 +1,6 @@
+{
+  "pluginId": "ai-native-local-runtime-command-evaluator",
+  "confidence": "high",
+  "reason": "The JSON plugin id is valid, but the file name should be rejected.",
+  "deductions": []
+}

@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-ownership-boundary-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement.",
+  "evidence": [
+    {
+      "source": "docs/architecture.md",
+      "locator": "Skill Pack Boundary and Tool Boundary",
+      "summary": "Ownership and scoring-rule boundaries are explicit."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "boundary-enforcement",
+      "deductionId": "incomplete-boundary-enforcement",
+      "applies": true,
+      "reason": "Architecture boundaries are documented, but there is no automated check preventing evaluator rules from leaking into the orchestrator or central registries from reappearing.",
+      "evidence": [
+        {
+          "source": "docs/architecture.md; tests/skill-packaging.test.mjs",
+          "locator": "Tool Boundary and packaging tests",
+          "summary": "Some boundary tests exist, but enforcement is partial."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add tests that specifically reject central rule registries and evaluator protocol re-centralization.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

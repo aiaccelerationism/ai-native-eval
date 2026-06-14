@@ -1,0 +1,6 @@
+{
+  "reportId": "folder-run-invalid",
+  "generatedAt": "2026-06-13T00:00:00.000Z",
+  "scope": "invalid folder run fixture",
+  "rootPluginIds": ["ai-native-repo-operability-evaluator"]
+}

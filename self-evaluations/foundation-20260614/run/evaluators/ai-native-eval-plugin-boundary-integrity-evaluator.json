@@ -1,0 +1,66 @@
+{
+  "pluginId": "ai-native-eval-plugin-boundary-integrity-evaluator",
+  "confidence": "high",
+  "reason": "The plugin graph uses direct-child manifests, configured additional roots, and disabled subtree validation, but external-package discovery is still out of scope. Applied deductions: incomplete-hot-plug-config.",
+  "evidence": [
+    {
+      "source": "docs/architecture.md; .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts",
+      "locator": "Skill Pack Boundary and runtime graph validation",
+      "summary": "Docs and validation code define recursive direct-child resolution without a central canonical hierarchy."
+    },
+    {
+      "source": ".ai-native-eval/config.json; self-evaluations/foundation-20260614/run/run.json",
+      "locator": "additionalRoots and rootPluginIds",
+      "summary": "This repository adds ai-native-eval-self-evaluator through project config rather than built-in root code."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "direct-child-ownership",
+      "deductionId": "missing-direct-child-ownership",
+      "applies": false,
+      "reason": "Evaluator manifests own direct children, and the architecture docs explicitly reject a central canonical hierarchy."
+    },
+    {
+      "groupId": "direct-child-ownership",
+      "deductionId": "unproven-direct-child-ownership",
+      "applies": false,
+      "reason": "Existing plugin model tests prove direct-child chain resolution without root knowledge of deeper descendants."
+    },
+    {
+      "groupId": "hot-plug-config",
+      "deductionId": "incomplete-hot-plug-config",
+      "applies": true,
+      "reason": "Project config can add roots, and this self-evaluation uses that path, but true external package discovery is still a documented non-goal rather than an implemented plugin installation flow.",
+      "evidence": [
+        {
+          "source": "docs/architecture.md; .ai-native-eval/config.json",
+          "locator": "Current Non-Goals and additionalRoots",
+          "summary": "The project supports configured additional roots but does not yet implement external package discovery."
+        }
+      ],
+      "recommendation": {
+        "summary": "When plugin distribution becomes in scope, add external pack discovery/install proof without editing built-in root skill code.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "hot-plug-config",
+      "deductionId": "unproven-external-pack-flow",
+      "applies": false,
+      "reason": "This PR adds a project-specific evaluator pack through .ai-native-eval/config.json, proving the configured root path for self-use."
+    },
+    {
+      "groupId": "disabled-subtree-integrity",
+      "deductionId": "missing-disabled-subtree-integrity",
+      "applies": false,
+      "reason": "Validation rejects outputs under disabled subtrees, and disabled roots render as not_applicable."
+    },
+    {
+      "groupId": "disabled-subtree-integrity",
+      "deductionId": "incomplete-disabled-subtree-integrity",
+      "applies": false,
+      "reason": "Tests cover disabled roots, disabled non-ai-native roots, and output rejection under disabled subtrees."
+    }
+  ]
+}

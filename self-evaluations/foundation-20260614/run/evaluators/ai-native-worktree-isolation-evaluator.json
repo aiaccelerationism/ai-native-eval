@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-worktree-isolation-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-worktree-policy, incomplete-dirty-state-protection, missing-parallel-cleanup-and-handoff.",
+  "evidence": [
+    {
+      "source": "AGENTS.md",
+      "locator": "Worktree And Branch Safety",
+      "summary": "Agents are instructed to check status, avoid direct main pushes, and isolate parallel work."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "worktree-policy",
+      "deductionId": "incomplete-worktree-policy",
+      "applies": true,
+      "reason": "The policy says to use branches or worktrees, but does not define a concrete worktree allocation, naming, or cleanup procedure.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Worktree And Branch Safety",
+          "summary": "Policy exists without operational procedure."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document or script worktree allocation and cleanup for parallel evaluator work.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "dirty-state-protection",
+      "deductionId": "incomplete-dirty-state-protection",
+      "applies": true,
+      "reason": "Agents are told to inspect git status, but there is no automated pre-commit/pre-PR guard for unrelated dirty files or generated artifact leaks.",
+      "evidence": [
+        {
+          "source": "AGENTS.md; .gitignore",
+          "locator": "Worktree And Branch Safety and ignore rules",
+          "summary": "Dirty-state protection is instruction-level."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a status check that detects unexpected dirty/generated files before PR publication.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "parallel-cleanup-and-handoff",
+      "deductionId": "missing-parallel-cleanup-and-handoff",
+      "applies": true,
+      "reason": "There is no durable worker ownership ledger, worktree registry, or cleanup artifact for parallel agent work.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Worktree And Branch Safety",
+          "summary": "Parallel worktree ownership is not persisted."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a parallel work ledger only when multi-agent work becomes routine.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

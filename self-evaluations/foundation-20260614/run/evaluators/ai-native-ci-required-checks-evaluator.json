@@ -1,0 +1,48 @@
+{
+  "pluginId": "ai-native-ci-required-checks-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-required-check-coverage, missing-check-enforcement, missing-check-signal-quality.",
+  "evidence": [
+    {
+      "source": "package.json; docs/reviewer-contract.md",
+      "locator": "scripts and Review Gates",
+      "summary": "The commands are documented, but hosted CI files are absent."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "check-enforcement",
+      "deductionId": "missing-check-enforcement",
+      "applies": true,
+      "reason": "There is no evidence that checks are required before merge.",
+      "evidence": [
+        {
+          "source": ".github/workflows; branch protection",
+          "locator": "missing evidence",
+          "summary": "No required-check enforcement is represented in the repo."
+        }
+      ],
+      "recommendation": {
+        "summary": "Enable branch protection after adding workflows.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "check-enforcement",
+      "deductionId": "incomplete-check-enforcement",
+      "applies": true,
+      "reason": "A GitHub Actions workflow now runs deterministic gates, but branch protection or required-check enforcement is not yet visible from repository evidence.",
+      "evidence": [
+        {
+          "source": ".github/workflows/ci.yml",
+          "locator": "Deterministic gates",
+          "summary": "CI runs pnpm test, self-eval validation, self-eval freshness check, and skill-eval contract."
+        }
+      ],
+      "recommendation": {
+        "summary": "Enable required checks on main after the workflow has run successfully in GitHub.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

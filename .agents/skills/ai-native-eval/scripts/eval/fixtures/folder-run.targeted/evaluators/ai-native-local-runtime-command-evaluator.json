@@ -1,0 +1,18 @@
+{
+  "pluginId": "ai-native-local-runtime-command-evaluator",
+  "confidence": "high",
+  "reason": "The tiny project intentionally passes local runtime command checks: README and package scripts identify start/test commands and expected runtime output.",
+  "evidence": [
+    {
+      "source": "README.md",
+      "locator": "Setup / Runtime",
+      "summary": "README documents npm install, npm test, node src/index.js, and expected runtime output."
+    },
+    {
+      "source": "package.json",
+      "locator": "scripts.start/scripts.test",
+      "summary": "Project-owned start and test scripts are present."
+    }
+  ],
+  "deductions": []
+}

@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-known-issue-awareness-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-known-issue-capture, missing-discoverability, incomplete-prevention-linkage.",
+  "evidence": [
+    {
+      "source": "docs/evidence.md",
+      "locator": "Recurrence Prevention",
+      "summary": "The repo defines how durable misses should become tests, evals, skills, or docs."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "known-issue-capture",
+      "deductionId": "missing-known-issue-capture",
+      "applies": true,
+      "reason": "No known-issues document or registry exists for repeated eval, report, browser, or real-agent failure modes.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md",
+          "locator": "Evidence Surfaces",
+          "summary": "Known issue registry is absent."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add docs/known-issues.md when recurring failure patterns appear.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "discoverability",
+      "deductionId": "missing-discoverability",
+      "applies": true,
+      "reason": "There is no searchable known-issue location linked from AGENTS.md or README.",
+      "evidence": [
+        {
+          "source": "AGENTS.md; README.md",
+          "locator": "repo guidance",
+          "summary": "Known issue routing is not present."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link the known-issue registry from AGENTS.md.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "prevention-linkage",
+      "deductionId": "incomplete-prevention-linkage",
+      "applies": true,
+      "reason": "Recurrence-prevention policy exists, but known issues are not linked to tests, evals, or fixes because the registry is absent.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md",
+          "locator": "Recurrence Prevention",
+          "summary": "Policy exists without issue cards."
+        }
+      ],
+      "recommendation": {
+        "summary": "Require known issue cards to link prevention artifacts.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-product-design-readiness-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-product-intent, missing-state-and-flow-coverage, incomplete-checkpoint-readiness.",
+  "evidence": [
+    {
+      "source": "README.md; docs/architecture.md",
+      "locator": "Reports and Data Flow",
+      "summary": "The report inspection surface is described at a system level."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "product-intent",
+      "deductionId": "missing-product-intent",
+      "applies": true,
+      "reason": "The report UI has no dedicated product brief describing reviewer users, jobs, decisions, and non-goals.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "Reports",
+          "summary": "Report capabilities are described functionally, not as product design intent."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a report UX/product brief for reviewer inspection workflows.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "state-and-flow-coverage",
+      "deductionId": "missing-state-and-flow-coverage",
+      "applies": true,
+      "reason": "Important report states are tested but not specified as product flows or acceptance states.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts",
+          "locator": "report rendering tests",
+          "summary": "Tests cover behavior without a product flow spec."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document report flows for tree inspection, disabled nodes, deductions, and copy prompts.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "checkpoint-readiness",
+      "deductionId": "incomplete-checkpoint-readiness",
+      "applies": true,
+      "reason": "There is no human design checkpoint requirement before changing the report UI.",
+      "evidence": [
+        {
+          "source": "docs/reviewer-contract.md",
+          "locator": "Review Gates",
+          "summary": "Design-specific checkpoint is not required."
+        }
+      ],
+      "recommendation": {
+        "summary": "Require a design review checkpoint for visible report changes.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

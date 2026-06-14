@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/final-response.md",
+  "must_contain": [
+    "AI_NATIVE_SKILL_EVAL_COMPLETE",
+    "ai-native-local-environment-reproducibility-evaluator"
+  ],
+  "must_match": [
+    "primary responsibility|responsibility|evaluate|orchestrate|use|help|score|level"
+  ]
+}

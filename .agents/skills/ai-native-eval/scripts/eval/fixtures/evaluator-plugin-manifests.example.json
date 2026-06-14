@@ -1,0 +1,56 @@
+{
+  "rootPluginIds": ["repo-operability"],
+  "manifests": [
+    {
+      "pluginId": "repo-operability",
+      "label": "Repo operability",
+      "version": "0.1.0",
+      "dimension": "repo_operability",
+      "directChildren": [
+        {
+          "pluginId": "runtime-reproducibility",
+          "weight": 1,
+          "required": true
+        }
+      ],
+      "extensionPoints": [
+        {
+          "id": "repo-operability.children",
+          "label": "Repo operability children"
+        }
+      ]
+    },
+    {
+      "pluginId": "runtime-reproducibility",
+      "label": "Runtime reproducibility",
+      "version": "0.1.0",
+      "dimension": "repo_operability",
+      "directChildren": [
+        {
+          "pluginId": "runtime-command",
+          "weight": 1,
+          "required": true
+        }
+      ]
+    },
+    {
+      "pluginId": "runtime-command",
+      "label": "Runtime command",
+      "version": "0.1.0",
+      "dimension": "repo_operability",
+      "directChildren": [
+        {
+          "pluginId": "runtime-command-failure-handling",
+          "weight": 1,
+          "required": false
+        }
+      ]
+    },
+    {
+      "pluginId": "runtime-command-failure-handling",
+      "label": "Runtime command failure handling",
+      "version": "0.1.0",
+      "dimension": "repo_operability"
+    }
+  ]
+}

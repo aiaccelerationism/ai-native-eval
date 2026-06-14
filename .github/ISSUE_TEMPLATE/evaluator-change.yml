@@ -1,0 +1,56 @@
+name: Evaluator or Eval Change
+description: Plan a change to evaluator skills, eval tooling, reports, or self-evaluation artifacts.
+title: "[eval] "
+labels:
+  - evaluator
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What problem, gap, or scoring behavior needs to change?
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: What should this issue intentionally avoid?
+    validations:
+      required: true
+  - type: textarea
+    id: affected_skills
+    attributes:
+      label: Affected skills or evaluators
+      description: List affected skill ids, evaluator plugin ids, or tool modules.
+      placeholder: |
+        - ai-native-eval
+        - ai-native-ci-required-checks-evaluator
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Concrete checks reviewers should use.
+      placeholder: |
+        - pnpm test passes
+        - pnpm self-eval:check passes
+        - Report markdown includes the new deduction reason
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Expected evidence
+      description: Reports, evals, screenshots, traces, or command output expected in the PR.
+    validations:
+      required: true
+  - type: textarea
+    id: review
+    attributes:
+      label: Reviewer expectations
+      description: Any human review, live-agent eval, browser check, or skip-gate requirement.
+    validations:
+      required: true
+

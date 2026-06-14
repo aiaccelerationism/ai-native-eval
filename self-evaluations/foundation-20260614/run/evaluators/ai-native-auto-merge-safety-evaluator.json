@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-auto-merge-safety-evaluator",
+  "confidence": "medium",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-merge-authority-boundary, missing-required-gates, missing-bot-safety-auditability.",
+  "evidence": [
+    {
+      "source": "AGENTS.md",
+      "locator": "Worktree And Branch Safety",
+      "summary": "The agent guide forbids direct pushes to main."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "merge-authority-boundary",
+      "deductionId": "incomplete-merge-authority-boundary",
+      "applies": true,
+      "reason": "Direct main pushes are prohibited by AGENTS.md, but no branch protection or bot merge authority configuration is visible from repository evidence.",
+      "evidence": [
+        {
+          "source": "AGENTS.md",
+          "locator": "Worktree And Branch Safety",
+          "summary": "Merge authority is instruction-level."
+        }
+      ],
+      "recommendation": {
+        "summary": "Document and enforce merge authority through GitHub branch protection when available.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "bot-safety-auditability",
+      "deductionId": "missing-bot-safety-auditability",
+      "applies": true,
+      "reason": "There is no bot auto-merge path, audit trail, or merge actor policy in this repo.",
+      "evidence": [
+        {
+          "source": "AGENTS.md; docs/reviewer-contract.md",
+          "locator": "merge/review guidance",
+          "summary": "Bot merge auditability is not defined."
+        }
+      ],
+      "recommendation": {
+        "summary": "Define merge actor and audit behavior if auto-merge is introduced.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "required-gates",
+      "deductionId": "incomplete-required-gates",
+      "applies": true,
+      "reason": "CI gates now exist, but branch protection/required check enforcement is not yet visible from repo evidence.",
+      "evidence": [
+        {
+          "source": ".github/workflows/ci.yml",
+          "locator": "Deterministic gates",
+          "summary": "CI runs the deterministic gate suite."
+        }
+      ],
+      "recommendation": {
+        "summary": "Enable branch protection required checks after confirming the workflow on GitHub.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

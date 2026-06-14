@@ -1,0 +1,20 @@
+{
+  "pluginId": "ai-native-quality-gate-skip-policy-evaluator",
+  "confidence": "low",
+  "reason": "No quality gate skip policy exists.",
+  "deductions": [
+    {
+      "groupId": "skip-policy-definition",
+      "deductionId": "missing-skip-policy-definition",
+      "applies": true,
+      "reason": "The repository has no skip policy or quality gate documentation.",
+      "evidence": [
+        {
+          "source": "repository scan",
+          "locator": "policy docs absent",
+          "summary": "No quality gate docs exist."
+        }
+      ]
+    }
+  ]
+}

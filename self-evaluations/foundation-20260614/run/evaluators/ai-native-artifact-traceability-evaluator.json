@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-artifact-traceability-evaluator",
+  "confidence": "high",
+  "reason": "Self-evaluation artifacts have committed source run data, a compact report, and a freshness check; broader PR artifact linkage is still partial.",
+  "evidence": [
+    {
+      "source": "docs/evidence.md; docs/foundation-self-evaluation.md",
+      "locator": "Self-Evaluation Artifacts and Current Baseline",
+      "summary": "Artifact paths and regeneration commands are documented."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "artifact-linkage",
+      "deductionId": "incomplete-artifact-linkage",
+      "applies": true,
+      "reason": "Run folder, JSON, and HTML artifacts are committed, but they are not linked to CI runs, screenshots, PR template fields, or issue acceptance criteria.",
+      "evidence": [
+        {
+          "source": "docs/evidence.md; README.md",
+          "locator": "Self-Evaluation Artifacts",
+          "summary": "Artifact paths are documented."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link report artifacts to PR evidence and validation output.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

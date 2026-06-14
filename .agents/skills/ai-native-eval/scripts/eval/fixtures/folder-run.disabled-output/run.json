@@ -1,0 +1,35 @@
+{
+  "reportId": "folder-run-disabled-output",
+  "generatedAt": "2026-06-13T00:00:00.000Z",
+  "language": "zh-TW",
+  "uiLanguage": "en",
+  "scope": "disabled output fixture",
+  "rootPluginIds": ["ai-native-product-ux-evidence-evaluator"],
+  "effectiveConfig": {
+    "schemaVersion": 1,
+    "configSources": [
+      { "kind": "built-in", "found": true },
+      { "kind": "project", "path": ".ai-native-eval/config.json", "found": true }
+    ],
+    "builtInRootPluginIds": ["ai-native-product-ux-evidence-evaluator"],
+    "roots": [
+      {
+        "pluginId": "ai-native-product-ux-evidence-evaluator",
+        "origin": "built-in",
+        "source": "built-in"
+      }
+    ],
+    "disabled": [
+      {
+        "pluginId": "ai-native-product-ux-evidence-evaluator",
+        "reason": "This project has no visible product workflow in scope.",
+        "source": "project"
+      }
+    ]
+  },
+  "reproducibility": {
+    "repoUrl": "https://github.com/example/repo",
+    "repoCommit": "example",
+    "configHash": "disabled-output"
+  }
+}

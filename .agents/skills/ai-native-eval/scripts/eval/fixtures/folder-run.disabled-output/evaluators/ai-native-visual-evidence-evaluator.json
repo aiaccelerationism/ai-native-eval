@@ -1,0 +1,6 @@
+{
+  "pluginId": "ai-native-visual-evidence-evaluator",
+  "confidence": "high",
+  "reason": "This output should be rejected because its parent subtree is disabled.",
+  "deductions": []
+}

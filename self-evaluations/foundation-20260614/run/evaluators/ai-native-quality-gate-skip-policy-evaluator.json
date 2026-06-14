@@ -1,0 +1,31 @@
+{
+  "pluginId": "ai-native-quality-gate-skip-policy-evaluator",
+  "confidence": "high",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-skip-policy-definition, missing-skip-safety, missing-skip-auditability.",
+  "evidence": [
+    {
+      "source": "docs/reviewer-contract.md; AGENTS.md",
+      "locator": "Review Gates and Review Contract",
+      "summary": "Docs explain when live evals may be deferred."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "skip-policy-definition",
+      "deductionId": "incomplete-skip-policy-definition",
+      "applies": true,
+      "reason": "The PR template now asks for skipped gates and safe-skip rationale, but the skip taxonomy is still prose-level rather than a machine-enforced policy.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md; docs/reviewer-contract.md",
+          "locator": "Gate Skips and Review Gates",
+          "summary": "PRs have a structured skip section and docs explain when live-agent evidence may be deferred."
+        }
+      ],
+      "recommendation": {
+        "summary": "Define allowed skip types and add automated checks if skip misuse becomes common.",
+        "priority": "medium"
+      }
+    }
+  ]
+}

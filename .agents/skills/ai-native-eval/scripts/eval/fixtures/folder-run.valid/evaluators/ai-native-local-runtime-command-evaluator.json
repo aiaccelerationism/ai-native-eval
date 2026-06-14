@@ -1,0 +1,24 @@
+{
+  "pluginId": "ai-native-local-runtime-command-evaluator",
+  "confidence": "high",
+  "reason": "Runtime command surface is mostly documented.",
+  "deductions": [
+    {
+      "groupId": "runtime-entrypoints",
+      "deductionId": "incomplete-runtime-entrypoints",
+      "applies": true,
+      "reason": "The primary entrypoint exists, but README-level routing is incomplete.",
+      "evidence": [
+        {
+          "source": "README.md",
+          "locator": "runtime section",
+          "summary": "Runtime guidance exists but is thin."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a compact README quickstart.",
+        "priority": "medium"
+      }
+    }
+  ]
+}
