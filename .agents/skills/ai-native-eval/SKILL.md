@@ -268,9 +268,10 @@ Keep the test names honest. The eval should have stable deterministic tests and 
 
 - `pnpm --dir scripts/eval test:tool`: deterministic eval tool pipeline tests. These do not call an AI agent. They validate config snapshots, evaluator folder validation, rubric parsing, aggregation, and HTML rendering from known inputs.
 - `pnpm --dir scripts/eval test:browser`: browser report E2E. This runs the real CLI to render a report, opens the generated HTML with Playwright, and checks that the report can be viewed and interacted with.
-- `pnpm --dir scripts/eval test:agent`: real agent E2E. This intentionally invokes `codex exec`, asks a real Codex agent to use the local `ai-native-eval` skill against a fixture repo, expects the agent to create fresh evaluator JSON outputs, validates the generated run folder, and opens the generated report with Playwright.
+- `pnpm --dir scripts/eval test:human`: human E2E. This intentionally invokes `codex exec`, asks a real Codex agent to act as the human tester using the local `ai-native-eval` skill against a fixture repo, expects the agent to create fresh evaluator JSON outputs, validates the generated run folder, and opens the generated report with Playwright.
+- `pnpm --dir scripts/eval test:agent`: compatibility alias for the same real-agent human E2E path.
 
-Real agent tests may be slower and less deterministic than tool tests. Do not remove them just because they involve AI behavior. Keep them separate from default `pnpm test` so the stable test suite remains fast while the true user path remains testable on demand.
+Human E2E tests may be slower and less deterministic than tool tests. Do not remove them just because they involve AI behavior. Keep them separate from default `pnpm test` so the stable test suite remains fast while the true user path remains testable on demand. Run them for workflow-critical, user-facing, agent-facing, lifecycle routing, and report behavior changes that a human developer would otherwise manually verify.
 
 ## Output
 

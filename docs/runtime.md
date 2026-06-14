@@ -56,6 +56,12 @@ pnpm skill-eval:live
 
 Runs skill evals through the real local Codex CLI. This is intentionally slower and less deterministic than contract mode.
 
+```sh
+pnpm test:human
+```
+
+Runs the real-agent human E2E path. This invokes a real Codex agent against a fixture repository, requires it to use the local `ai-native-eval` skill, generate fresh evaluator outputs, validate the run folder, render the HTML report, and open the report with Playwright. Use this when a change affects user-facing flows, agent-facing routing, lifecycle evaluator entrypoints, generated reports, or anything a human developer would otherwise manually test.
+
 ## Self-Evaluation Commands
 
 The committed self-evaluation baseline lives under `self-evaluations/foundation-20260614/`.

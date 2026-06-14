@@ -232,6 +232,7 @@ pnpm score:example
 pnpm persist:example
 pnpm self-eval:validate
 pnpm self-eval:render
+pnpm test:human
 ```
 
 ## Contributing

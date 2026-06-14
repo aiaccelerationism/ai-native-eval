@@ -439,8 +439,9 @@ test("every skill owns a skillgrade eval case", async () => {
 });
 
 test("root skill eval runner separates contract and real-agent live modes", async () => {
-  const [packageBody, runnerBody, wrapperBody, readmeBody] = await Promise.all([
+  const [packageBody, evalPackageBody, runnerBody, wrapperBody, readmeBody] = await Promise.all([
     readFile("package.json", "utf8"),
+    readFile(".agents/skills/ai-native-eval/scripts/eval/package.json", "utf8"),
     readFile("tools/skill-eval.sh", "utf8"),
     readFile(".agents/skills/_eval-support/bin/codex", "utf8"),
     readFile("README.md", "utf8")
@@ -448,6 +449,8 @@ test("root skill eval runner separates contract and real-agent live modes", asyn
 
   assert.match(packageBody, /"skill-eval:contract": "tools\/skill-eval\.sh contract"/);
   assert.match(packageBody, /"skill-eval:live": "tools\/skill-eval\.sh live"/);
+  assert.match(packageBody, /"test:human": "pnpm --dir \.agents\/skills\/ai-native-eval\/scripts\/eval test:human"/);
+  assert.match(evalPackageBody, /"test:human": "pnpm build && RUN_REAL_CODEX_E2E=1 node --test dist\/tests\/real-agent\.e2e\.js"/);
   assert.match(runnerBody, /--validate --ci --provider=local/);
   assert.match(runnerBody, /--agent=codex --provider=local --trials=1/);
   assert.match(runnerBody, /mindepth 3 -maxdepth 3/);

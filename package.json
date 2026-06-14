@@ -13,6 +13,7 @@
     "skill-eval:contract": "tools/skill-eval.sh contract",
     "skill-eval:live": "tools/skill-eval.sh live",
     "skill-eval:skill": "tools/skill-eval.sh skill",
+    "test:human": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval test:human",
     "test": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval install --frozen-lockfile && node --test tests/*.test.mjs && pnpm --dir .agents/skills/ai-native-eval/scripts/eval test",
     "render:example": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval render:example",
     "persist:example": "pnpm --dir .agents/skills/ai-native-eval/scripts/eval persist:example",

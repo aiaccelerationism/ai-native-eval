@@ -24,7 +24,7 @@ This is a standalone evaluator plugin. It emits scored evaluation nodes and does
 
 ## Evidence
 
-Inspect Playwright/Cypress config, E2E reports, screenshots, traces, videos, workflow artifacts, and PR evidence links.
+Inspect Playwright/Cypress config, E2E reports, screenshots, traces, videos, workflow artifacts, PR evidence links, real-agent E2E output, and human E2E records where an agent deliberately substitutes for the human developer's final manual verification path.
 
 ## Scoring Rules
 
@@ -59,6 +59,14 @@ Use these groups when evaluating screenshots, traces, videos, reports, and repro
         "recommendation": "Add explicit E2E artifact proof guidance for e2e proof presence."
       },
       {
+        "id": "missing-human-e2e-proof-presence",
+        "label": "Missing human E2E proof presence",
+        "points": 0.2,
+        "appliesWhen": "A workflow-critical or user-facing change lacks a human E2E record where a human developer or AI agent acting as the human tester exercises the changed behavior end to end.",
+        "evidenceRequired": "Cite the changed behavior, PR evidence, real-agent run, human-test command, report artifact, or missing human E2E record.",
+        "recommendation": "Require a human E2E or agent-as-human test artifact for workflow-critical changes before treating the change as user-validated."
+      },
+      {
         "id": "incomplete-e2e-proof-presence",
         "label": "Incomplete e2e proof presence",
         "points": 0.1,
@@ -90,6 +98,14 @@ Use these groups when evaluating screenshots, traces, videos, reports, and repro
         "recommendation": "Add explicit E2E artifact proof guidance for artifact quality."
       },
       {
+        "id": "incomplete-human-e2e-artifact-quality",
+        "label": "Incomplete human E2E artifact quality",
+        "points": 0.09,
+        "appliesWhen": "A human E2E record exists but does not show the scenario exercised, command run, artifact path, inspected result, and pass/fail outcome clearly enough for review.",
+        "evidenceRequired": "Cite the human-test log, report, screenshot, trace, PR comment, or summary and identify the missing review detail.",
+        "recommendation": "Record the human E2E command, scenario, artifact paths, inspected output, and outcome in review evidence."
+      },
+      {
         "id": "incomplete-artifact-quality",
         "label": "Incomplete artifact quality",
         "points": 0.09,
@@ -119,6 +135,14 @@ Use these groups when evaluating screenshots, traces, videos, reports, and repro
         "appliesWhen": "The repository does not document how to rerun or regenerate the E2E proof.",
         "evidenceRequired": "Cite E2E configs, Playwright reports, screenshots, traces, videos, PR artifacts, and docs that show the missing E2E artifact proof requirement.",
         "recommendation": "Add explicit E2E artifact proof guidance for proof reproducibility."
+      },
+      {
+        "id": "missing-human-e2e-reproducibility",
+        "label": "Missing human E2E reproducibility",
+        "points": 0.125,
+        "appliesWhen": "Human E2E or agent-as-human verification is required, but the repository does not document the command or steps another agent can rerun to reproduce the human-test evidence.",
+        "evidenceRequired": "Cite runtime docs, package scripts, test commands, PR evidence, or missing rerun instructions for the human E2E path.",
+        "recommendation": "Document a project-owned human E2E command or checklist that another agent can rerun and attach to review evidence."
       },
       {
         "id": "incomplete-proof-reproducibility",
@@ -160,6 +184,14 @@ Use these groups when evaluating screenshots, traces, videos, reports, and repro
         "recommendation": "Make the configured practice mandatory in real change flow and repair the recent-change path that allowed it to be skipped."
       },
       {
+        "id": "recent-changes-miss-human-e2e",
+        "label": "Recent changes miss human E2E",
+        "points": 0.5,
+        "appliesWhen": "Most recent workflow-critical, user-facing, or agent-facing changes lack human E2E evidence from a human developer or an AI agent explicitly acting as the human tester.",
+        "evidenceRequired": "Cite the sampled recent changes and show which ones lack human-test command output, report artifacts, browser inspection, or equivalent human E2E proof.",
+        "recommendation": "Make human E2E evidence a required PR closeout item for workflow-critical changes."
+      },
+      {
         "id": "inconsistent-recent-change-follow-through",
         "label": "Inconsistent recent change follow-through",
         "points": 0.25,
@@ -184,7 +216,7 @@ Group budgets sum to `1.0`: half covers configured capability and half covers re
 
 ## Required Checks
 
-Cite exact artifacts and identify claims that lack inspectable proof.
+Cite exact artifacts and identify claims that lack inspectable proof. For workflow-critical, user-facing, agent-facing, or evaluation-routing changes, verify whether a human E2E path was executed by a human developer or by an AI agent explicitly acting as the human tester. Treat deterministic unit tests as insufficient by themselves for this requirement.
 
 ## Output Expectations
 
