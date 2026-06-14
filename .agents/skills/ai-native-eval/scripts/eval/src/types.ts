@@ -10,12 +10,28 @@ export type Confidence = "low" | "medium" | "high";
 
 export type ReportUiLanguage = "en" | "zh-TW";
 
+export type TriggerMode =
+  | "one_shot"
+  | "turn_inline"
+  | "self_iteration"
+  | "periodic"
+  | "external_event";
+
+export interface TriggerMetadata {
+  mode: TriggerMode;
+  source?: "user" | "agent" | "github" | "scheduler" | "wrapper" | string;
+  event?: string;
+  threshold?: number;
+  maxIterations?: number;
+}
+
 export interface EvaluationContext {
   reviewType: string;
   target?: string;
   targetRef?: string;
   phase?: string;
   trigger?: string;
+  triggerMetadata?: TriggerMetadata;
   targetSurfaces?: string[];
   outputIntents?: string[];
   affectsOverallScore?: boolean;

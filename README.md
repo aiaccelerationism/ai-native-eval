@@ -56,6 +56,7 @@ The report gives humans and agents the same review surface:
 - Static HTML and compact Markdown output.
 - Source-controlled config for enabling, disabling, reweighting, or adding evaluator packs.
 - Incremental evaluations that can reuse prior evidence instead of starting from zero every time.
+- Trigger metadata for one-shot, turn-inline, self-iteration, periodic, or external-event integrations, while external systems remain responsible for hooks, schedulers, comments, and repair loops.
 
 ## Built-In Evaluator Packs
 

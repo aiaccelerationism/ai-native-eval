@@ -37,6 +37,15 @@ Configure this evaluator under `evaluators["ai-native-issue-lifecycle-evaluator"
 
 Supported phases are `intake`, `planning`, `active`, `follow_up`, and `closeout`. If an issue target is clear but phase is absent, assume `intake`.
 
+Supported trigger modes are `one_shot`, `external_event`, and
+`self_iteration`. The default trigger mode is `one_shot` when a user asks to
+evaluate an issue. `external_event` may represent issue creation, label changes,
+assignment, linked PR updates, or project-specific issue workflow events.
+`self_iteration` may emit repair guidance for issue readiness or planning gaps,
+but an external wrapper owns reruns and enforcement. Store issue trigger
+settings under
+`evaluators["ai-native-issue-lifecycle-evaluator"].settings.triggers`.
+
 ## Evidence
 
 Inspect issue body, acceptance criteria, non-goals, dependencies, labels, linked PRs, reviewer expectations, decision context, skill routing expectations, and follow-up artifacts.

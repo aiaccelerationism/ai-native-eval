@@ -50,6 +50,15 @@ Configure this evaluator under:
 
 Supported phases are `baseline` and `incremental`. If the user asks for the whole repo without a phase, assume `baseline`.
 
+Supported trigger modes are `one_shot`, `self_iteration`, and `external_event`.
+The default trigger mode is `one_shot` for user-initiated repo evaluation.
+`self_iteration` may emit threshold and repair recommendations, but an external
+wrapper owns reruns and stop conditions. `external_event` may represent release,
+merge, or custom repository events supplied by CI or another integration. This
+evaluator owns any repo-specific trigger settings under
+`evaluators["ai-native-repo-maturity-evaluator"].settings.triggers`; the core
+tool should persist those settings without interpreting them.
+
 ## Evidence
 
 Inspect broad repository evidence through direct child evaluator outputs: foundation maturity, optional BMAD maturity, repository docs, runtime commands, CI/test gates, GitHub workflow, agent readiness, evidence discipline, and recent PR-equivalent follow-through.

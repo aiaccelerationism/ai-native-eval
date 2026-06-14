@@ -702,6 +702,10 @@ test("context routes add roots and audit targeted evaluation intent", async () =
         targetRef: "PR-123",
         phase: "opened",
         trigger: "user",
+        triggerMetadata: {
+          mode: "one_shot",
+          source: "user"
+        },
         targetSurfaces: ["pr"]
       }
     });
@@ -712,6 +716,7 @@ test("context routes add roots and audit targeted evaluation intent", async () =
         reviewType: string;
         target: string;
         targetRef: string;
+        triggerMetadata: { mode: string; source: string };
         outputIntents: string[];
         affectsOverallScore: boolean;
       };
@@ -727,6 +732,8 @@ test("context routes add roots and audit targeted evaluation intent", async () =
     assert.deepEqual(run.evaluationContext.outputIntents, ["advisory", "markdown"]);
     assert.equal(run.evaluationContext.affectsOverallScore, false);
     assert.equal(run.evaluationContext.targetRef, "PR-123");
+    assert.equal(run.evaluationContext.triggerMetadata.mode, "one_shot");
+    assert.equal(run.evaluationContext.triggerMetadata.source, "user");
     assert.equal(run.rootPluginIds[0], "ai-native-pr-lifecycle-evaluator");
     assert.ok(run.rootPluginIds.includes("ai-native-pr-readiness-evaluator"));
     assert.deepEqual(
@@ -805,6 +812,16 @@ test("init-run accepts open-ended evaluation context CLI flags", async () => {
         "after_user_query",
         "--trigger",
         "agent",
+        "--trigger-mode",
+        "turn_inline",
+        "--trigger-source",
+        "agent",
+        "--trigger-event",
+        "thread.turn.completed",
+        "--threshold",
+        "0.85",
+        "--max-iterations",
+        "3",
         "--target-surface",
         "thread",
         "--output-intent",
@@ -827,6 +844,13 @@ test("init-run accepts open-ended evaluation context CLI flags", async () => {
         targetRef: string;
         phase: string;
         trigger: string;
+        triggerMetadata: {
+          mode: string;
+          source: string;
+          event: string;
+          threshold: number;
+          maxIterations: number;
+        };
         targetSurfaces: string[];
         outputIntents: string[];
         affectsOverallScore: boolean;
@@ -836,9 +860,83 @@ test("init-run accepts open-ended evaluation context CLI flags", async () => {
     assert.equal(run.reviewType, "turn");
     assert.deepEqual(run.rootPluginIds, ["ai-native-turn-guardrail-evaluator"]);
     assert.equal(run.evaluationContext.phase, "after_user_query");
+    assert.deepEqual(run.evaluationContext.triggerMetadata, {
+      mode: "turn_inline",
+      source: "agent",
+      event: "thread.turn.completed",
+      threshold: 0.85,
+      maxIterations: 3
+    });
     assert.deepEqual(run.evaluationContext.targetSurfaces, ["thread"]);
     assert.deepEqual(run.evaluationContext.outputIntents, ["advisory"]);
     assert.equal(run.evaluationContext.affectsOverallScore, false);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("init-run defaults explicit PR targets to one-shot trigger mode", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-trigger-default-"));
+  try {
+    const repoRoot = join(tempRoot, "repo");
+    const runFolder = join(tempRoot, "run");
+    await mkdir(repoRoot, { recursive: true });
+
+    const runPath = await initRun({
+      repoRoot,
+      runFolder,
+      reportId: "trigger-default-test",
+      generatedAt: "2026-06-13T00:00:00.000Z",
+      repoCommit: "abc123",
+      evaluationContext: {
+        reviewType: "event",
+        target: "pull_request",
+        phase: "opened"
+      }
+    });
+    const run = JSON.parse(await readFile(runPath, "utf8")) as {
+      rootPluginIds: string[];
+      evaluationContext: {
+        target: string;
+        triggerMetadata: { mode: string };
+      };
+    };
+
+    assert.deepEqual(run.rootPluginIds, ["ai-native-pr-lifecycle-evaluator"]);
+    assert.equal(run.evaluationContext.triggerMetadata.mode, "one_shot");
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("init-run defaults periodic targets to periodic trigger mode", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-trigger-periodic-"));
+  try {
+    const repoRoot = join(tempRoot, "repo");
+    const runFolder = join(tempRoot, "run");
+    await mkdir(repoRoot, { recursive: true });
+
+    const runPath = await initRun({
+      repoRoot,
+      runFolder,
+      reportId: "trigger-periodic-test",
+      generatedAt: "2026-06-13T00:00:00.000Z",
+      repoCommit: "abc123",
+      evaluationContext: {
+        reviewType: "periodic",
+        target: "periodic",
+        phase: "scheduled"
+      }
+    });
+    const run = JSON.parse(await readFile(runPath, "utf8")) as {
+      rootPluginIds: string[];
+      evaluationContext: {
+        triggerMetadata: { mode: string };
+      };
+    };
+
+    assert.deepEqual(run.rootPluginIds, ["ai-native-periodic-health-evaluator"]);
+    assert.equal(run.evaluationContext.triggerMetadata.mode, "periodic");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
@@ -938,7 +1036,13 @@ test("per-evaluator config can add and disable children under the selected pack"
                   source: "project"
                 })),
                 settings: {
-                  defaultPhase: "opened"
+                  defaultPhase: "opened",
+                  triggers: {
+                    self_iteration: {
+                      minimumScore: 0.85,
+                      maxIterations: 3
+                    }
+                  }
                 }
               }
             ],
@@ -967,6 +1071,15 @@ test("per-evaluator config can add and disable children under the selected pack"
     assert.equal(added.disabledSource, "project");
     assert.match(html, /Evaluator configs/);
     assert.match(html, /ai-native-local-runtime-command-evaluator/);
+    assert.deepEqual(
+      report.runConfig?.evaluatorConfigs?.[0]?.settings?.triggers,
+      {
+        self_iteration: {
+          minimumScore: 0.85,
+          maxIterations: 3
+        }
+      }
+    );
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
@@ -984,6 +1097,13 @@ test("folder reports preserve evaluation context in rendered artifacts", async (
       target: "repo",
       phase: "weekly",
       trigger: "schedule",
+      triggerMetadata: {
+        mode: "periodic",
+        source: "scheduler",
+        event: "weekly.health",
+        threshold: 0.8,
+        maxIterations: 1
+      },
       outputIntents: ["artifact"],
       affectsOverallScore: true
     };
@@ -1005,7 +1125,11 @@ test("folder reports preserve evaluation context in rendered artifacts", async (
     assert.equal(report.evaluationContext?.reviewType, "periodic");
     assert.match(markdown, /Evaluation Context/);
     assert.match(markdown, /Review type: periodic/);
+    assert.match(markdown, /Trigger mode: periodic/);
+    assert.match(markdown, /Trigger owner: external systems own scheduling/);
     assert.match(html, /Evaluation Context/);
+    assert.match(html, /Trigger mode/);
+    assert.match(html, /weekly\.health/);
     assert.equal(manifest.evaluationContext?.phase, "weekly");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });

@@ -2,7 +2,8 @@
   "output_path": "outputs/pr-routing-response.md",
   "must_contain": [
     "AI_NATIVE_PR_REQUEST_ROUTE",
-    "ai-native-pr-lifecycle-evaluator"
+    "ai-native-pr-lifecycle-evaluator",
+    "one_shot"
   ],
   "must_not_contain": [
     "Which target",

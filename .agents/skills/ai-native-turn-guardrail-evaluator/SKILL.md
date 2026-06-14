@@ -37,6 +37,14 @@ Configure this evaluator under `evaluators["ai-native-turn-guardrail-evaluator"]
 
 Supported phases are `before_response`, `after_user_query`, and `after_response`. If a turn target is clear but phase is absent, assume `after_user_query`.
 
+Supported trigger modes are `one_shot`, `turn_inline`, and `self_iteration`.
+The default trigger mode is `one_shot` when a user asks for a single-turn
+guardrail check. `turn_inline` is appropriate when an external agent runtime
+checks each user/agent exchange. `self_iteration` may emit threshold metadata
+and repair recommendations for the current response, but an external wrapper
+owns the loop and reruns. Store turn trigger settings under
+`evaluators["ai-native-turn-guardrail-evaluator"].settings.triggers`.
+
 ## Evidence
 
 Inspect the immediate user request, current agent response plan, active skill trigger, known issue awareness, required repo workflow, and whether the agent should ask a clarifying question or enforce a process rule before continuing.

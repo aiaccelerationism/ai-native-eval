@@ -1,0 +1,15 @@
+{
+  "output_path": "outputs/self-iteration-thread-response.md",
+  "must_contain": [
+    "AI_NATIVE_SELF_ITERATION_THREAD_ROUTE",
+    "ai-native-thread-checkpoint-evaluator",
+    "self_iteration"
+  ],
+  "must_match": [
+    "external.*(wrapper|owner|system)|wrapper.*(rerun|loop)|does not run the loop|owns reruns"
+  ],
+  "must_not_contain": [
+    "ai-native-repo-maturity-evaluator",
+    "Which target"
+  ]
+}

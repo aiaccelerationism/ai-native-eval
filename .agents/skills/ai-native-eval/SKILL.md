@@ -84,13 +84,34 @@ phase and state the assumption before proceeding. Ask only when the missing phas
 would cause a high-cost run, public comment, durable artifact promotion, or
 misleading score.
 
+Trigger mode is metadata, not a second target-selection menu. If the user does
+not explicitly name a trigger or integration mode, use `one_shot` for ordinary
+repo, PR, issue, thread, and turn evaluations. Use `periodic` by default only
+when the target itself is periodic or scheduled health. Do not ask which trigger
+mode to use for ordinary clear-target requests.
+
+If the user explicitly names a mode such as `one_shot`, `turn_inline`,
+`self_iteration`, `periodic`, or `external_event`, record that metadata and pass
+it to the selected lifecycle evaluator pack. The orchestrator may recognize this
+shared vocabulary, but it must not centrally define how each mode changes phase,
+child selection, scoring, thresholds, or recommendations. Each selected lifecycle
+pack owns those semantics through its own `SKILL.md` and
+`evaluators[pluginId].settings.triggers` config.
+
+If the user asks how to integrate ai-native-eval with CI, GitHub events, turn
+hooks, schedulers, or repair loops, explain the supported trigger metadata and
+the external-owner contract: external systems own scheduling, enforcement,
+comment posting, and iteration loops; ai-native-eval records context, routes to
+the selected evaluator pack, validates outputs, and renders reviewable results.
+
 The context may include:
 
 - `reviewType`: baseline, incremental, event, thread, turn, periodic, or a project-specific value.
 - `target`: repo, issue, pull_request, workflow_run, agent_thread, user_turn, or a project-specific value.
 - `targetRef`: the issue number, PR number, branch, thread id, run id, or other handle when available.
 - `phase`: intake, opened, active, review, pre_merge, post_merge, closeout, follow_up, or a project-specific value.
-- `trigger`: user, agent, github, schedule, manual, or a project-specific value.
+- `trigger`: legacy initiator/source string such as user, agent, github, schedule, manual, or a project-specific value.
+- `triggerMetadata`: structured trigger contract with `mode`, optional `source`, optional `event`, optional `threshold`, and optional `maxIterations`.
 - `targetSurfaces`: the evidence surfaces this run should emphasize.
 - `outputIntents`: artifact, markdown, comment, advisory, blocking, score_update, or project-specific outputs.
 - `affectsOverallScore`: whether this run should update the repository maturity view or remain a targeted advisory record.
@@ -174,6 +195,7 @@ Config resolution is deterministic:
 
 - The default built-in root is `ai-native-repo-maturity-evaluator`.
 - Context targets select lifecycle roots: repo -> `ai-native-repo-maturity-evaluator`, PR -> `ai-native-pr-lifecycle-evaluator`, issue -> `ai-native-issue-lifecycle-evaluator`, thread -> `ai-native-thread-checkpoint-evaluator`, turn -> `ai-native-turn-guardrail-evaluator`, periodic -> `ai-native-periodic-health-evaluator`.
+- Trigger metadata defaults to `one_shot` for explicit non-periodic targets and `periodic` for explicit periodic targets. The core tool records trigger mode/source/event/threshold metadata but does not execute schedulers, hooks, comments, or self-iteration loops.
 - Optional person config can add roots or disable plugins.
 - Optional project config is read from `<repo>/.ai-native-eval/config.json` unless an explicit project config path is supplied.
 - Optional explicit config is a one-run override.

@@ -109,6 +109,9 @@ pnpm --dir .agents/skills/ai-native-eval/scripts/eval exec ai-native-eval init-r
   --target-ref PR-123 \
   --phase opened \
   --trigger user \
+  --trigger-mode external_event \
+  --trigger-source github \
+  --trigger-event pull_request.opened \
   --target-surface pr \
   --output-intent advisory \
   --affects-overall-score false
@@ -117,6 +120,27 @@ pnpm --dir .agents/skills/ai-native-eval/scripts/eval exec ai-native-eval init-r
 The context is stored in `run.json`, carried into rendered reports, snapshots,
 and manifests, and selects a lifecycle evaluator root such as
 `ai-native-pr-lifecycle-evaluator`.
+
+Trigger mode flags are optional. When a target is explicit and no trigger mode
+is supplied, ordinary repo, PR, issue, thread, and turn runs default to
+`one_shot`; periodic targets default to `periodic`. Trigger metadata is an
+integration contract only: the tool records mode, source, event, threshold, and
+max iteration values, but external systems own scheduling, enforcement, comment
+posting, and self-iteration reruns.
+
+Self-iteration wrappers can pass threshold metadata without asking the tool to
+run the loop:
+
+```sh
+pnpm --dir .agents/skills/ai-native-eval/scripts/eval exec ai-native-eval init-run . \
+  --review-type thread \
+  --target agent_thread \
+  --phase closeout \
+  --trigger-mode self_iteration \
+  --trigger-source wrapper \
+  --threshold 0.85 \
+  --max-iterations 3
+```
 
 Project config should scope evaluator-specific behavior by plugin id:
 
@@ -135,12 +159,24 @@ Project config should scope evaluator-specific behavior by plugin id:
       ],
       "settings": {
         "defaultPhase": "opened",
-        "outputMode": "advisory"
+        "outputMode": "advisory",
+        "triggers": {
+          "external_event": {
+            "events": ["pull_request.opened", "pull_request.synchronize"]
+          },
+          "self_iteration": {
+            "minimumScore": 0.85,
+            "maxIterations": 3
+          }
+        }
       }
     }
   }
 }
 ```
+
+The core tool persists `settings.triggers` as evaluator-owned configuration. The
+selected evaluator skill, not the orchestrator, decides what those settings mean.
 
 Legacy global `additionalRoots`, `disabled`, and `contextRoutes` are still read
 for compatibility, but generated reports show non-fatal deprecation warnings.

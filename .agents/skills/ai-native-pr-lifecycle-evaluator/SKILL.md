@@ -42,6 +42,17 @@ Supported phases are `opened`, `active`, `review`, `pre_merge`, `post_merge`, an
 
 Settings are evaluator-owned and may include `defaultPhase`, `evidenceStrictness`, `outputMode`, and `affectOverallScorePolicy`.
 
+Supported trigger modes are `one_shot`, `external_event`, and
+`self_iteration`. The default trigger mode is `one_shot` when a user asks to
+evaluate a PR. `external_event` may be used by GitHub Actions or webhooks with
+events such as `pull_request.opened`, `pull_request.synchronize`,
+`pull_request.review_requested`, `pull_request.closed`, or project-specific PR
+events. `self_iteration` may return threshold metadata and repair guidance, but
+an external wrapper owns rerunning the agent and deciding when to stop. Store PR
+trigger settings under
+`evaluators["ai-native-pr-lifecycle-evaluator"].settings.triggers`; the core
+tool should not centrally map PR trigger modes to child evaluators.
+
 ## Evidence
 
 Inspect PR body, linked issue, changed/not-done sections, acceptance criteria, command evidence, CI checks, review comments, requested changes, artifact links, skipped gates, and closeout notes.
