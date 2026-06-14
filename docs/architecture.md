@@ -51,6 +51,11 @@ repo evidence
 
 The report JSON is the source of truth. The HTML report is a static inspection surface generated from the same validated report.
 
+Generated repository evaluations are grouped as copyable bundles under
+`.ai-native-eval/artifacts/<run-id>/`. The bundle root contains the human-facing
+reports plus snapshot and manifest metadata, while `run/` contains `run.json` and
+per-leaf evaluator output files.
+
 ## Ownership Rules
 
 - Evaluator plugin manifests and deduction rubrics belong in each evaluator skill's `SKILL.md`.

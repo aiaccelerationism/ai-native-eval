@@ -113,13 +113,18 @@ AI-native foundation: 8.2 / 10
   state.json
   evidence-ledger.jsonl
   artifacts/
-    runs/
-    reports/
-    snapshots/
-    manifests/
+    20260614T183012Z-a1b2c3d4e5f6/
+      run/
+        run.json
+        evaluators/
+      report.html
+      report.md
+      report.json
+      snapshot.json
+      manifest.json
 ```
 
-当 `config.json`、`state.json` 与小型 evidence ledger 定义共享项目策略或持久评估状态时，可以纳入源码管理。默认情况下，`artifacts/` 下的生成输出会被忽略。需要成为仓库历史一部分的已审查报告，应提升到稳定的已提交证据目录。
+当 `config.json`、`state.json` 与小型 evidence ledger 定义共享项目策略或持久评估状态时，可以纳入源码管理。普通评估默认会在 `artifacts/` 下写入带时间戳的生成 bundle，方便把完整 run 作为一个目录复制、附加、审查或删除。默认情况下，`artifacts/` 下的生成输出会被忽略。需要成为仓库历史一部分的已审查报告，应提升到稳定的已提交证据目录。
 
 ## 仓库结构
 

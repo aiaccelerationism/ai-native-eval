@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
+import { spawnSync } from "node:child_process";
+import { basename, dirname, join } from "node:path";
 import { buildReport } from "./aggregate.js";
 import { initRun } from "./config.js";
 import {
@@ -93,6 +94,8 @@ async function main(): Promise<void> {
     await writeJsonArtifact(paths.reportJsonPath, report);
     await writeJsonArtifact(paths.snapshotPath, snapshotFromReport(report));
     await writeJsonArtifact(paths.manifestPath, manifest);
+    await mkdir(dirname(paths.reportMarkdownPath), { recursive: true });
+    await writeFile(paths.reportMarkdownPath, renderMarkdownReport(report));
     await mkdir(dirname(paths.reportHtmlPath), { recursive: true });
     await writeFile(paths.reportHtmlPath, renderHtmlReport(report));
     console.log(JSON.stringify(paths, null, 2));
@@ -111,25 +114,39 @@ async function main(): Promise<void> {
 }
 
 async function runInitRunCommand(repoRoot: string, rest: string[]): Promise<void> {
-  const out = readOption(rest, "--out");
-  if (!out) {
-    console.error("Missing --out <run-folder>");
-    process.exitCode = 2;
-    return;
-  }
+  const repoCommit = readOption(rest, "--repo-commit") ?? readGitCommit(repoRoot);
+  const generatedAt = new Date().toISOString();
+  const reportId =
+    readOption(rest, "--report-id") ??
+    createRunId({
+      generatedAt,
+      headCommit: repoCommit
+    });
+  const out =
+    readOption(rest, "--out") ??
+    join(repoRoot, ".ai-native-eval", "artifacts", reportId, "run");
   const runPath = await initRun({
     repoRoot,
     runFolder: out,
     personConfigPath: readOption(rest, "--person-config"),
     projectConfigPath: readOption(rest, "--project-config"),
     explicitConfigPath: readOption(rest, "--config"),
-    reportId: readOption(rest, "--report-id"),
+    reportId,
+    generatedAt,
     language: readOption(rest, "--language"),
     uiLanguage: readOption(rest, "--ui-language") as "en" | "zh-TW" | undefined,
     scope: readOption(rest, "--scope"),
-    repoCommit: readOption(rest, "--repo-commit")
+    repoCommit
   });
   console.log(runPath);
+}
+
+function readGitCommit(repoRoot: string): string | undefined {
+  const result = spawnSync("git", ["-C", repoRoot, "rev-parse", "HEAD"], {
+    encoding: "utf8"
+  });
+  if (result.status !== 0) return undefined;
+  return result.stdout.trim() || undefined;
 }
 
 async function runFolderCommand(
@@ -157,9 +174,16 @@ async function runFolderCommand(
       runFolder: inputPath,
       skillsDir
     });
-    const out = readOption(rest, "--out");
-    const jsonOut = readOption(rest, "--json-out");
-    const markdownOut = readOption(rest, "--markdown-out");
+    const explicitOut = readOption(rest, "--out");
+    const explicitJsonOut = readOption(rest, "--json-out");
+    const explicitMarkdownOut = readOption(rest, "--markdown-out");
+    const defaultOutputs =
+      !explicitOut && !explicitJsonOut && !explicitMarkdownOut
+        ? defaultReportOutputs(inputPath)
+        : undefined;
+    const out = explicitOut ?? defaultOutputs?.html;
+    const jsonOut = explicitJsonOut ?? defaultOutputs?.json;
+    const markdownOut = explicitMarkdownOut ?? defaultOutputs?.markdown;
     if (!out && !jsonOut && !markdownOut) {
       console.error(
         "Missing one of --out <report.html>, --json-out <report.json>, or --markdown-out <report.md>"
@@ -182,6 +206,20 @@ async function runFolderCommand(
       await writeFile(markdownOut, renderMarkdownReport(report));
       console.log(markdownOut);
     }
+    if (defaultOutputs) {
+      await writeJsonArtifact(defaultOutputs.snapshot, snapshotFromReport(report));
+      await writeJsonArtifact(
+        defaultOutputs.manifest,
+        buildIncrementalManifest({
+          manifestId: report.reportId,
+          generatedAt: report.generatedAt,
+          headCommit: report.reproducibility?.repoCommit,
+          changedFiles: []
+        })
+      );
+      console.log(defaultOutputs.snapshot);
+      console.log(defaultOutputs.manifest);
+    }
   } catch (error) {
     if (error instanceof FolderValidationError) {
       printValidationErrors(error.errors);
@@ -199,6 +237,20 @@ function printValidationErrors(errors: string[]): void {
   }
 }
 
+function defaultReportOutputs(runFolder: string):
+  | { html: string; json: string; markdown: string; snapshot: string; manifest: string }
+  | undefined {
+  if (basename(runFolder) !== "run") return undefined;
+  const bundleRoot = dirname(runFolder);
+  return {
+    html: join(bundleRoot, "report.html"),
+    json: join(bundleRoot, "report.json"),
+    markdown: join(bundleRoot, "report.md"),
+    snapshot: join(bundleRoot, "snapshot.json"),
+    manifest: join(bundleRoot, "manifest.json")
+  };
+}
+
 function readOption(args: string[], name: string): string | undefined {
   const index = args.indexOf(name);
   if (index === -1) return undefined;
@@ -210,9 +262,13 @@ function usage(): void {
   ai-native-eval score <evaluation-tree.json>
   ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-TW]
   ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-TW] [--changed-file <path>]...
-  ai-native-eval init-run <repo-root> --out <run-folder> [--config <path>] [--project-config <path>] [--person-config <path>]
+  ai-native-eval init-run <repo-root> [--out <run-folder>] [--config <path>] [--project-config <path>] [--person-config <path>]
   ai-native-eval validate-folder <run-folder> [--skills-dir .agents/skills]
-  ai-native-eval render-folder <run-folder> [--out <report.html>] [--json-out <report.json>] [--markdown-out <report.md>] [--skills-dir .agents/skills]`);
+  ai-native-eval render-folder <run-folder> [--out <report.html>] [--json-out <report.json>] [--markdown-out <report.md>] [--skills-dir .agents/skills]
+
+Default repo-local artifact bundle:
+  init-run without --out creates .ai-native-eval/artifacts/<timestamp>-<commit>/run
+  render-folder on a bundle run folder writes report.html, report.md, report.json, snapshot.json, and manifest.json beside run/`);
 }
 
 function readRepeatedOption(args: string[], name: string): string[] {

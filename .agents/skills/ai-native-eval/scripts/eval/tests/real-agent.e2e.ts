@@ -32,13 +32,11 @@ test(
     const fixtureProject = join(process.cwd(), "fixtures/real-agent-project");
     const sourceSkillsDir = join(process.cwd(), "../../..");
     const projectSkillsDir = join(projectDir, ".agents/skills");
-    const runFolder = join(projectDir, ".ai-native-eval/artifacts/runs/real-agent-e2e");
-    const reportPath = join(projectDir, ".ai-native-eval/artifacts/reports/real-agent-e2e.html");
-    const lastMessagePath = join(
-      projectDir,
-      ".ai-native-eval/artifacts/real-agent-last-message.md"
-    );
-    const logPath = join(projectDir, ".ai-native-eval/artifacts/real-agent-codex.log");
+    const artifactBundle = join(projectDir, ".ai-native-eval/artifacts/real-agent-e2e");
+    const runFolder = join(artifactBundle, "run");
+    const reportPath = join(artifactBundle, "report.html");
+    const lastMessagePath = join(artifactBundle, "last-message.md");
+    const logPath = join(artifactBundle, "codex.log");
     let keepArtifacts = process.env.KEEP_REAL_AGENT_E2E_ARTIFACTS === "1";
 
     try {
@@ -175,17 +173,18 @@ Use the local project skill at .agents/skills/ai-native-eval/SKILL.md to run a r
 This is an automated real-agent E2E test. Do not ask for clarification. Do not use prewritten evaluator outputs. You must inspect this repo and write fresh evaluator JSON files yourself.
 
 Required artifact paths:
-- run folder: .ai-native-eval/artifacts/runs/real-agent-e2e
-- HTML report: .ai-native-eval/artifacts/reports/real-agent-e2e.html
+- artifact bundle: .ai-native-eval/artifacts/real-agent-e2e
+- run folder: .ai-native-eval/artifacts/real-agent-e2e/run
+- HTML report: .ai-native-eval/artifacts/real-agent-e2e/report.html
 
 Required workflow:
 1. Read .agents/skills/ai-native-eval/SKILL.md.
 2. Install/build the bundled eval tool if needed.
 3. Run init-run for this repo using the required run folder. The repo already has .ai-native-eval/config.json; use it.
 4. Evaluate the enabled leaf evaluators from the runtime-resolved tree. The project config disables all built-in roots except repo operability, so the enabled leaves should be local runtime command and local environment reproducibility.
-5. Write one JSON output file per enabled leaf under .ai-native-eval/artifacts/runs/real-agent-e2e/evaluators/.
+5. Write one JSON output file per enabled leaf under .ai-native-eval/artifacts/real-agent-e2e/run/evaluators/.
 6. Validate the folder with the bundled tool.
-7. Render the static HTML report to .ai-native-eval/artifacts/reports/real-agent-e2e.html.
+7. Render the static HTML report to .ai-native-eval/artifacts/real-agent-e2e/report.html.
 
 Acceptance expectations:
 - The local runtime command evaluator should recognize that package scripts for dev, build, and test exist.

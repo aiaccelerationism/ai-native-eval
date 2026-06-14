@@ -80,6 +80,20 @@ Regenerates the compact self-evaluation report in a temporary check flow and fai
 
 The CLI can still generate local HTML or JSON reports with `render-folder --out <report.html>` or `render-folder --json-out <report.json>`, but those larger artifacts are not committed for the baseline.
 
+For ordinary repository evaluations, the default generated output is a copyable artifact bundle:
+
+```text
+.ai-native-eval/artifacts/<timestamp>-<commit>/
+  run/
+  report.html
+  report.md
+  report.json
+  snapshot.json
+  manifest.json
+```
+
+`init-run <repo-root>` creates `.ai-native-eval/artifacts/<timestamp>-<commit>/run` when `--out` is omitted. `render-folder` writes `report.html`, `report.md`, `report.json`, `snapshot.json`, and `manifest.json` beside `run/` when the input path is a bundle run folder.
+
 ## CI
 
 GitHub Actions runs deterministic gates on pull requests and pushes to `main`:

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -491,6 +491,44 @@ test("render-folder can write validated JSON and markdown reports", async () => 
   }
 });
 
+test("render-folder defaults to report files beside a bundle run folder", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-bundle-render-"));
+  try {
+    const bundleRoot = join(tempRoot, "20260613T120000Z-abcdef123456");
+    const runFolder = join(bundleRoot, "run");
+    await cp("fixtures/folder-run.valid", runFolder, { recursive: true });
+
+    const result = spawnSync(
+      process.execPath,
+      ["dist/src/cli.js", "render-folder", runFolder, "--skills-dir", "../../../"],
+      { cwd: process.cwd(), encoding: "utf8" }
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /report\.html/);
+    assert.match(result.stdout, /report\.json/);
+    assert.match(result.stdout, /report\.md/);
+    assert.match(result.stdout, /snapshot\.json/);
+    assert.match(result.stdout, /manifest\.json/);
+    const html = await readFile(join(bundleRoot, "report.html"), "utf8");
+    const json = JSON.parse(await readFile(join(bundleRoot, "report.json"), "utf8")) as EvaluationReport;
+    const markdown = await readFile(join(bundleRoot, "report.md"), "utf8");
+    const snapshot = JSON.parse(await readFile(join(bundleRoot, "snapshot.json"), "utf8")) as {
+      reportId: string;
+    };
+    const manifest = JSON.parse(await readFile(join(bundleRoot, "manifest.json"), "utf8")) as {
+      manifestId: string;
+    };
+    assert.match(html, /Local runtime command evaluator/);
+    assert.equal(json.reportId, "folder-run-valid");
+    assert.match(markdown, /Local runtime command evaluator/);
+    assert.equal(snapshot.reportId, "folder-run-valid");
+    assert.equal(manifest.manifestId, "folder-run-valid");
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
 test("folder validation reports all evaluator output errors", async () => {
   const result = await validateFolderReport({
     runFolder: "fixtures/folder-run.invalid",
@@ -592,6 +630,37 @@ test("initializes an audited run config snapshot from built-in and project confi
       "project"
     );
     assert.match(run.reproducibility.configHash ?? "", /^[a-f0-9]{64}$/);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("init-run defaults to a repo-local timestamped artifact bundle", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "ai-native-eval-cli-init-"));
+  try {
+    const repoRoot = join(tempRoot, "repo");
+    await mkdir(repoRoot, { recursive: true });
+
+    const result = spawnSync(
+      process.execPath,
+      ["dist/src/cli.js", "init-run", repoRoot, "--repo-commit", "abcdef1234567890"],
+      { cwd: process.cwd(), encoding: "utf8" }
+    );
+
+    assert.equal(result.status, 0, result.stderr);
+    const runPath = result.stdout.trim();
+    assert.match(
+      runPath,
+      /repo\/\.ai-native-eval\/artifacts\/\d{8}T\d{6}Z-abcdef123456\/run\/run\.json$/
+    );
+    const run = JSON.parse(await readFile(runPath, "utf8")) as {
+      runId: string;
+      reportId: string;
+      reproducibility: { repoCommit?: string };
+    };
+    assert.match(run.runId, /^\d{8}T\d{6}Z-abcdef123456$/);
+    assert.equal(run.reportId, run.runId);
+    assert.equal(run.reproducibility.repoCommit, "abcdef1234567890");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
@@ -769,12 +838,32 @@ test("creates append-only artifact paths and incremental manifests", () => {
 
   const paths = artifactPaths(runId);
   assert.equal(
+    paths.bundleRoot,
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456"
+  );
+  assert.equal(
+    paths.runFolder,
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456/run"
+  );
+  assert.equal(
     paths.reportHtmlPath,
-    ".ai-native-eval/artifacts/reports/20260613T120000Z-abcdef123456-level-report.html"
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456/report.html"
+  );
+  assert.equal(
+    paths.reportMarkdownPath,
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456/report.md"
+  );
+  assert.equal(
+    paths.reportJsonPath,
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456/report.json"
   );
   assert.equal(
     paths.snapshotPath,
-    ".ai-native-eval/artifacts/snapshots/20260613T120000Z-abcdef123456-snapshot.json"
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456/snapshot.json"
+  );
+  assert.equal(
+    paths.manifestPath,
+    ".ai-native-eval/artifacts/20260613T120000Z-abcdef123456/manifest.json"
   );
 
   const manifest = buildIncrementalManifest({

@@ -113,13 +113,18 @@ Repos being evaluated may store eval state under:
   state.json
   evidence-ledger.jsonl
   artifacts/
-    runs/
-    reports/
-    snapshots/
-    manifests/
+    20260614T183012Z-a1b2c3d4e5f6/
+      run/
+        run.json
+        evaluators/
+      report.html
+      report.md
+      report.json
+      snapshot.json
+      manifest.json
 ```
 
-`config.json`, `state.json`, and small evidence ledgers may be source-controlled when they define shared project policy or durable evaluation state. Generated output under `artifacts/` is ignored by default. Promote reviewed reports into a stable committed evidence folder when they should become part of the repo history.
+`config.json`, `state.json`, and small evidence ledgers may be source-controlled when they define shared project policy or durable evaluation state. A normal evaluation writes a timestamped generated bundle under `artifacts/` by default, so the complete run can be copied, attached, reviewed, or removed as one directory. Generated output under `artifacts/` is ignored by default. Promote reviewed reports into a stable committed evidence folder when they should become part of the repo history.
 
 ## Repo Layout
 
