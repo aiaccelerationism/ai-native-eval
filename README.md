@@ -1,4 +1,4 @@
-# ai-native-eval
+![AI Native Eval](docs/assets/ai-native-eval-title.jpg)
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
