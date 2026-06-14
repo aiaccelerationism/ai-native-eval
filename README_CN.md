@@ -161,10 +161,11 @@ ai-native-eval/
 
 本仓库会评估自身，并发布严格的 baseline 报告。
 
-- Score: `3.1 / 10`
-- Level: `3`
+- Score: `2.8 / 10`
+- Level: `2`
 - Confidence: `high`
 - Scope: foundation maturity plus AI Native Eval evaluator-system quality；本次自评估禁用了 `bmad-method-evaluator`。
+- AI participation: foundation 评分现在保留 40% 给 AI 参与度，包括 agent threads、source control AI participation、skill activation、AI self-assessment、human follow-through 与 collaboration trace。
 - Recent-change evidence: 因为 baseline 尚未把每个 evaluator 连接到最近五个 PR 等级实质变更的遵循证据，所以会严格扣分。
 - Run folder: `self-evaluations/foundation-20260614/run/`
 - Compact report: [self-evaluations/foundation-20260614/report.md](self-evaluations/foundation-20260614/report.md)

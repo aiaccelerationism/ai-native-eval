@@ -4,15 +4,16 @@ This repository dogfoods `ai-native-foundation-evaluator` and the project-specif
 
 The baseline intentionally evaluates foundation maturity plus AI Native Eval evaluator-system quality. `bmad-method-evaluator` is disabled in the self-evaluation config because this repository is not a BMAD project baseline.
 
-The baseline is strict about evidence quality. Documentation is credited as a starting point, but evaluators deduct heavily when the repository lacks matching scripts, templates, CI enforcement, durable artifacts, review automation, historical proof, or recent PR-equivalent change follow-through.
+The baseline is strict about evidence quality. Documentation is credited as a starting point, but evaluators deduct heavily when the repository lacks matching scripts, templates, CI enforcement, durable artifacts, review automation, historical proof, AI participation proof, or recent PR-equivalent change follow-through.
 
 ## Current Baseline
 
 - Run id: `self-eval-20260614-foundation`
 - Scope: `ai-native-eval foundation and evaluator-system self-evaluation`
-- Score: `3.1 / 10`
-- Level: `3`
+- Score: `2.8 / 10`
+- Level: `2`
 - Confidence: `high`
+- AI participation: foundation scoring now reserves 40% for AI participation, including agent threads, source control AI participation, skill activation, AI self-assessment, human follow-through, and collaboration trace.
 - Recent-change evidence: strict deductions apply because the baseline does not yet link each evaluator to proof from the latest five PR-equivalent substantive changes.
 - Compact report: [self-evaluations/foundation-20260614/report.md](../self-evaluations/foundation-20260614/report.md)
 - Run folder: `self-evaluations/foundation-20260614/run/`

@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-ai-self-assessment-loop-evaluator",
+  "confidence": "medium",
+  "reason": "Issue and PR templates now define AI self-assessment expectations, but recent issue/PR evidence does not yet show the loop being executed or feeding improvements. Recent-change follow-through is deducted.",
+  "evidence": [
+    {
+      "source": ".github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md",
+      "locator": "AI self-assessment expectations and AI Participation Self-Assessment",
+      "summary": "Templates now ask for trigger quality, missed triggers, user prompting burden, and follow-through evidence."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "ai-self-assessment-configuration",
+      "deductionId": "incomplete-ai-self-assessment-configuration",
+      "applies": true,
+      "reason": "Self-assessment fields exist, but there is no check that requires them to be completed before merge.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md",
+          "locator": "AI Participation Self-Assessment",
+          "summary": "Fields exist in the PR template."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a review expectation or check that PR self-assessment fields are completed.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "ai-self-assessment-execution",
+      "deductionId": "missing-ai-self-assessment-execution",
+      "applies": true,
+      "reason": "No recent issue or PR evidence in the committed baseline proves AI self-assessment was performed.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/report.md",
+          "locator": "Evaluation Tree",
+          "summary": "The report lacks recent AI self-assessment examples."
+        }
+      ],
+      "recommendation": {
+        "summary": "Populate AI self-assessment sections in substantive PRs.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "ai-self-assessment-learning",
+      "deductionId": "missing-ai-self-assessment-learning",
+      "applies": true,
+      "reason": "The baseline does not show AI self-assessment findings becoming template, skill, or evaluator repairs.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "self-eval outputs",
+          "summary": "No self-assessment loop repair examples are cited."
+        }
+      ],
+      "recommendation": {
+        "summary": "Convert recurring self-assessment misses into durable skill, template, or evaluator updates.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}

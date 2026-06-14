@@ -161,10 +161,11 @@ The report renderer and deterministic aggregation source live in the `ai-native-
 
 This repo evaluates itself and publishes a strict baseline report.
 
-- Score: `3.1 / 10`
-- Level: `3`
+- Score: `2.8 / 10`
+- Level: `2`
 - Confidence: `high`
 - Scope: foundation maturity plus AI Native Eval evaluator-system quality; `bmad-method-evaluator` is disabled for this self-evaluation.
+- AI participation: foundation scoring now reserves 40% for AI participation, including agent threads, source control AI participation, skill activation, AI self-assessment, human follow-through, and collaboration trace.
 - Recent-change evidence: strict deductions apply because the baseline does not yet link each evaluator to proof from the latest five PR-equivalent substantive changes.
 - Run folder: `self-evaluations/foundation-20260614/run/`
 - Compact report: [self-evaluations/foundation-20260614/report.md](self-evaluations/foundation-20260614/report.md)

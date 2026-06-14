@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-human-ai-collaboration-trace-evaluator",
+  "confidence": "medium",
+  "reason": "PR templates now include a Human-AI Collaboration Trace, but recent evidence does not yet show the full loop from human request through agent action, AI review, repair, validation, and merge. Recent-change follow-through is deducted.",
+  "evidence": [
+    {
+      "source": ".github/pull_request_template.md; docs/reviewer-contract.md",
+      "locator": "Human-AI Collaboration Trace and Review Contract",
+      "summary": "The PR template now asks for collaboration trace evidence."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "collaboration-trace-configuration",
+      "deductionId": "incomplete-collaboration-trace-configuration",
+      "applies": true,
+      "reason": "The PR template has a collaboration trace section, but issue templates and checks do not yet enforce all stages of the loop.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md; .github/ISSUE_TEMPLATE/evaluator-change.yml",
+          "locator": "Human-AI Collaboration Trace",
+          "summary": "PR fields exist; issue fields cover AI participation but not the full trace."
+        }
+      ],
+      "recommendation": {
+        "summary": "Require collaboration trace fields from issue planning through PR closeout.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "collaboration-trace-execution",
+      "deductionId": "missing-collaboration-trace-execution",
+      "applies": true,
+      "reason": "The baseline does not cite recent PRs showing the full human-AI loop through review, repair, validation, and merge.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/report.md",
+          "locator": "Evaluation Tree",
+          "summary": "No recent collaboration trace sample is linked."
+        }
+      ],
+      "recommendation": {
+        "summary": "Populate collaboration trace sections in substantive PRs and cite them in self-evaluation.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "collaboration-trace-reviewability",
+      "deductionId": "incomplete-collaboration-trace-reviewability",
+      "applies": true,
+      "reason": "The collaboration trace is configured in the template but not yet proven easy to audit in actual PRs.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md",
+          "locator": "Human-AI Collaboration Trace",
+          "summary": "The section is present but not yet backed by recent examples."
+        }
+      ],
+      "recommendation": {
+        "summary": "Use structured collaboration trace fields in recent PRs so reviewers can audit them quickly.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}

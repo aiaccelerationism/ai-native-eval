@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-skill-activation-depth-evaluator",
+  "confidence": "medium",
+  "reason": "The repo has skill routing and skill evals, and templates now ask for skill activation, but recent PR-equivalent evidence does not yet prove early skill activation or low user prompting burden. Recent-change follow-through is deducted.",
+  "evidence": [
+    {
+      "source": ".agents/skills/**/SKILL.md; .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md",
+      "locator": "skills and AI participation fields",
+      "summary": "Skills exist and issue/PR templates now ask for expected or activated skills."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "skill-activation-configuration",
+      "deductionId": "incomplete-skill-activation-configuration",
+      "applies": true,
+      "reason": "Templates now ask for skills, but there is no blocking rule requiring no-skill-needed justification or skill eval updates for repeated misses.",
+      "evidence": [
+        {
+          "source": ".github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md",
+          "locator": "AI participation plan and Skills activated",
+          "summary": "Skill fields exist but are not enforced by a check."
+        }
+      ],
+      "recommendation": {
+        "summary": "Require no-skill-needed justification and durable skill updates for recurring misses.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "skill-activation-execution",
+      "deductionId": "missing-skill-activation-execution",
+      "applies": true,
+      "reason": "The baseline does not cite recent PRs showing relevant skills were selected early and shaped implementation or review.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "self-eval outputs",
+          "summary": "Outputs do not link recent PR skill activation examples."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record skill activation evidence in recent PRs and self-evaluation outputs.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "skill-activation-learning",
+      "deductionId": "incomplete-skill-activation-learning",
+      "applies": true,
+      "reason": "Skill evals exist, but this baseline does not yet link missed or late skill activation to specific durable skill repairs.",
+      "evidence": [
+        {
+          "source": "tests/skill-packaging.test.mjs; .agents/skills/**/evals",
+          "locator": "skill evals",
+          "summary": "Skill eval infrastructure exists."
+        }
+      ],
+      "recommendation": {
+        "summary": "Link late skill activation findings to skill or eval updates.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}
