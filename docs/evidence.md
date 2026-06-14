@@ -9,6 +9,7 @@ The eval should be able to prove its own behavior with durable artifacts.
 - Deterministic tests: root `tests/**` and nested eval tests.
 - Skill evals: `.agents/skills/**/evals/**`.
 - Project eval config: `.ai-native-eval/config.json` when present.
+- Research planning artifacts: [research-plan.md](research-plan.md), [research-pilot-protocol.md](research-pilot-protocol.md), and [research-data-schema.md](research-data-schema.md).
 - Local generated eval bundles: `.ai-native-eval/artifacts/<run-id>/**`.
 - PR evidence: command output summaries, report links, and review findings.
 

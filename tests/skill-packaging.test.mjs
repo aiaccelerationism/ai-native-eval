@@ -354,7 +354,7 @@ test("every skill owns a skillgrade eval case", async () => {
     .filter((name) => !name.startsWith("_"))
     .sort();
 
-  assert.equal(skillNames.length, 64);
+  assert.equal(skillNames.length, 68);
 
   for (const skill of skillNames) {
     const evalYamlPath = `.agents/skills/${skill}/evals/eval.yaml`;

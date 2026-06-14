@@ -161,11 +161,12 @@ The report renderer and deterministic aggregation source live in the `ai-native-
 
 This repo evaluates itself and publishes a strict baseline report.
 
-- Score: `2.8 / 10`
-- Level: `2`
+- Score: `3.4 / 10`
+- Level: `3`
 - Confidence: `high`
-- Scope: foundation maturity plus AI Native Eval evaluator-system quality; `bmad-method-evaluator` is disabled for this self-evaluation.
+- Scope: foundation maturity plus AI Native Eval evaluator-system quality and research readiness; `bmad-method-evaluator` is disabled for this self-evaluation.
 - AI participation: foundation scoring now reserves 40% for AI participation, including agent threads, source control AI participation, skill activation, AI self-assessment, human follow-through, and collaboration trace.
+- Research readiness: the repo now has a research plan, pilot protocol, and metrics/data schema; strict deductions remain for missing pilot execution and recent-change follow-through.
 - Recent-change evidence: strict deductions apply because the baseline does not yet link each evaluator to proof from the latest five PR-equivalent substantive changes.
 - Run folder: `self-evaluations/foundation-20260614/run/`
 - Compact report: [self-evaluations/foundation-20260614/report.md](self-evaluations/foundation-20260614/report.md)
@@ -176,6 +177,14 @@ The baseline is generated from per-leaf evaluator JSON files and can be regenera
 pnpm self-eval:validate
 pnpm self-eval:render
 ```
+
+## Research Plan
+
+This repo also tracks a research plan for testing whether eval-guided AI-native adoption improves measurable development outcomes beyond informal AI-native intent.
+
+- Research plan: [docs/research-plan.md](docs/research-plan.md)
+- Pilot protocol: [docs/research-pilot-protocol.md](docs/research-pilot-protocol.md)
+- Metrics and data schema: [docs/research-data-schema.md](docs/research-data-schema.md)
 
 ## Skill Evaluations
 

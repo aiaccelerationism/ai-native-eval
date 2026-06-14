@@ -10,6 +10,7 @@ Skills live under `.agents/skills/**`.
 - `ai-native-foundation-evaluator` is the built-in foundation evaluator pack root.
 - `bmad-method-evaluator` is the built-in BMAD evaluator pack root.
 - `ai-native-eval-self-evaluator` is a project-specific evaluator-system pack used by this repo's own `.ai-native-eval/config.json`, not a default root for ordinary repositories.
+- `ai-native-research-evaluator` is a project-specific research-readiness pack used by this repo's own `.ai-native-eval/config.json`, not a default root for ordinary repositories.
 - Fine-grained evaluator skills own their own direct children and deduction rubric.
 
 There is no central canonical evaluator hierarchy. The runtime tree is resolved from installed skill manifests:

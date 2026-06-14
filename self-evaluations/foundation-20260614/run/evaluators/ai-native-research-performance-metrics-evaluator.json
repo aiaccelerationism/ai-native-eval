@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-research-performance-metrics-evaluator",
+  "confidence": "high",
+  "reason": "The repository now defines primary and secondary metrics plus JSONL schemas for task runs and finding ledgers. It still lacks collected pilot data and reviewer calibration examples, and recent-change follow-through has not been proven.",
+  "evidence": [
+    {
+      "source": "docs/research-data-schema.md",
+      "locator": "Primary Metrics, Secondary Metrics, Task Bank Record, Run Record, Finding Ledger Record",
+      "summary": "The schema defines measurable outcomes, fields, example records, and quality controls for pilot data collection."
+    },
+    {
+      "source": "docs/research-pilot-protocol.md",
+      "locator": "Review Rules and Required Closeout",
+      "summary": "The protocol defines reviewer-recorded outcomes, aggregate metrics, and closeout requirements."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "outcome-metric-definition",
+      "deductionId": "missing-outcome-metric-definition",
+      "applies": false,
+      "reason": "docs/research-data-schema.md defines task success, acceptance pass, repair loops, reviewer time, missing evidence, command failures, and secondary metrics."
+    },
+    {
+      "groupId": "data-collection-operability",
+      "deductionId": "missing-data-collection-operability",
+      "applies": false,
+      "reason": "docs/research-data-schema.md defines task-bank, runs, and finding-ledger JSONL records that can collect pilot metrics across conditions."
+    },
+    {
+      "groupId": "metric-quality-control",
+      "deductionId": "incomplete-metric-quality-control",
+      "applies": true,
+      "reason": "The schema and protocol define reviewer scales and quality controls, but the repo does not yet include calibration examples or duplicate-coding proof for subjective metrics.",
+      "evidence": [
+        {
+          "source": "docs/research-data-schema.md; docs/research-pilot-protocol.md",
+          "locator": "Quality Controls and Review Rules",
+          "summary": "Controls exist for reviewer ratings and missing evidence counts, but no pilot review examples or calibration cases have been run."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add reviewer calibration examples during the first pilot and preserve any disagreement handling in the pilot closeout.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "There is no recent PR-equivalent sample showing research metrics being collected, reviewed, or quality-controlled in substantive changes.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "The committed baseline now has metric definitions, but no pilot task-run records or recent PR-equivalent metric collection evidence."
+        }
+      ],
+      "recommendation": {
+        "summary": "Run the first pilot task batch and preserve complete task-bank, run, reviewer, and finding-ledger records.",
+        "priority": "high"
+      }
+    }
+  ]
+}
