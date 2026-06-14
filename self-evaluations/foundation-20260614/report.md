@@ -1,16 +1,16 @@
 # AI Native Eval Report
 
-- Scope: ai-native-eval foundation and evaluator-system self-evaluation
+- Scope: ai-native-eval foundation, evaluator-system, and research-readiness self-evaluation
 - Generated: 2026-06-14T06:42:37.499Z
-- Score: 2.8 / 10
-- Level: 2
+- Score: 3.4 / 10
+- Level: 3
 - Confidence: high
 - Repo commit: `working-tree-self-eval-20260614`
 
 ## Plugin Resolution
 
-- Roots: `ai-native-foundation-evaluator`, `bmad-method-evaluator`, `ai-native-eval-self-evaluator`
-- Resolved: 51 plugin(s)
+- Roots: `ai-native-foundation-evaluator`, `bmad-method-evaluator`, `ai-native-eval-self-evaluator`, `ai-native-research-evaluator`
+- Resolved: 55 plugin(s)
 - Disabled: `bmad-method-evaluator`, `bmad-analysis-evaluator`, `bmad-product-brief-evaluator`, `bmad-planning-evaluator`, `bmad-prd-quality-evaluator`, `bmad-solutioning-evaluator`, `bmad-architecture-readiness-evaluator`, `bmad-epic-story-breakdown-evaluator`, `bmad-implementation-evaluator`, `bmad-story-context-quality-evaluator`, `bmad-core-practices-evaluator`
 
 ## Run Configuration
@@ -21,7 +21,7 @@
 
 ## Evaluation Tree
 
-- ai-native-eval foundation and evaluator-system self-evaluation (fail · 2.8 / 10 · high)
+- ai-native-eval foundation, evaluator-system, and research-readiness self-evaluation (fail · 3.4 / 10 · high)
   - AI-native foundation evaluator (fail · 2.3 / 10 · high · `ai-native-foundation-evaluator`)
     - AI participation evaluator (fail · 1.3 / 10 · medium · `ai-native-ai-participation-evaluator`)
       - Agent thread participation evaluator (fail · 1.5 / 10 · medium · `ai-native-agent-thread-participation-evaluator`)
@@ -988,3 +988,52 @@
             - Evidence:
               - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
             - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+  - AI Native research evaluator (fail · 4.5 / 10 · high · `ai-native-research-evaluator`)
+    - Research claim and design evaluator (partial · 5.0 / 10 · high · `ai-native-research-claim-design-evaluator`)
+      - Reason: The repository now has a committed research plan and pilot protocol defining the eval-guided adoption claim, comparison groups, staged pilot design, and pilot feasibility. The remaining deduction is for lack of recent PR-equivalent follow-through proving that the research workflow has been used in substantive changes.
+      - Evidence:
+        - docs/research-plan.md Thesis, Research Questions, Comparison Conditions, Minimum Pilot: The plan states the eval-guided adoption claim, makes it falsifiable, defines baseline/self-declared/eval-guided conditions, and scopes a minimum pilot.
+        - docs/research-pilot-protocol.md Conditions, Task Selection, Agent Run Rules, Stop/Go Criteria: The protocol defines staged conditions, task matching, run controls, reviewer workflow, eval-guided repair rules, and pilot stop/go criteria.
+      - Why not 10/10:
+        - Recent change follow-through: -0.50
+          - No recent change evidence: -0.50
+            - Reason: The committed self-evaluation does not yet link this evaluator to a sampled set of recent PR-equivalent changes showing that the research claim and pilot protocol were followed in actual work.
+            - Evidence:
+              - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: The committed baseline now has research planning artifacts, but no recent-change sample maps research claim design practice to PR-equivalent execution evidence.
+            - Recommendation [high]: When the first pilot task is opened, link the issue, PR, review, and artifact trail that proves the research protocol was followed.
+    - Research performance metrics evaluator (fail · 4.5 / 10 · high · `ai-native-research-performance-metrics-evaluator`)
+      - Reason: The repository now defines primary and secondary metrics plus JSONL schemas for task runs and finding ledgers. It still lacks collected pilot data and reviewer calibration examples, and recent-change follow-through has not been proven.
+      - Evidence:
+        - docs/research-data-schema.md Primary Metrics, Secondary Metrics, Task Bank Record, Run Record, Finding Ledger Record: The schema defines measurable outcomes, fields, example records, and quality controls for pilot data collection.
+        - docs/research-pilot-protocol.md Review Rules and Required Closeout: The protocol defines reviewer-recorded outcomes, aggregate metrics, and closeout requirements.
+      - Why not 10/10:
+        - Metric quality control: -0.05
+          - Incomplete metric quality control: -0.05
+            - Reason: The schema and protocol define reviewer scales and quality controls, but the repo does not yet include calibration examples or duplicate-coding proof for subjective metrics.
+            - Evidence:
+              - docs/research-data-schema.md; docs/research-pilot-protocol.md Quality Controls and Review Rules: Controls exist for reviewer ratings and missing evidence counts, but no pilot review examples or calibration cases have been run.
+            - Recommendation [medium]: Add reviewer calibration examples during the first pilot and preserve any disagreement handling in the pilot closeout.
+        - Recent change follow-through: -0.50
+          - No recent change evidence: -0.50
+            - Reason: There is no recent PR-equivalent sample showing research metrics being collected, reviewed, or quality-controlled in substantive changes.
+            - Evidence:
+              - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: The committed baseline now has metric definitions, but no pilot task-run records or recent PR-equivalent metric collection evidence.
+            - Recommendation [high]: Run the first pilot task batch and preserve complete task-bank, run, reviewer, and finding-ledger records.
+    - Research evidence chain evaluator (fail · 4.0 / 10 · high · `ai-native-research-evidence-chain-evaluator`)
+      - Reason: The repository now defines the finding-to-repair-to-outcome evidence chain, validity controls, and anti-process-theater safeguards. It still lacks actual pilot ledger entries that connect real evaluator findings to repairs and measured outcomes.
+      - Evidence:
+        - docs/research-plan.md Evidence Chain and Validity Controls: The research plan requires evaluator finding -> selected repair task -> implementation artifact -> validation command -> later task outcome -> reviewer interpretation, and names validity risks.
+        - docs/research-data-schema.md Finding Ledger Record and Quality Controls: The data schema defines a finding ledger record with evaluator id, deduction id, repair ref, validation commands, post-repair task runs, outcome summary, claim support, and limitations.
+      - Why not 10/10:
+        - Finding repair outcome trace: -0.10
+          - Incomplete finding repair outcome trace: -0.10
+            - Reason: The repo defines the evidence chain and ledger schema, but it has not yet run a pilot with actual evaluator findings, repair artifacts, and measured post-repair outcomes.
+            - Evidence:
+              - docs/research-plan.md; docs/research-data-schema.md Evidence Chain and Finding Ledger Record: The convention exists as a durable artifact, but no populated research/pilots ledger is committed yet.
+            - Recommendation [high]: Populate finding-ledger.jsonl during the first pilot with selected evaluator findings, repairs, validation commands, and later outcome measurements.
+        - Recent change follow-through: -0.50
+          - No recent change evidence: -0.50
+            - Reason: There is no recent PR-equivalent sample showing the finding-repair-outcome trace being used for real research repairs.
+            - Evidence:
+              - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: The committed baseline now has trace conventions, but no populated pilot ledger or recent PR-equivalent finding-to-outcome evidence.
+            - Recommendation [high]: For the first eval-guided pilot repair, link the evaluator deduction, implementation PR or fixture diff, validation command, and later outcome measurement.

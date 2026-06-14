@@ -1,0 +1,65 @@
+{
+  "pluginId": "ai-native-research-evidence-chain-evaluator",
+  "confidence": "high",
+  "reason": "The repository now defines the finding-to-repair-to-outcome evidence chain, validity controls, and anti-process-theater safeguards. It still lacks actual pilot ledger entries that connect real evaluator findings to repairs and measured outcomes.",
+  "evidence": [
+    {
+      "source": "docs/research-plan.md",
+      "locator": "Evidence Chain and Validity Controls",
+      "summary": "The research plan requires evaluator finding -> selected repair task -> implementation artifact -> validation command -> later task outcome -> reviewer interpretation, and names validity risks."
+    },
+    {
+      "source": "docs/research-data-schema.md",
+      "locator": "Finding Ledger Record and Quality Controls",
+      "summary": "The data schema defines a finding ledger record with evaluator id, deduction id, repair ref, validation commands, post-repair task runs, outcome summary, claim support, and limitations."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "finding-repair-outcome-trace",
+      "deductionId": "incomplete-finding-repair-outcome-trace",
+      "applies": true,
+      "reason": "The repo defines the evidence chain and ledger schema, but it has not yet run a pilot with actual evaluator findings, repair artifacts, and measured post-repair outcomes.",
+      "evidence": [
+        {
+          "source": "docs/research-plan.md; docs/research-data-schema.md",
+          "locator": "Evidence Chain and Finding Ledger Record",
+          "summary": "The convention exists as a durable artifact, but no populated research/pilots ledger is committed yet."
+        }
+      ],
+      "recommendation": {
+        "summary": "Populate finding-ledger.jsonl during the first pilot with selected evaluator findings, repairs, validation commands, and later outcome measurements.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "validity-risk-control",
+      "deductionId": "missing-validity-risk-control",
+      "applies": false,
+      "reason": "docs/research-plan.md and docs/research-pilot-protocol.md identify task leakage, task mismatch, agent variance, reviewer bias, selection bias, process theater, and negative-result controls."
+    },
+    {
+      "groupId": "anti-process-theater-safeguard",
+      "deductionId": "missing-anti-process-theater-safeguard",
+      "applies": false,
+      "reason": "docs/research-plan.md explicitly says improved docs, improved eval score, or a prettier report alone cannot support the claim without measured development outcomes."
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "There is no recent PR-equivalent sample showing the finding-repair-outcome trace being used for real research repairs.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "The committed baseline now has trace conventions, but no populated pilot ledger or recent PR-equivalent finding-to-outcome evidence."
+        }
+      ],
+      "recommendation": {
+        "summary": "For the first eval-guided pilot repair, link the evaluator deduction, implementation PR or fixture diff, validation command, and later outcome measurement.",
+        "priority": "high"
+      }
+    }
+  ]
+}

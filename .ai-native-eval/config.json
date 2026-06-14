@@ -4,6 +4,10 @@
     {
       "pluginId": "ai-native-eval-self-evaluator",
       "reason": "This repository is the AI Native Eval evaluator system, so it dogfoods evaluator-system-specific checks for rubric quality, deterministic aggregation, and plugin-boundary integrity."
+    },
+    {
+      "pluginId": "ai-native-research-evaluator",
+      "reason": "This repository is developing AI Native Eval as a researchable evaluator system, so it dogfoods research-readiness checks for proving eval-guided AI-native adoption improves development outcomes."
     }
   ],
   "disabled": [

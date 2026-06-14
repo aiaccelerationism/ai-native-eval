@@ -1,0 +1,54 @@
+{
+  "pluginId": "ai-native-research-claim-design-evaluator",
+  "confidence": "high",
+  "reason": "The repository now has a committed research plan and pilot protocol defining the eval-guided adoption claim, comparison groups, staged pilot design, and pilot feasibility. The remaining deduction is for lack of recent PR-equivalent follow-through proving that the research workflow has been used in substantive changes.",
+  "evidence": [
+    {
+      "source": "docs/research-plan.md",
+      "locator": "Thesis, Research Questions, Comparison Conditions, Minimum Pilot",
+      "summary": "The plan states the eval-guided adoption claim, makes it falsifiable, defines baseline/self-declared/eval-guided conditions, and scopes a minimum pilot."
+    },
+    {
+      "source": "docs/research-pilot-protocol.md",
+      "locator": "Conditions, Task Selection, Agent Run Rules, Stop/Go Criteria",
+      "summary": "The protocol defines staged conditions, task matching, run controls, reviewer workflow, eval-guided repair rules, and pilot stop/go criteria."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "claim-and-comparison-clarity",
+      "deductionId": "missing-claim-and-comparison-clarity",
+      "applies": false,
+      "reason": "docs/research-plan.md states a falsifiable claim and distinguishes baseline, self-declared AI-native, and eval-guided AI-native conditions."
+    },
+    {
+      "groupId": "study-design-operability",
+      "deductionId": "missing-study-design-operability",
+      "applies": false,
+      "reason": "docs/research-pilot-protocol.md defines an executable staged pilot with task selection, agent run rules, review rules, eval-guided repair rules, and stop/go criteria."
+    },
+    {
+      "groupId": "pilot-feasibility",
+      "deductionId": "missing-pilot-feasibility",
+      "applies": false,
+      "reason": "docs/research-plan.md defines a minimum pilot with repo count, task count, agent budget, reviewer role, and output artifacts."
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not yet link this evaluator to a sampled set of recent PR-equivalent changes showing that the research claim and pilot protocol were followed in actual work.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "The committed baseline now has research planning artifacts, but no recent-change sample maps research claim design practice to PR-equivalent execution evidence."
+        }
+      ],
+      "recommendation": {
+        "summary": "When the first pilot task is opened, link the issue, PR, review, and artifact trail that proves the research protocol was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}
