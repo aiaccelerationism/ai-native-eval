@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/artifact-bundle-response.md",
+  "must_contain": [
+    "AI_NATIVE_ARTIFACT_BUNDLE_DEFAULT",
+    ".ai-native-eval/artifacts/<run-id>/"
+  ],
+  "must_match": [
+    "(/tmp|tmp).*dry runs|dry runs.*(/tmp|tmp)|tests.*(/tmp|tmp)|(/tmp|tmp).*tests|explicitly asks not to write|not to write generated artifacts"
+  ]
+}

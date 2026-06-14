@@ -9,7 +9,7 @@ The eval should be able to prove its own behavior with durable artifacts.
 - Deterministic tests: root `tests/**` and nested eval tests.
 - Skill evals: `.agents/skills/**/evals/**`.
 - Project eval config: `.ai-native-eval/config.json` when present.
-- Local generated eval artifacts: `.ai-native-eval/artifacts/**`.
+- Local generated eval bundles: `.ai-native-eval/artifacts/<run-id>/**`.
 - PR evidence: command output summaries, report links, and review findings.
 
 ## Self-Evaluation Artifacts
@@ -23,7 +23,7 @@ self-evaluations/foundation-20260614/run/
 self-evaluations/foundation-20260614/report.md
 ```
 
-Local ad hoc runs are generated under `.ai-native-eval/artifacts/**`, which is ignored by default. The committed run folder contains one JSON file per leaf evaluator. The compact Markdown report is generated from that folder, not hand-edited. Full HTML and normalized JSON reports may be generated locally for inspection, but they are intentionally not committed because they are much larger.
+Local ad hoc runs are generated under `.ai-native-eval/artifacts/<run-id>/`, which is ignored by default. A generated bundle keeps the run folder, reports, snapshot, and manifest together so the evaluation can be copied, attached, reviewed, or removed as one directory. The committed run folder contains one JSON file per leaf evaluator. The compact Markdown report is generated from that folder, not hand-edited. Full HTML and normalized JSON reports may be generated locally for inspection, but they are intentionally not committed because they are much larger.
 
 Evaluation artifacts should not persist secrets, tokens, raw private logs, large binary artifacts, or unrelated user data. Summarize sensitive evidence instead of copying it into reports.
 

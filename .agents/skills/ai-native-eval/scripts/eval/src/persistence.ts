@@ -17,12 +17,16 @@ export function createRunId(input: {
 }
 
 export function artifactPaths(runId: string, root = ".ai-native-eval/artifacts"): ArtifactPaths {
+  const bundleRoot = join(root, runId);
   return {
     runId,
-    snapshotPath: join(root, "snapshots", `${runId}-snapshot.json`),
-    manifestPath: join(root, "manifests", `${runId}-manifest.json`),
-    reportJsonPath: join(root, "reports", `${runId}-level-report.json`),
-    reportHtmlPath: join(root, "reports", `${runId}-level-report.html`)
+    bundleRoot,
+    runFolder: join(bundleRoot, "run"),
+    snapshotPath: join(bundleRoot, "snapshot.json"),
+    manifestPath: join(bundleRoot, "manifest.json"),
+    reportJsonPath: join(bundleRoot, "report.json"),
+    reportMarkdownPath: join(bundleRoot, "report.md"),
+    reportHtmlPath: join(bundleRoot, "report.html")
   };
 }
 

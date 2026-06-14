@@ -67,9 +67,30 @@ From the `ai-native-eval` skill directory:
 ```sh
 pnpm --dir scripts/eval install
 pnpm --dir scripts/eval build
-pnpm --dir scripts/eval exec ai-native-eval init-run <repo-root> --out <run-folder>
+pnpm --dir scripts/eval exec ai-native-eval init-run <repo-root>
 pnpm --dir scripts/eval validate-folder <run-folder> --skills-dir ../..
-pnpm --dir scripts/eval render-folder <run-folder> --out <report.html> --skills-dir ../..
+pnpm --dir scripts/eval render-folder <run-folder> --skills-dir ../..
+```
+
+By default, a normal repository evaluation writes a timestamped, repo-local artifact
+bundle under `.ai-native-eval/artifacts/<timestamp>-<commit>/`. The bundle is
+generated output and is ignored by default; it does not require extra user
+permission beyond the evaluation request. Use `/tmp` only for dry runs, tests, or
+when the user explicitly asks not to write generated artifacts into the repository.
+
+The default bundle layout is:
+
+```text
+.ai-native-eval/artifacts/<run-id>/
+  run/
+    run.json
+    evaluators/
+      <leaf-evaluator>.json
+  report.html
+  report.md
+  report.json
+  snapshot.json
+  manifest.json
 ```
 
 The preferred workflow accepts a folder with `run.json` and per-leaf evaluator outputs:
@@ -160,12 +181,14 @@ The `groupId` and `deductionId` must come from that evaluator skill's `ai-native
 
 ## Persistence
 
-Persist repo-local state under `.ai-native-eval/` only when the user allows writes.
+Persist shared repo-local state under `.ai-native-eval/` only when the user allows writes.
 
 - `.ai-native-eval/config.json` is source-controlled shared project policy by default.
 - `state.json` may point to the latest artifacts.
-- Generated reports, snapshots, manifests, run folders, logs, and temporary files belong under `.ai-native-eval/artifacts/`.
+- Normal evaluation requests are permission to write generated, ignored artifacts under `.ai-native-eval/artifacts/<run-id>/`.
+- Generated reports, snapshots, manifests, run folders, logs, and temporary files belong in the timestamped artifact bundle.
 - `.ai-native-eval/artifacts/` is ignored by default; promote reviewed results into `self-evaluations/` or project docs when they should become durable repo evidence.
+- Ask before promoting artifacts into source-controlled docs, `self-evaluations/**`, shared config, or other durable repository state.
 - Reports, snapshots, manifests, and ledger entries are append-only once promoted.
 - JSON report is the source of truth; HTML report is a static render.
 - Snapshots should preserve the normalized tree, score, confidence, commit, evaluator lock/config hash, plugin resolution, execution batches, and evaluator run records.
@@ -207,7 +230,7 @@ Use the requested content language for human-facing evaluator text such as `reas
 
 - Do not claim a high-confidence level from docs alone.
 - Do not scan huge repositories exhaustively by default when prior state exists.
-- Do not mutate repository files unless the user asked to persist state or write reports.
+- Do not mutate source-controlled repository files unless the user asked to persist state or promote reports. Generated eval bundles under `.ai-native-eval/artifacts/<run-id>/` are the default output for ordinary evaluations.
 - Do not let evaluator plugins depend on `ai-native-eval` internals.
 - Do not reintroduce a shared protocol skill as a required dependency for evaluator plugins.
 - Do not conflate polished docs with actual quality gates.

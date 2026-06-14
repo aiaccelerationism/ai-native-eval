@@ -299,8 +299,11 @@ export interface IncrementalManifest {
 
 export interface ArtifactPaths {
   runId: string;
+  bundleRoot: string;
+  runFolder: string;
   snapshotPath: string;
   manifestPath: string;
   reportJsonPath: string;
+  reportMarkdownPath: string;
   reportHtmlPath: string;
 }
