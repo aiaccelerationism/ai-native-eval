@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-artifact-traceability-evaluator",
   "confidence": "high",
-  "reason": "Self-evaluation artifacts have committed source run data, a compact report, and a freshness check; broader PR artifact linkage is still partial.",
+  "reason": "Self-evaluation artifacts have committed source run data, a compact report, and a freshness check; broader PR artifact linkage is still partial. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": "docs/evidence.md; docs/foundation-self-evaluation.md",
@@ -25,6 +25,33 @@
       "recommendation": {
         "summary": "Link report artifacts to PR evidence and validation output.",
         "priority": "medium"
+      }
+    },
+    {
+      "groupId": "artifact-presence",
+      "deductionId": "missing-artifact-presence",
+      "applies": false
+    },
+    {
+      "groupId": "artifact-reproducibility",
+      "deductionId": "missing-artifact-reproducibility",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
       }
     }
   ]

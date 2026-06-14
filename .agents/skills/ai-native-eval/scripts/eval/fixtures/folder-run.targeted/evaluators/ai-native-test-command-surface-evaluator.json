@@ -31,6 +31,21 @@
         "summary": "Add lint/build/smoke/E2E command surfaces as the project matures.",
         "priority": "high"
       }
+    },
+    {
+      "groupId": "test-command-documentation",
+      "deductionId": "missing-test-command-documentation",
+      "applies": false
+    },
+    {
+      "groupId": "test-result-actionability",
+      "deductionId": "missing-test-result-actionability",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

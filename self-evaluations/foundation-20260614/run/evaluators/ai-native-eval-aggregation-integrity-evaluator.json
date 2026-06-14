@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-eval-aggregation-integrity-evaluator",
   "confidence": "high",
-  "reason": "The deterministic tool owns aggregation, folder validation, and config snapshots, but legacy score fallback and config-source ordering still need stricter proof. Applied deductions: incomplete-deterministic-score-path, unproven-deterministic-repeatability, incomplete-config-auditability.",
+  "reason": "The deterministic tool owns aggregation, folder validation, and config snapshots, but legacy score fallback and config-source ordering still need stricter proof. Applied deductions: incomplete-deterministic-score-path, unproven-deterministic-repeatability, incomplete-config-auditability. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": ".agents/skills/ai-native-eval/scripts/eval/src/aggregate.ts; .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts",
@@ -12,6 +12,11 @@
       "source": ".agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts",
       "locator": "deterministic aggregation and folder validation tests",
       "summary": "Tests cover nested aggregation, deduction scoring, disabled outputs, filename mismatches, and folder rendering."
+    },
+    {
+      "source": ".agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts; .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts",
+      "locator": "validateLeafPlugin and folder validation reports all evaluator output errors",
+      "summary": "Folder validation rejects missing rubric group judgments, and the invalid fixture test covers missing recent-change follow-through."
     }
   ],
   "deductions": [
@@ -62,6 +67,19 @@
       "reason": "Folder validation covers the major output-contract classes needed for the current evaluator-system model."
     },
     {
+      "groupId": "validation-gate-integrity",
+      "deductionId": "missing-required-group-judgment-validation",
+      "applies": false,
+      "reason": "Folder validation requires each rubric group to have at least one explicit judgment, and the invalid folder fixture asserts the missing recent-change group failure.",
+      "evidence": [
+        {
+          "source": ".agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts; .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts",
+          "locator": "missing deduction judgment for group",
+          "summary": "The validator records judged groups and reports a missing group judgment; the aggregate test expects the recent-change follow-through group to fail when omitted."
+        }
+      ]
+    },
+    {
       "groupId": "config-auditability",
       "deductionId": "incomplete-config-auditability",
       "applies": true,
@@ -76,6 +94,23 @@
       "recommendation": {
         "summary": "Make config source ordering explicit and add a test for project/person/explicit source order.",
         "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
       }
     }
   ]

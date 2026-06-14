@@ -175,6 +175,90 @@ test("leaf evaluator skills define their own deduction group rubrics", async () 
   assert.ok(leafEvaluatorPaths.length >= 30);
 });
 
+test("leaf evaluator rubrics reserve half the score for recent change follow-through", async () => {
+  const skillDirs = await readdir(".agents/skills", { withFileTypes: true });
+  const skillPaths = skillDirs
+    .filter((entry) => entry.isDirectory())
+    .filter((entry) => !entry.name.startsWith("_"))
+    .map((entry) => `.agents/skills/${entry.name}/SKILL.md`)
+    .sort();
+
+  const rubricPaths = [];
+
+  for (const path of skillPaths) {
+    const body = await readFile(path, "utf8");
+    const rubricMatch = body.match(/```ai-native-deduction-groups\n([\s\S]*?)\n```/);
+    if (!rubricMatch) {
+      continue;
+    }
+
+    rubricPaths.push(path);
+    assert.match(body, /## Recent Change Follow-Through/, path);
+    assert.match(body, /last five PR-equivalent substantive changes/, path);
+    assert.match(body, /humans and agents followed them/, path);
+    assert.match(body, /GitHub access is unavailable/, path);
+    assert.match(body, /treat that evidence as absent/, path);
+
+    const rubric = JSON.parse(rubricMatch[1]);
+    const recentChangeGroup = rubric.find(
+      (group) => group.id === "recent-change-follow-through"
+    );
+    assert.ok(recentChangeGroup, path);
+    assert.equal(recentChangeGroup.budget, 0.5, path);
+    assert.ok(
+      recentChangeGroup.deductions.some(
+        (deduction) => deduction.id === "recent-changes-bypass-practice"
+      ),
+      path
+    );
+    assert.ok(
+      recentChangeGroup.deductions.some(
+        (deduction) => deduction.id === "missing-human-agent-follow-through"
+      ),
+      path
+    );
+    assert.ok(
+      recentChangeGroup.deductions.some(
+        (deduction) => deduction.id === "no-recent-change-evidence"
+      ),
+      path
+    );
+
+    const configuredBudget = rubric
+      .filter((group) => group.id !== "recent-change-follow-through")
+      .reduce((total, group) => total + group.budget, 0);
+    const totalBudget = configuredBudget + recentChangeGroup.budget;
+
+    assert.equal(Math.round(configuredBudget * 1000) / 1000, 0.5, path);
+    assert.equal(Math.round(totalBudget * 1000) / 1000, 1, path);
+  }
+
+  assert.ok(rubricPaths.length >= 40);
+});
+
+test("self evaluator checks recent-change scoring safeguards", async () => {
+  const [rubricBody, aggregationBody, packagingBody, folderReportBody, aggregateTestBody] =
+    await Promise.all([
+      readFile(".agents/skills/ai-native-eval-rubric-quality-evaluator/SKILL.md", "utf8"),
+      readFile(
+        ".agents/skills/ai-native-eval-aggregation-integrity-evaluator/SKILL.md",
+        "utf8"
+      ),
+      readFile("tests/skill-packaging.test.mjs", "utf8"),
+      readFile(".agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts", "utf8"),
+      readFile(".agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts", "utf8")
+    ]);
+
+  assert.match(rubricBody, /missing-recent-change-rubric-rule/);
+  assert.match(rubricBody, /missing GitHub access is treated as absent evidence/);
+  assert.match(aggregationBody, /missing-required-group-judgment-validation/);
+  assert.match(aggregationBody, /recent-change follow-through cannot be silently omitted/);
+  assert.match(packagingBody, /recentChangeGroup\.budget, 0\.5/);
+  assert.match(packagingBody, /GitHub access is unavailable/);
+  assert.match(folderReportBody, /missing deduction judgment for group/);
+  assert.match(aggregateTestBody, /recent-change-follow-through/);
+});
+
 test("eval skill bundles the only report rendering tool source", async () => {
   const skillBody = await readFile(
     ".agents/skills/ai-native-eval/SKILL.md",

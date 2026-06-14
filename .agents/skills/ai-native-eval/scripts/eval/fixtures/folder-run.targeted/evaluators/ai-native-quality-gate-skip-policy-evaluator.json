@@ -15,6 +15,21 @@
           "summary": "No quality gate docs exist."
         }
       ]
+    },
+    {
+      "groupId": "skip-safety",
+      "deductionId": "missing-skip-safety",
+      "applies": false
+    },
+    {
+      "groupId": "skip-auditability",
+      "deductionId": "missing-skip-auditability",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

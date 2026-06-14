@@ -32,6 +32,13 @@ Use the deduction groups below for leaf scoring. Start from full credit and appl
 
 The canonical leaf node should use `pointsAvailable: 1`. If this evaluator emits multiple leaf nodes, each leaf must define its own deduction groups instead of reusing these blindly.
 
+
+## Recent Change Follow-Through
+
+Score current practice, not only configured intent. For this evaluator, inspect the last five PR-equivalent substantive changes when available: GitHub PRs are preferred; otherwise use merge commits, issue-linked task branches, release notes, or grouped commits that represent reviewable work. Treat trivial typo/version-only commits as non-substantive and move farther back until the sample has up to five real changes. If fewer than five exist, inspect all available substantive changes and lower confidence.
+
+At least half of this leaf score is reserved for whether those recent changes actually followed the evaluator-specific practice. A repository with polished docs, templates, or configuration but no evidence that humans and agents followed them in recent substantive work must lose at least the full recent-change budget. If GitHub access is unavailable for a repository whose issue, PR, review, check, or human-gate practice lives in GitHub, treat that evidence as absent and apply the recent-change deduction; do not infer compliance from local git history alone. Local git, release notes, or grouped commits can only substitute when they preserve equivalent issue, review, check, artifact, and human/agent follow-through evidence.
+
 ## Deduction Groups
 
 Use these groups when evaluating PASS/WARN/BLOCK review before visible product implementation or merge.
@@ -41,12 +48,12 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
   {
     "id": "review-gate-presence",
     "label": "Design review gate presence",
-    "budget": 0.4,
+    "budget": 0.2,
     "deductions": [
       {
         "id": "missing-review-gate-presence",
         "label": "Missing design review gate presence",
-        "points": 0.4,
+        "points": 0.2,
         "appliesWhen": "The repository does not require design review for visible product or UX changes.",
         "evidenceRequired": "Cite design review docs, PR templates, issue specs, mock routes, review comments, and screenshots that show the missing design review gates requirement.",
         "recommendation": "Add explicit design review gates guidance for design review gate presence."
@@ -54,7 +61,7 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
       {
         "id": "incomplete-review-gate-presence",
         "label": "Incomplete design review gate presence",
-        "points": 0.2,
+        "points": 0.1,
         "appliesWhen": "The repository requires review only for some visible change types.",
         "evidenceRequired": "Cite the partial design review gates evidence and the specific gap.",
         "recommendation": "Tighten the design review gate presence guidance until another agent can evaluate it without guessing."
@@ -62,7 +69,7 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
       {
         "id": "unlinked-review-gate-presence",
         "label": "Unlinked design review gate presence evidence",
-        "points": 0.1,
+        "points": 0.05,
         "appliesWhen": "Design review gates evidence exists but is not linked from the relevant agent, issue, PR, docs, or report workflow.",
         "evidenceRequired": "Cite both the existing evidence and the missing link path.",
         "recommendation": "Link the design review gates evidence from the workflow where agents need it."
@@ -72,12 +79,12 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
   {
     "id": "verdict-contract",
     "label": "Verdict contract",
-    "budget": 0.35,
+    "budget": 0.175,
     "deductions": [
       {
         "id": "missing-verdict-contract",
         "label": "Missing verdict contract",
-        "points": 0.35,
+        "points": 0.175,
         "appliesWhen": "The repository does not define PASS/WARN/BLOCK or equivalent design review outcomes.",
         "evidenceRequired": "Cite design review docs, PR templates, issue specs, mock routes, review comments, and screenshots that show the missing design review gates requirement.",
         "recommendation": "Add explicit design review gates guidance for verdict contract."
@@ -85,7 +92,7 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
       {
         "id": "incomplete-verdict-contract",
         "label": "Incomplete verdict contract",
-        "points": 0.18,
+        "points": 0.09,
         "appliesWhen": "The repository verdicts exist but merge implications are unclear.",
         "evidenceRequired": "Cite the partial design review gates evidence and the specific gap.",
         "recommendation": "Tighten the verdict contract guidance until another agent can evaluate it without guessing."
@@ -93,7 +100,7 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
       {
         "id": "unlinked-verdict-contract",
         "label": "Unlinked verdict contract evidence",
-        "points": 0.09,
+        "points": 0.045,
         "appliesWhen": "Design review gates evidence exists but is not linked from the relevant agent, issue, PR, docs, or report workflow.",
         "evidenceRequired": "Cite both the existing evidence and the missing link path.",
         "recommendation": "Link the design review gates evidence from the workflow where agents need it."
@@ -103,12 +110,12 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
   {
     "id": "review-evidence",
     "label": "Review evidence",
-    "budget": 0.25,
+    "budget": 0.125,
     "deductions": [
       {
         "id": "missing-review-evidence",
         "label": "Missing review evidence",
-        "points": 0.25,
+        "points": 0.125,
         "appliesWhen": "The repository does not preserve design review artifacts or link them to PR/issue scope.",
         "evidenceRequired": "Cite design review docs, PR templates, issue specs, mock routes, review comments, and screenshots that show the missing design review gates requirement.",
         "recommendation": "Add explicit design review gates guidance for review evidence."
@@ -116,7 +123,7 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
       {
         "id": "incomplete-review-evidence",
         "label": "Incomplete review evidence",
-        "points": 0.13,
+        "points": 0.065,
         "appliesWhen": "The repository review artifacts exist but are not easy to inspect or reproduce.",
         "evidenceRequired": "Cite the partial design review gates evidence and the specific gap.",
         "recommendation": "Tighten the review evidence guidance until another agent can evaluate it without guessing."
@@ -124,17 +131,56 @@ Use these groups when evaluating PASS/WARN/BLOCK review before visible product i
       {
         "id": "unlinked-review-evidence",
         "label": "Unlinked review evidence evidence",
-        "points": 0.06,
+        "points": 0.03,
         "appliesWhen": "Design review gates evidence exists but is not linked from the relevant agent, issue, PR, docs, or report workflow.",
         "evidenceRequired": "Cite both the existing evidence and the missing link path.",
         "recommendation": "Link the design review gates evidence from the workflow where agents need it."
+      }
+    ]
+  },
+  {
+    "id": "recent-change-follow-through",
+    "label": "Recent change follow-through",
+    "budget": 0.5,
+    "deductions": [
+      {
+        "id": "no-recent-change-evidence",
+        "label": "No recent change evidence",
+        "points": 0.5,
+        "appliesWhen": "The evaluator cannot identify a usable sample of the last five PR-equivalent substantive changes from GitHub PRs, merge commits, issue-linked task branches, release notes, or grouped commits, and the review scope expects current workflow practice rather than documentation-only readiness.",
+        "evidenceRequired": "Cite the attempted recent-change sources, such as GitHub PR lists, merge commits, issue links, release notes, grouped commit ranges, or missing-access notes.",
+        "recommendation": "Preserve enough PR-equivalent change history for this evaluator to verify whether the documented practice is actually used."
+      },
+      {
+        "id": "recent-changes-bypass-practice",
+        "label": "Recent changes bypass the practice",
+        "points": 0.5,
+        "appliesWhen": "Configuration, templates, or documentation for this evaluator exist, but most of the last five PR-equivalent substantive changes bypass the expected issue, PR, review, test, artifact, human-gate, or agent workflow practice.",
+        "evidenceRequired": "Cite the sampled recent changes and show which expected practice was skipped or contradicted.",
+        "recommendation": "Make the configured practice mandatory in real change flow and repair the recent-change path that allowed it to be skipped."
+      },
+      {
+        "id": "inconsistent-recent-change-follow-through",
+        "label": "Inconsistent recent change follow-through",
+        "points": 0.25,
+        "appliesWhen": "The sampled recent changes show partial adoption, but at least two of the last five PR-equivalent substantive changes miss or weaken the evaluator-specific practice.",
+        "evidenceRequired": "Cite the sampled changes, distinguishing examples that followed the practice from examples that did not.",
+        "recommendation": "Tighten templates, checks, reviewer expectations, or agent instructions so the practice is followed consistently across substantive changes."
+      },
+      {
+        "id": "missing-human-agent-follow-through",
+        "label": "Missing human/agent follow-through",
+        "points": 0.25,
+        "appliesWhen": "The repository claims human or agent responsibilities for this practice, but recent substantive changes do not show the human and agent roles actually carrying those responsibilities through to review or merge.",
+        "evidenceRequired": "Cite recent PRs, reviews, comments, commits, or artifacts that show the missing human/agent follow-through.",
+        "recommendation": "Record human and agent responsibilities in the change artifacts reviewers actually use, not only in static policy docs."
       }
     ]
   }
 ]
 ```
 
-Group budgets sum to `1.0`, so this leaf has no built-in fallback points. Each group includes a full-missing deduction that can consume the full group budget. When emitting evaluator output, convert each rubric item into a runtime deduction with `applies`, a concrete `reason`, and cited evidence when it applies.
+Group budgets sum to `1.0`: half covers configured capability and half covers recent change follow-through, so this leaf has no built-in fallback points. Each group includes a full-missing deduction that can consume the full group budget. When emitting evaluator output, convert each rubric item into a runtime deduction with `applies`, a concrete `reason`, and cited evidence when it applies.
 
 ## Required Checks
 

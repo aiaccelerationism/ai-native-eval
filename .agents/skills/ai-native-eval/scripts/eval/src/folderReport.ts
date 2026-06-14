@@ -280,6 +280,7 @@ function validateLeafPlugin(
   }
 
   const groups = new Map(skill.rubric.map((group) => [group.id, group]));
+  const judgedGroups = new Set<string>();
   const seen = new Set<string>();
   for (const deduction of output.deductions) {
     const group = groups.get(deduction.groupId);
@@ -297,12 +298,18 @@ function validateLeafPlugin(
       continue;
     }
     const key = `${deduction.groupId}/${deduction.deductionId}`;
+    judgedGroups.add(deduction.groupId);
     if (seen.has(key)) {
       errors.push(`${pluginId}: duplicate deduction judgment ${key}`);
     }
     seen.add(key);
     if (deduction.applies && !deduction.reason?.trim()) {
       errors.push(`${pluginId}: applied deduction ${key} requires reason`);
+    }
+  }
+  for (const group of skill.rubric) {
+    if (!judgedGroups.has(group.id)) {
+      errors.push(`${pluginId}: missing deduction judgment for group ${group.id}`);
     }
   }
 }

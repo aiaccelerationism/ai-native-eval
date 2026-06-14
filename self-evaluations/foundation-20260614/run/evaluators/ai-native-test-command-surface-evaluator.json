@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-test-command-surface-evaluator",
   "confidence": "high",
-  "reason": "Root commands now include deterministic tests, self-eval validate/render/check, and contract evals; live/browser commands remain intentionally explicit.",
+  "reason": "Root commands now include deterministic tests, self-eval validate/render/check, and contract evals; live/browser commands remain intentionally explicit. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": "package.json; .agents/skills/ai-native-eval/scripts/eval/package.json; docs/runtime.md",
@@ -25,6 +25,33 @@
       "recommendation": {
         "summary": "Expose root commands for browser and real-agent test layers or document why they remain nested.",
         "priority": "medium"
+      }
+    },
+    {
+      "groupId": "test-command-documentation",
+      "deductionId": "missing-test-command-documentation",
+      "applies": false
+    },
+    {
+      "groupId": "test-result-actionability",
+      "deductionId": "missing-test-result-actionability",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
       }
     }
   ]

@@ -19,6 +19,21 @@
         "summary": "Document expected success output for local runtime commands.",
         "priority": "medium"
       }
+    },
+    {
+      "groupId": "runtime-entrypoints",
+      "deductionId": "missing-runtime-entrypoints",
+      "applies": false
+    },
+    {
+      "groupId": "scriptability",
+      "deductionId": "missing-scriptability",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-eval-rubric-quality-evaluator",
   "confidence": "medium",
-  "reason": "AI Native Eval now has structured leaf rubrics with full group budgets and validation tests, but the meta-rubric layer is new and not yet backed by real historical repair cycles. Applied deductions: incomplete-rubric-operability, unlinked-rubric-operability-proof, incomplete-repair-guidance.",
+  "reason": "AI Native Eval now has structured leaf rubrics with full group budgets and validation tests, but the meta-rubric layer is new and not yet backed by real historical repair cycles. Applied deductions: incomplete-rubric-operability, unlinked-rubric-operability-proof, incomplete-repair-guidance. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": ".agents/skills/*-evaluator/SKILL.md; tests/skill-packaging.test.mjs",
@@ -12,6 +12,11 @@
       "source": ".agents/skills/ai-native-eval-rubric-quality-evaluator/SKILL.md",
       "locator": "AI Native Eval Rubric Quality Evaluator",
       "summary": "The evaluator-system-specific rubric quality evaluator is newly introduced in this change."
+    },
+    {
+      "source": "tests/skill-packaging.test.mjs; .agents/skills/*-evaluator/SKILL.md",
+      "locator": "leaf evaluator rubrics reserve half the score for recent change follow-through",
+      "summary": "Packaging tests require every leaf rubric to reserve 0.5 budget for recent-change follow-through and to treat unavailable GitHub evidence as absent for GitHub-hosted workflows."
     }
   ],
   "deductions": [
@@ -50,6 +55,19 @@
       }
     },
     {
+      "groupId": "rubric-operability",
+      "deductionId": "missing-recent-change-rubric-rule",
+      "applies": false,
+      "reason": "Every leaf rubric now includes a 0.5 recent-change follow-through group, packaging tests assert that budget, and the leaf instructions say unavailable GitHub evidence is absent for GitHub-hosted workflows.",
+      "evidence": [
+        {
+          "source": "tests/skill-packaging.test.mjs; .agents/skills/*-evaluator/SKILL.md",
+          "locator": "leaf evaluator rubrics reserve half the score for recent change follow-through",
+          "summary": "The self-check covers the recent-change budget, no-recent-change deduction, human/agent follow-through deduction, and GitHub-unavailable-as-absent rule."
+        }
+      ]
+    },
+    {
       "groupId": "deduction-budget-completeness",
       "deductionId": "missing-budget-completeness",
       "applies": false,
@@ -76,6 +94,23 @@
       "recommendation": {
         "summary": "Add a follow-up workflow for converting important self-eval deductions into issues or task specs.",
         "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
       }
     }
   ]

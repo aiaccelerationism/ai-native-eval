@@ -1,7 +1,7 @@
 {
   "pluginId": "ai-native-data-portability-boundary-evaluator",
   "confidence": "medium",
-  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-data-boundary-definition, incomplete-portability-path, incomplete-data-validation-proof.",
+  "reason": "Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-data-boundary-definition, incomplete-portability-path, incomplete-data-validation-proof. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.",
   "evidence": [
     {
       "source": "README.md; docs/evidence.md",
@@ -59,6 +59,23 @@
       "recommendation": {
         "summary": "Add report JSON schema validation if external consumers rely on it.",
         "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.",
+        "priority": "high"
       }
     }
   ]

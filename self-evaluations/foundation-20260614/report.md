@@ -2,8 +2,8 @@
 
 - Scope: ai-native-eval foundation and evaluator-system self-evaluation
 - Generated: 2026-06-14T06:42:37.499Z
-- Score: 6.3 / 10
-- Level: 6
+- Score: 3.1 / 10
+- Level: 3
 - Confidence: high
 - Repo commit: `working-tree-self-eval-20260614`
 
@@ -21,587 +21,795 @@
 
 ## Evaluation Tree
 
-- ai-native-eval foundation and evaluator-system self-evaluation (partial · 6.3 / 10 · high)
-  - AI-native foundation evaluator (partial · 6.0 / 10 · high · `ai-native-foundation-evaluator`)
-    - Repo operability evaluator (partial · 6.2 / 10 · high · `ai-native-repo-operability-evaluator`)
-      - Local runtime command evaluator (partial · 8.7 / 10 · high · `ai-native-local-runtime-command-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-runtime-command-validation.
+- ai-native-eval foundation and evaluator-system self-evaluation (fail · 3.1 / 10 · high)
+  - AI-native foundation evaluator (fail · 3.0 / 10 · high · `ai-native-foundation-evaluator`)
+    - Repo operability evaluator (fail · 3.1 / 10 · high · `ai-native-repo-operability-evaluator`)
+      - Local runtime command evaluator (fail · 4.3 / 10 · high · `ai-native-local-runtime-command-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-runtime-command-validation. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - package.json; docs/runtime.md scripts and Core Commands: Project-owned commands cover the main deterministic runtime and report paths.
         - Why not 10/10:
-          - Runtime command validation: -0.13
-            - Incomplete runtime command validation: -0.13
+          - Runtime command validation: -0.07
+            - Incomplete runtime command validation: -0.07
               - Reason: Runtime commands are scriptable, but there is no dedicated smoke command that validates the self-evaluation report from a clean checkout without relying on reviewer memory.
               - Evidence:
                 - package.json; docs/runtime.md self-eval scripts: Build, test, validate, and render commands exist, but no single smoke command checks the whole baseline artifact path.
               - Recommendation [medium]: Add a root smoke command that validates and renders the committed self-evaluation report from scratch.
-      - Local environment reproducibility evaluator (fail · 3.2 / 10 · medium · `ai-native-local-environment-reproducibility-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-environment-setup, missing-reset-and-recovery, incomplete-machine-local-boundaries.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Local environment reproducibility evaluator (fail · 1.6 / 10 · medium · `ai-native-local-environment-reproducibility-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-environment-setup, missing-reset-and-recovery, incomplete-machine-local-boundaries. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/runtime.md; .gitignore Prerequisites and generated output ignores: Install and generated artifact boundaries are documented.
         - Why not 10/10:
-          - Environment setup: -0.20
-            - Incomplete environment setup: -0.20
+          - Environment setup: -0.10
+            - Incomplete environment setup: -0.10
               - Reason: Dependency setup is documented, but there is no environment doctor/preflight command to check Node, pnpm, Codex CLI, nested tool dependencies, and Playwright readiness.
               - Evidence:
                 - docs/runtime.md Prerequisites: Prerequisites are documented as prose.
               - Recommendation [high]: Add a project-owned preflight command for local evaluator development.
-          - Reset and recovery: -0.35
-            - Missing reset and recovery: -0.35
+          - Reset and recovery: -0.17
+            - Missing reset and recovery: -0.17
               - Reason: The repo has no reset or cleanup command for generated eval output, skill eval runs, nested dist output, or local browser artifacts.
               - Evidence:
                 - package.json .scripts: No reset/cleanup script exists.
               - Recommendation [high]: Add a cleanup/reset command and document when agents should use it.
-          - Machine-local boundaries: -0.13
-            - Incomplete machine-local boundaries: -0.13
+          - Machine-local boundaries: -0.07
+            - Incomplete machine-local boundaries: -0.07
               - Reason: Machine-local generated output is partly ignored, but committed self-evaluation artifacts rely on an allowlist and there is no guard that prevents accidental unrelated generated artifacts from being committed.
               - Evidence:
                 - .gitignore; docs/evidence.md self-evaluation artifact policy: Generated output boundaries are mostly policy-level.
               - Recommendation [medium]: Add a packaging/status check that fails on unexpected generated artifacts.
-    - Documentation and onboarding evaluator (partial · 8.3 / 10 · high · `ai-native-docs-evaluator`)
-      - README onboarding evaluator (partial · 8.7 / 10 · high · `ai-native-readme-onboarding-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-next-step-routing.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Documentation and onboarding evaluator (fail · 4.2 / 10 · high · `ai-native-docs-evaluator`)
+      - README onboarding evaluator (fail · 4.3 / 10 · high · `ai-native-readme-onboarding-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-next-step-routing. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - README.md First Skill, Repo Layout, Reports, Skill Evaluations: README gives a new agent the main conceptual and command entrypoints.
         - Why not 10/10:
-          - Next-step routing: -0.13
-            - Incomplete next-step routing: -0.13
+          - Next-step routing: -0.07
+            - Incomplete next-step routing: -0.07
               - Reason: README names commands and skills, but does not route new contributors by task type such as changing evaluator rubrics, report UI, CI, or self-evaluation artifacts.
               - Evidence:
                 - README.md Repo Layout and Reports: README explains structure but has limited task-based routing.
               - Recommendation [medium]: Add a short task-to-file/command routing table for common contributor goals.
-      - Runtime docs evaluator (pass · 10.0 / 10 · high · `ai-native-runtime-docs-evaluator`)
-        - Reason: Runtime docs now include CI gates, self-eval validation, rendering, and freshness-check behavior.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Runtime docs evaluator (partial · 5.0 / 10 · high · `ai-native-runtime-docs-evaluator`)
+        - Reason: Runtime docs now include CI gates, self-eval validation, rendering, and freshness-check behavior. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/runtime.md Core Commands and Failure Handling: Runtime documentation is machine-repeatable and points to expected failure handling.
-      - Decision context evaluator (fail · 3.2 / 10 · medium · `ai-native-decision-context-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-source-of-truth-clarity, missing-decision-rationale, incomplete-decision-linkage.
+        - Why not 10/10:
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Decision context evaluator (fail · 1.6 / 10 · medium · `ai-native-decision-context-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-source-of-truth-clarity, missing-decision-rationale, incomplete-decision-linkage. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/architecture.md; docs/foundation-self-evaluation.md Current Non-Goals and Current Baseline: Key boundaries and the self-evaluation scope are written down.
         - Why not 10/10:
-          - Source-of-truth clarity: -0.20
-            - Incomplete source-of-truth clarity: -0.20
+          - Source-of-truth clarity: -0.10
+            - Incomplete source-of-truth clarity: -0.10
               - Reason: Source-of-truth docs exist, but there is no decision index that tells agents which doc wins when README, AGENTS, skill instructions, and report artifacts conflict.
               - Evidence:
                 - README.md; AGENTS.md; docs/architecture.md repo guidance: Multiple source-of-truth docs exist.
               - Recommendation [high]: Add a source-of-truth precedence section for agent instructions, tool behavior, and self-eval artifacts.
-          - Decision rationale: -0.35
-            - Missing decision rationale: -0.35
+          - Decision rationale: -0.17
+            - Missing decision rationale: -0.17
               - Reason: The repo has no dated ADR or decision log for major choices such as folder-first reports, JSON sidecars, built-in roots, or self-evaluation scope.
               - Evidence:
                 - docs/architecture.md; docs/foundation-self-evaluation.md Current Non-Goals and baseline scope: Rationale exists as prose but not as durable decision records.
               - Recommendation [high]: Add docs/decisions/ records for the major eval architecture decisions.
-          - Decision linkage: -0.13
-            - Incomplete decision linkage: -0.13
+          - Decision linkage: -0.07
+            - Incomplete decision linkage: -0.07
               - Reason: The self-evaluation report links artifacts, but decisions are not linked to approving PRs/issues or review outcomes.
               - Evidence:
                 - docs/foundation-self-evaluation.md Current Baseline: Baseline paths are listed without PR or issue linkage.
               - Recommendation [medium]: Link future baseline changes to the approving PR and decision record.
-      - Review workflow docs evaluator (pass · 10.0 / 10 · high · `ai-native-review-workflow-docs-evaluator`)
-        - Reason: Review workflow documentation is now backed by a PR template and CI gate list, so review expectations are visible during PR authoring.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Review workflow docs evaluator (partial · 5.0 / 10 · high · `ai-native-review-workflow-docs-evaluator`)
+        - Reason: Review workflow documentation is now backed by a PR template and CI gate list, so review expectations are visible during PR authoring. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - AGENTS.md; docs/reviewer-contract.md Review Contract and Review Gates: Agent and reviewer expectations are documented.
-    - Agent readiness evaluator (partial · 5.9 / 10 · medium · `ai-native-agent-readiness-evaluator`)
-      - Repo thread bootstrap evaluator (partial · 6.7 / 10 · medium · `ai-native-repo-thread-bootstrap-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-bootstrap-context, incomplete-thread-safety.
+        - Why not 10/10:
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Agent readiness evaluator (fail · 3.0 / 10 · medium · `ai-native-agent-readiness-evaluator`)
+      - Repo thread bootstrap evaluator (fail · 3.4 / 10 · medium · `ai-native-repo-thread-bootstrap-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-bootstrap-context, incomplete-thread-safety. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - AGENTS.md Required Reading and Runtime And Test Commands: New agent threads can orient to scope and command surfaces.
         - Why not 10/10:
-          - Bootstrap context: -0.20
-            - Incomplete bootstrap context: -0.20
+          - Bootstrap context: -0.10
+            - Incomplete bootstrap context: -0.10
               - Reason: AGENTS.md gives bootstrap context, but there is no bootstrap script or checklist command that confirms branch, dirty state, dependency state, and self-eval artifact status.
               - Evidence:
                 - AGENTS.md Required Reading and Runtime And Test Commands: Bootstrap context is prose-driven.
               - Recommendation [medium]: Add a lightweight bootstrap/check command for new eval threads.
-          - Thread safety: -0.13
-            - Incomplete thread safety: -0.13
+          - Thread safety: -0.07
+            - Incomplete thread safety: -0.07
               - Reason: Thread safety rules exist, but no artifact records thread-local open work, active PR, or handoff state for continuation.
               - Evidence:
                 - AGENTS.md Thread Closeout: Closeout is documented but not persisted.
               - Recommendation [medium]: Add a handoff template or local run note convention for long-lived work.
-      - Worktree isolation evaluator (fail · 3.7 / 10 · medium · `ai-native-worktree-isolation-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-worktree-policy, incomplete-dirty-state-protection, missing-parallel-cleanup-and-handoff.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Worktree isolation evaluator (fail · 1.9 / 10 · medium · `ai-native-worktree-isolation-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-worktree-policy, incomplete-dirty-state-protection, missing-parallel-cleanup-and-handoff. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - AGENTS.md Worktree And Branch Safety: Agents are instructed to check status, avoid direct main pushes, and isolate parallel work.
         - Why not 10/10:
-          - Worktree policy: -0.20
-            - Incomplete worktree policy: -0.20
+          - Worktree policy: -0.10
+            - Incomplete worktree policy: -0.10
               - Reason: The policy says to use branches or worktrees, but does not define a concrete worktree allocation, naming, or cleanup procedure.
               - Evidence:
                 - AGENTS.md Worktree And Branch Safety: Policy exists without operational procedure.
               - Recommendation [high]: Document or script worktree allocation and cleanup for parallel evaluator work.
-          - Dirty-state protection: -0.18
-            - Incomplete dirty-state protection: -0.18
+          - Dirty-state protection: -0.09
+            - Incomplete dirty-state protection: -0.09
               - Reason: Agents are told to inspect git status, but there is no automated pre-commit/pre-PR guard for unrelated dirty files or generated artifact leaks.
               - Evidence:
                 - AGENTS.md; .gitignore Worktree And Branch Safety and ignore rules: Dirty-state protection is instruction-level.
               - Recommendation [high]: Add a status check that detects unexpected dirty/generated files before PR publication.
-          - Parallel cleanup and handoff: -0.25
-            - Missing parallel cleanup and handoff: -0.25
+          - Parallel cleanup and handoff: -0.13
+            - Missing parallel cleanup and handoff: -0.13
               - Reason: There is no durable worker ownership ledger, worktree registry, or cleanup artifact for parallel agent work.
               - Evidence:
                 - AGENTS.md Worktree And Branch Safety: Parallel worktree ownership is not persisted.
               - Recommendation [medium]: Add a parallel work ledger only when multi-agent work becomes routine.
-      - Parallel agent capacity evaluator (fail · 3.2 / 10 · medium · `ai-native-parallel-agent-capacity-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-capacity-policy, missing-batch-planning, incomplete-over-fanout-recovery.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Parallel agent capacity evaluator (fail · 1.6 / 10 · medium · `ai-native-parallel-agent-capacity-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-capacity-policy, missing-batch-planning, incomplete-over-fanout-recovery. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - AGENTS.md Parallel Agent Capacity: Capacity policy and max_threads guidance are explicit.
         - Why not 10/10:
-          - Capacity policy: -0.20
-            - Incomplete capacity policy: -0.20
+          - Capacity policy: -0.10
+            - Incomplete capacity policy: -0.10
               - Reason: Capacity guidance exists, but no command or config check verifies the local max_threads setting before fan-out.
               - Evidence:
                 - AGENTS.md Parallel Agent Capacity: max_threads guidance is documented as prose.
               - Recommendation [medium]: Add a preflight or planning checklist that records actual max_threads when fan-out is planned.
-          - Batch planning: -0.35
-            - Missing batch planning: -0.35
+          - Batch planning: -0.17
+            - Missing batch planning: -0.17
               - Reason: Execution batches are represented in the eval model, but this self-evaluation run does not persist a concrete capacity/batch plan artifact beyond the generated run folder.
               - Evidence:
                 - .ai-native-eval/artifacts/runs/self-eval-20260614-foundation/run.json run snapshot: Run config exists without capacity planning record.
               - Recommendation [high]: Record execution batch choices and capacity constraints in large self-eval runs.
-          - Over-fanout recovery: -0.13
-            - Incomplete over-fanout recovery: -0.13
+          - Over-fanout recovery: -0.07
+            - Incomplete over-fanout recovery: -0.07
               - Reason: The repo explains when fan-out is justified, but does not describe recovery when too many agent tasks are spawned or partial evaluator outputs fail.
               - Evidence:
                 - AGENTS.md Parallel Agent Capacity: No over-fanout repair flow is documented.
               - Recommendation [medium]: Document how to reduce, resume, or repair oversized evaluator fan-out runs.
-      - Thread closeout evaluator (partial · 6.9 / 10 · medium · `ai-native-thread-closeout-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-continuation-quality, incomplete-thread-locality.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Thread closeout evaluator (fail · 3.5 / 10 · medium · `ai-native-thread-closeout-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-continuation-quality, incomplete-thread-locality. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - AGENTS.md Thread Closeout: Final answers must summarize thread-local remaining work and continuation prompts.
         - Why not 10/10:
-          - Continuation quality: -0.18
-            - Incomplete continuation quality: -0.18
+          - Continuation quality: -0.09
+            - Incomplete continuation quality: -0.09
               - Reason: Closeout instructions require continuation prompts, but there is no template that captures branch, PR, validation, self-eval artifacts, and remaining evaluator gaps consistently.
               - Evidence:
                 - AGENTS.md Thread Closeout: Closeout is prose-level.
               - Recommendation [medium]: Add a closeout template for PR/self-eval work.
-          - Thread locality: -0.13
-            - Incomplete thread locality: -0.13
+          - Thread locality: -0.07
+            - Incomplete thread locality: -0.07
               - Reason: Thread-locality is documented, but no artifact prevents future agents from confusing global project backlog with current thread leftovers.
               - Evidence:
                 - AGENTS.md Thread Closeout: Thread-local remaining work is instruction-only.
               - Recommendation [medium]: Record thread-local continuation state in PR body or handoff notes.
-      - Skill routing quality evaluator (partial · 8.7 / 10 · high · `ai-native-skill-routing-quality-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-routing-validation.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Skill routing quality evaluator (fail · 4.3 / 10 · high · `ai-native-skill-routing-quality-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-routing-validation. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - .agents/skills/**/SKILL.md; .agents/skills/**/evals/eval.yaml skill metadata and eval cases: Skill routing and basic eval coverage are present across installed skills.
         - Why not 10/10:
-          - Routing validation: -0.13
-            - Incomplete routing validation: -0.13
+          - Routing validation: -0.07
+            - Incomplete routing validation: -0.07
               - Reason: Every skill has a basic eval, but most evals only test basic routing completion and do not verify domain-specific deduction quality or realistic evaluator output.
               - Evidence:
                 - .agents/skills/**/evals/eval.yaml basic-routing evals: Skill evals exist but are mostly shallow routing checks.
               - Recommendation [high]: Add deeper eval cases for representative evaluator judgments and failure modes.
-    - GitHub workflow evaluator (partial · 7.6 / 10 · high · `ai-native-github-evaluator`)
-      - Issue readiness evaluator (partial · 8.7 / 10 · high · `ai-native-issue-readiness-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-issue-context, missing-acceptance-and-review, missing-skill-and-artifact-coverage.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - GitHub workflow evaluator (fail · 3.8 / 10 · high · `ai-native-github-evaluator`)
+      - Issue readiness evaluator (fail · 4.3 / 10 · high · `ai-native-issue-readiness-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-issue-context, missing-acceptance-and-review, missing-skill-and-artifact-coverage. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/reviewer-contract.md; AGENTS.md Required Review Surface: Review scope is documented, but issue intake artifacts are not part of the repo.
         - Why not 10/10:
-          - Skill and artifact coverage: -0.13
-            - Incomplete skill and artifact coverage: -0.13
+          - Skill and artifact coverage: -0.07
+            - Incomplete skill and artifact coverage: -0.07
               - Reason: The evaluator change issue template asks for affected skills and evidence, but it is only one issue template and does not yet cover every issue type the repo may need.
               - Evidence:
                 - .github/ISSUE_TEMPLATE/evaluator-change.yml Affected skills and Expected evidence: Issue intake now captures skills, acceptance criteria, evidence, and reviewer expectations.
               - Recommendation [low]: Add more issue templates when non-evaluator work types become common.
-      - PR readiness evaluator (partial · 8.2 / 10 · high · `ai-native-pr-readiness-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-pr-scope-and-context, incomplete-pr-proof, incomplete-human-and-review-gates.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - PR readiness evaluator (fail · 4.1 / 10 · high · `ai-native-pr-readiness-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-pr-scope-and-context, incomplete-pr-proof, incomplete-human-and-review-gates. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/reviewer-contract.md; AGENTS.md Required Review Surface and Review Contract: PR content expectations are clear in docs.
         - Why not 10/10:
-          - PR proof: -0.18
-            - Incomplete pr proof: -0.18
+          - PR proof: -0.09
+            - Incomplete pr proof: -0.09
               - Reason: The PR template and CI now request proof commands, but the repository still lacks branch protection evidence proving those checks are required before merge.
               - Evidence:
                 - .github/pull_request_template.md; .github/workflows/ci.yml Validation and deterministic gates: PR authors have structured validation fields and CI executes core gates.
               - Recommendation [medium]: Enable required CI checks and keep PR proof fields complete.
-      - Review contract evaluator (partial · 8.7 / 10 · high · `ai-native-review-contract-evaluator`)
-        - Reason: The review contract is documented and surfaced through the PR template; follow-through tracking is still policy-level.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Review contract evaluator (fail · 4.3 / 10 · high · `ai-native-review-contract-evaluator`)
+        - Reason: The review contract is documented and surfaced through the PR template; follow-through tracking is still policy-level. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/reviewer-contract.md Severity and Review Gates: Reviewers have a durable contract for approval and finding severity.
         - Why not 10/10:
-          - Review follow-through: -0.13
-            - Incomplete review follow-through: -0.13
+          - Review follow-through: -0.07
+            - Incomplete review follow-through: -0.07
               - Reason: Follow-through expectations exist, but there is no mechanism for tracking unresolved findings, waived findings, or linked fixes.
               - Evidence:
                 - docs/reviewer-contract.md Follow-Through: Follow-through is policy-level.
               - Recommendation [medium]: Add a review finding tracking convention or checklist for PRs.
-      - Auto-merge safety evaluator (fail · 3.7 / 10 · medium · `ai-native-auto-merge-safety-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-merge-authority-boundary, missing-required-gates, missing-bot-safety-auditability.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Auto-merge safety evaluator (fail · 1.9 / 10 · medium · `ai-native-auto-merge-safety-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-merge-authority-boundary, missing-required-gates, missing-bot-safety-auditability. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - AGENTS.md Worktree And Branch Safety: The agent guide forbids direct pushes to main.
         - Why not 10/10:
-          - Merge authority boundary: -0.20
-            - Incomplete merge authority boundary: -0.20
+          - Merge authority boundary: -0.10
+            - Incomplete merge authority boundary: -0.10
               - Reason: Direct main pushes are prohibited by AGENTS.md, but no branch protection or bot merge authority configuration is visible from repository evidence.
               - Evidence:
                 - AGENTS.md Worktree And Branch Safety: Merge authority is instruction-level.
               - Recommendation [high]: Document and enforce merge authority through GitHub branch protection when available.
-          - Required merge gates: -0.18
-            - Incomplete required merge gates: -0.18
+          - Required merge gates: -0.09
+            - Incomplete required merge gates: -0.09
               - Reason: CI gates now exist, but branch protection/required check enforcement is not yet visible from repo evidence.
               - Evidence:
                 - .github/workflows/ci.yml Deterministic gates: CI runs the deterministic gate suite.
               - Recommendation [medium]: Enable branch protection required checks after confirming the workflow on GitHub.
-          - Bot safety auditability: -0.25
-            - Missing bot safety auditability: -0.25
+          - Bot safety auditability: -0.13
+            - Missing bot safety auditability: -0.13
               - Reason: There is no bot auto-merge path, audit trail, or merge actor policy in this repo.
               - Evidence:
                 - AGENTS.md; docs/reviewer-contract.md merge/review guidance: Bot merge auditability is not defined.
               - Recommendation [medium]: Define merge actor and audit behavior if auto-merge is introduced.
-    - CI and test evidence evaluator (partial · 6.2 / 10 · high · `ai-native-ci-test-evaluator`)
-      - CI required checks evaluator (partial · 6.5 / 10 · medium · `ai-native-ci-required-checks-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-required-check-coverage, missing-check-enforcement, missing-check-signal-quality.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - CI and test evidence evaluator (fail · 3.1 / 10 · high · `ai-native-ci-test-evaluator`)
+      - CI required checks evaluator (fail · 3.3 / 10 · medium · `ai-native-ci-required-checks-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-required-check-coverage, missing-check-enforcement, missing-check-signal-quality. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - package.json; docs/reviewer-contract.md scripts and Review Gates: The commands are documented, but hosted CI files are absent.
         - Why not 10/10:
-          - Check enforcement: -0.35, capped at 0.35
-            - Missing check enforcement: -0.35
+          - Check enforcement: -0.17, capped at 0.175
+            - Missing check enforcement: -0.17
               - Reason: There is no evidence that checks are required before merge.
               - Evidence:
                 - .github/workflows; branch protection missing evidence: No required-check enforcement is represented in the repo.
               - Recommendation [high]: Enable branch protection after adding workflows.
-            - Incomplete check enforcement: -0.18
+            - Incomplete check enforcement: -0.09
               - Reason: A GitHub Actions workflow now runs deterministic gates, but branch protection or required-check enforcement is not yet visible from repository evidence.
               - Evidence:
                 - .github/workflows/ci.yml Deterministic gates: CI runs pnpm test, self-eval validation, self-eval freshness check, and skill-eval contract.
               - Recommendation [medium]: Enable required checks on main after the workflow has run successfully in GitHub.
-      - Test command surface evaluator (partial · 8.0 / 10 · high · `ai-native-test-command-surface-evaluator`)
-        - Reason: Root commands now include deterministic tests, self-eval validate/render/check, and contract evals; live/browser commands remain intentionally explicit.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Test command surface evaluator (fail · 4.0 / 10 · high · `ai-native-test-command-surface-evaluator`)
+        - Reason: Root commands now include deterministic tests, self-eval validate/render/check, and contract evals; live/browser commands remain intentionally explicit. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - package.json; .agents/skills/ai-native-eval/scripts/eval/package.json; docs/runtime.md scripts: Root and nested tool scripts cover deterministic and real-agent test layers.
         - Why not 10/10:
-          - Test command coverage: -0.20
-            - Incomplete test command coverage: -0.20
+          - Test command coverage: -0.10
+            - Incomplete test command coverage: -0.10
               - Reason: The repo has strong deterministic tests, browser E2E, and contract evals, but no separate lint command and live-agent tests are not part of an explicit root command surface.
               - Evidence:
                 - package.json; .agents/skills/ai-native-eval/scripts/eval/package.json scripts: Test layers exist but are unevenly exposed at root.
               - Recommendation [medium]: Expose root commands for browser and real-agent test layers or document why they remain nested.
-      - E2E artifact proof evaluator (fail · 3.2 / 10 · medium · `ai-native-e2e-artifact-proof-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-e2e-proof-presence, missing-artifact-quality, incomplete-proof-reproducibility.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - E2E artifact proof evaluator (fail · 1.6 / 10 · medium · `ai-native-e2e-artifact-proof-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-e2e-proof-presence, missing-artifact-quality, incomplete-proof-reproducibility. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .agents/skills/ai-native-eval/scripts/eval/tests/real-agent.e2e.ts Playwright and real-agent tests: The repo contains E2E tests for the report and real agent path.
         - Why not 10/10:
-          - E2E proof presence: -0.20
-            - Incomplete e2e proof presence: -0.20
+          - E2E proof presence: -0.10
+            - Incomplete e2e proof presence: -0.10
               - Reason: Browser and real-agent E2E tests exist, but the committed baseline does not include fresh screenshot, trace, or video proof from those tests.
               - Evidence:
                 - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html browser E2E and report: E2E capability exists, but artifacts are not persisted.
               - Recommendation [high]: Attach browser artifacts to PRs that change report UI or self-eval presentation.
-          - Artifact quality: -0.35
-            - Missing artifact quality: -0.35
+          - Artifact quality: -0.17
+            - Missing artifact quality: -0.17
               - Reason: The baseline commits HTML/JSON but no visual trace, screenshot, or video artifact that proves the page rendered correctly in a browser.
               - Evidence:
                 - .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html static report: Static HTML is not visual proof by itself.
               - Recommendation [high]: Persist or attach a screenshot/trace for baseline report validation.
-          - Proof reproducibility: -0.13
-            - Incomplete proof reproducibility: -0.13
+          - Proof reproducibility: -0.07
+            - Incomplete proof reproducibility: -0.07
               - Reason: Playwright can reproduce the report E2E, but the baseline report itself does not name the browser run artifact or command output.
               - Evidence:
                 - docs/foundation-self-evaluation.md Regeneration: Regeneration commands are listed without artifact links.
               - Recommendation [medium]: Link self-eval report artifacts to the exact browser proof command/result.
-      - Quality gate skip policy evaluator (partial · 8.0 / 10 · high · `ai-native-quality-gate-skip-policy-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-skip-policy-definition, missing-skip-safety, missing-skip-auditability.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Quality gate skip policy evaluator (fail · 4.0 / 10 · high · `ai-native-quality-gate-skip-policy-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-skip-policy-definition, missing-skip-safety, missing-skip-auditability. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/reviewer-contract.md; AGENTS.md Review Gates and Review Contract: Docs explain when live evals may be deferred.
         - Why not 10/10:
-          - Skip policy definition: -0.20
-            - Incomplete skip policy definition: -0.20
+          - Skip policy definition: -0.10
+            - Incomplete skip policy definition: -0.10
               - Reason: The PR template now asks for skipped gates and safe-skip rationale, but the skip taxonomy is still prose-level rather than a machine-enforced policy.
               - Evidence:
                 - .github/pull_request_template.md; docs/reviewer-contract.md Gate Skips and Review Gates: PRs have a structured skip section and docs explain when live-agent evidence may be deferred.
               - Recommendation [medium]: Define allowed skip types and add automated checks if skip misuse becomes common.
-    - Product UX evidence evaluator (fail · 1.8 / 10 · medium · `ai-native-product-ux-evidence-evaluator`)
-      - Product design readiness evaluator (fail · 1.2 / 10 · medium · `ai-native-product-design-readiness-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-product-intent, missing-state-and-flow-coverage, incomplete-checkpoint-readiness.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Product UX evidence evaluator (fail · 0.9 / 10 · medium · `ai-native-product-ux-evidence-evaluator`)
+      - Product design readiness evaluator (fail · 0.6 / 10 · medium · `ai-native-product-design-readiness-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-product-intent, missing-state-and-flow-coverage, incomplete-checkpoint-readiness. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - README.md; docs/architecture.md Reports and Data Flow: The report inspection surface is described at a system level.
         - Why not 10/10:
-          - Product intent: -0.40
-            - Missing product intent: -0.40
+          - Product intent: -0.20
+            - Missing product intent: -0.20
               - Reason: The report UI has no dedicated product brief describing reviewer users, jobs, decisions, and non-goals.
               - Evidence:
                 - README.md Reports: Report capabilities are described functionally, not as product design intent.
               - Recommendation [high]: Add a report UX/product brief for reviewer inspection workflows.
-          - State and flow coverage: -0.35
-            - Missing state and flow coverage: -0.35
+          - State and flow coverage: -0.17
+            - Missing state and flow coverage: -0.17
               - Reason: Important report states are tested but not specified as product flows or acceptance states.
               - Evidence:
                 - .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts report rendering tests: Tests cover behavior without a product flow spec.
               - Recommendation [high]: Document report flows for tree inspection, disabled nodes, deductions, and copy prompts.
-          - Checkpoint readiness: -0.13
-            - Incomplete checkpoint readiness: -0.13
+          - Checkpoint readiness: -0.07
+            - Incomplete checkpoint readiness: -0.07
               - Reason: There is no human design checkpoint requirement before changing the report UI.
               - Evidence:
                 - docs/reviewer-contract.md Review Gates: Design-specific checkpoint is not required.
               - Recommendation [medium]: Require a design review checkpoint for visible report changes.
-      - UX mock contract evaluator (fail · 1.7 / 10 · medium · `ai-native-ux-mock-contract-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-mock-before-implementation, incomplete-state-and-parity-contract, missing-mock-traceability.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - UX mock contract evaluator (fail · 0.8 / 10 · medium · `ai-native-ux-mock-contract-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-mock-before-implementation, incomplete-state-and-parity-contract, missing-mock-traceability. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .agents/skills/ai-native-eval/scripts/eval/src/renderHtml.ts report browser E2E and renderer: The report UI is validated through rendered HTML.
         - Why not 10/10:
-          - Mock before implementation: -0.40
-            - Missing mock before implementation: -0.40
+          - Mock before implementation: -0.20
+            - Missing mock before implementation: -0.20
               - Reason: No approved UX mock, screenshot baseline, or design artifact exists before report UI implementation changes.
               - Evidence:
                 - .agents/skills/ai-native-eval/scripts/eval/src/renderHtml.ts renderer source: UI exists as implementation first.
               - Recommendation [high]: Create a lightweight report mock or screenshot baseline before major UI changes.
-          - State and parity contract: -0.18
-            - Incomplete state and parity contract: -0.18
+          - State and parity contract: -0.09
+            - Incomplete state and parity contract: -0.09
               - Reason: Report state behavior is tested, but there is no mock-to-implementation parity contract for layout, hierarchy, or interactions.
               - Evidence:
                 - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts browser E2E: Browser checks basic UI, not mock parity.
               - Recommendation [high]: Define parity expectations between approved report mock and renderer output.
-          - Mock traceability: -0.25
-            - Missing mock traceability: -0.25
+          - Mock traceability: -0.13
+            - Missing mock traceability: -0.13
               - Reason: There is no mock artifact to trace report sections or visual states back to.
               - Evidence:
                 - docs/evidence.md Evidence Surfaces: Visual proof is recognized, but mock traceability is absent.
               - Recommendation [medium]: Add traceable mock or screenshot artifacts for report UI.
-      - Design review gate evaluator (fail · 1.2 / 10 · medium · `ai-native-design-review-gate-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-review-gate-presence, missing-verdict-contract, incomplete-review-evidence.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Design review gate evaluator (fail · 0.6 / 10 · medium · `ai-native-design-review-gate-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-review-gate-presence, missing-verdict-contract, incomplete-review-evidence. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/reviewer-contract.md Review Gates: Review gates are command and review-surface focused.
         - Why not 10/10:
-          - Design review gate presence: -0.40
-            - Missing design review gate presence: -0.40
+          - Design review gate presence: -0.20
+            - Missing design review gate presence: -0.20
               - Reason: Visible report UI changes do not require a PASS/WARN/BLOCK design review gate.
               - Evidence:
                 - docs/reviewer-contract.md Review Gates: No design verdict gate exists.
               - Recommendation [high]: Add a design review gate for report UI changes.
-          - Verdict contract: -0.35
-            - Missing verdict contract: -0.35
+          - Verdict contract: -0.17
+            - Missing verdict contract: -0.17
               - Reason: There is no design review verdict contract describing what PASS, WARN, or BLOCK means for report UI.
               - Evidence:
                 - docs/reviewer-contract.md Severity: General review severity exists; design verdict does not.
               - Recommendation [high]: Define design review verdict semantics.
-          - Review evidence: -0.13
-            - Incomplete review evidence: -0.13
+          - Review evidence: -0.07
+            - Incomplete review evidence: -0.07
               - Reason: Browser E2E exists, but screenshot/design review evidence is not required for visible changes.
               - Evidence:
                 - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts browser E2E: Test exists without design evidence requirement.
               - Recommendation [medium]: Require screenshots or browser artifacts on report UI PRs.
-      - Visual evidence evaluator (fail · 3.2 / 10 · medium · `ai-native-visual-evidence-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-visual-proof-presence, missing-visual-proof-quality, incomplete-visual-proof-linkage.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Visual evidence evaluator (fail · 1.6 / 10 · medium · `ai-native-visual-evidence-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-visual-proof-presence, missing-visual-proof-quality, incomplete-visual-proof-linkage. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts; .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html browser E2E and report artifact: The report has a browser E2E path and a static HTML artifact.
         - Why not 10/10:
-          - Visual proof presence: -0.20
-            - Incomplete visual proof presence: -0.20
+          - Visual proof presence: -0.10
+            - Incomplete visual proof presence: -0.10
               - Reason: The project has a static HTML report and browser test, but no committed or linked screenshot/trace for the self-eval baseline.
               - Evidence:
                 - .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.html HTML report: HTML is inspectable but not visual proof.
               - Recommendation [high]: Attach a screenshot or trace to report UI changes.
-          - Visual proof quality: -0.35
-            - Missing visual proof quality: -0.35
+          - Visual proof quality: -0.17
+            - Missing visual proof quality: -0.17
               - Reason: No visual artifact proves desktop/mobile layout, expanded tree states, or copy prompt affordances.
               - Evidence:
                 - .agents/skills/ai-native-eval/scripts/eval/tests/report-browser.e2e.ts browser E2E: The browser test exercises basic UI without persisted visual evidence.
               - Recommendation [high]: Persist screenshot evidence for key report states.
-          - Visual proof linkage: -0.13
-            - Incomplete visual proof linkage: -0.13
+          - Visual proof linkage: -0.07
+            - Incomplete visual proof linkage: -0.07
               - Reason: The report artifact is linked from README, but visual proof is not linked to PRs, tests, or self-eval artifacts.
               - Evidence:
                 - README.md Foundation Self-Evaluation: Report paths are linked; visual proof paths are absent.
               - Recommendation [medium]: Link visual proof artifacts from README or PRs when UI changes.
-    - Architecture boundary evaluator (partial · 6.2 / 10 · high · `ai-native-architecture-evaluator`)
-      - Ownership boundary evaluator (partial · 8.2 / 10 · high · `ai-native-ownership-boundary-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Architecture boundary evaluator (fail · 3.1 / 10 · high · `ai-native-architecture-evaluator`)
+      - Ownership boundary evaluator (fail · 4.1 / 10 · high · `ai-native-ownership-boundary-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/architecture.md Skill Pack Boundary and Tool Boundary: Ownership and scoring-rule boundaries are explicit.
         - Why not 10/10:
-          - Boundary enforcement: -0.18
-            - Incomplete boundary enforcement: -0.18
+          - Boundary enforcement: -0.09
+            - Incomplete boundary enforcement: -0.09
               - Reason: Architecture boundaries are documented, but there is no automated check preventing evaluator rules from leaking into the orchestrator or central registries from reappearing.
               - Evidence:
                 - docs/architecture.md; tests/skill-packaging.test.mjs Tool Boundary and packaging tests: Some boundary tests exist, but enforcement is partial.
               - Recommendation [medium]: Add tests that specifically reject central rule registries and evaluator protocol re-centralization.
-      - Deployment boundary evaluator (fail · 3.2 / 10 · medium · `ai-native-deployment-boundary-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-deployment-mode-boundaries, missing-deploy-command-surface, incomplete-deployment-validation.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Deployment boundary evaluator (fail · 1.6 / 10 · medium · `ai-native-deployment-boundary-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-deployment-mode-boundaries, missing-deploy-command-surface, incomplete-deployment-validation. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/architecture.md; README.md Current Non-Goals and Repo Layout: The repo declares no hosted service or database runtime.
         - Why not 10/10:
-          - Deployment mode boundaries: -0.20
-            - Incomplete deployment mode boundaries: -0.20
+          - Deployment mode boundaries: -0.10
+            - Incomplete deployment mode boundaries: -0.10
               - Reason: The repo documents local skill/tool scope, but does not document release, installation, or update modes for consumers using the skill pack from other projects.
               - Evidence:
                 - README.md; docs/architecture.md Repo Layout and Current Non-Goals: Local boundaries are clear; distribution boundaries are thin.
               - Recommendation [high]: Document supported install/update paths for Codex skill consumers.
-          - Deploy command surface: -0.35
-            - Missing deploy command surface: -0.35
+          - Deploy command surface: -0.17
+            - Missing deploy command surface: -0.17
               - Reason: There is no release/package/deploy command surface for publishing or validating installable skill pack versions.
               - Evidence:
                 - package.json scripts: No release or install validation command beyond tests exists.
               - Recommendation [medium]: Add a release validation command when publishing versions.
-          - Deployment validation: -0.13
-            - Incomplete deployment validation: -0.13
+          - Deployment validation: -0.07
+            - Incomplete deployment validation: -0.07
               - Reason: Packaging tests validate shape, but no release artifact or installation smoke report is generated for consumers.
               - Evidence:
                 - tests/skill-packaging.test.mjs packaging tests: Packaging shape is tested locally.
               - Recommendation [medium]: Add consumer install smoke validation before releases.
-      - Data portability boundary evaluator (fail · 4.9 / 10 · medium · `ai-native-data-portability-boundary-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-data-boundary-definition, incomplete-portability-path, incomplete-data-validation-proof.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Data portability boundary evaluator (fail · 2.5 / 10 · medium · `ai-native-data-portability-boundary-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-data-boundary-definition, incomplete-portability-path, incomplete-data-validation-proof. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - README.md; docs/evidence.md Persistence Target and Self-Evaluation Artifacts: Eval state and reports are file artifacts.
         - Why not 10/10:
-          - Data boundary definition: -0.20
-            - Incomplete data boundary definition: -0.20
+          - Data boundary definition: -0.10
+            - Incomplete data boundary definition: -0.10
               - Reason: JSON/HTML report artifacts and run folders are documented, but there is no formal schema/version compatibility contract for external consumers.
               - Evidence:
                 - docs/evidence.md; .agents/skills/ai-native-eval/scripts/eval/src/types.ts artifact policy and types: Data structures are typed but not versioned as a public contract.
               - Recommendation [high]: Document report JSON schema compatibility expectations.
-          - Portability path: -0.18
-            - Incomplete portability path: -0.18
+          - Portability path: -0.09
+            - Incomplete portability path: -0.09
               - Reason: Artifacts are file-based and portable, but no migration path exists for future schema changes.
               - Evidence:
                 - .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.json report JSON: Report JSON exists without migration policy.
               - Recommendation [medium]: Add migration rules before changing persisted report schema.
-          - Data validation proof: -0.13
-            - Incomplete data validation proof: -0.13
+          - Data validation proof: -0.07
+            - Incomplete data validation proof: -0.07
               - Reason: Folder validation proves evaluator inputs, but committed report JSON itself is not validated by a standalone schema command.
               - Evidence:
                 - package.json self-eval scripts: self-eval render emits JSON but does not separately validate report schema.
               - Recommendation [medium]: Add report JSON schema validation if external consumers rely on it.
-      - Domain boundary evaluator (partial · 8.2 / 10 · high · `ai-native-domain-boundary-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Domain boundary evaluator (fail · 4.1 / 10 · high · `ai-native-domain-boundary-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-boundary-enforcement. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/architecture.md; AGENTS.md Current Non-Goals and Current Scope: Domain boundaries and non-goals are documented.
         - Why not 10/10:
-          - Boundary enforcement: -0.18
-            - Incomplete boundary enforcement: -0.18
+          - Boundary enforcement: -0.09
+            - Incomplete boundary enforcement: -0.09
               - Reason: Domain boundaries are documented, but enforcement is mostly through review and packaging tests rather than automated policy checks.
               - Evidence:
                 - docs/architecture.md; tests/skill-packaging.test.mjs Current Non-Goals and packaging tests: Boundaries are clear but only partially automated.
               - Recommendation [medium]: Add checks that prevent BMAD-specific assumptions from leaking into foundation scoring.
-    - Evidence and learning evaluator (partial · 5.3 / 10 · high · `ai-native-evidence-evaluator`)
-      - Acceptance proof evaluator (partial · 8.0 / 10 · high · `ai-native-acceptance-proof-evaluator`)
-        - Reason: Self-evaluation acceptance proof is now backed by validate/render/check commands and a PR template validation surface; issue linkage remains partial.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Evidence and learning evaluator (fail · 2.6 / 10 · high · `ai-native-evidence-evaluator`)
+      - Acceptance proof evaluator (fail · 4.0 / 10 · high · `ai-native-acceptance-proof-evaluator`)
+        - Reason: Self-evaluation acceptance proof is now backed by validate/render/check commands and a PR template validation surface; issue linkage remains partial. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/foundation-self-evaluation.md; docs/runtime.md Acceptance Criteria and Self-Evaluation Commands: The baseline defines concrete acceptance criteria and commands.
         - Why not 10/10:
-          - Acceptance criteria linkage: -0.20
-            - Incomplete acceptance criteria linkage: -0.20
+          - Acceptance criteria linkage: -0.10
+            - Incomplete acceptance criteria linkage: -0.10
               - Reason: Self-evaluation acceptance criteria exist, but they are not linked to an issue/spec or enforced through a PR template.
               - Evidence:
                 - docs/foundation-self-evaluation.md Acceptance Criteria: Acceptance criteria are documented in repo docs.
               - Recommendation [medium]: Link future self-eval baselines to issue/spec acceptance criteria.
-      - Artifact traceability evaluator (partial · 8.2 / 10 · high · `ai-native-artifact-traceability-evaluator`)
-        - Reason: Self-evaluation artifacts have committed source run data, a compact report, and a freshness check; broader PR artifact linkage is still partial.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Artifact traceability evaluator (fail · 4.1 / 10 · high · `ai-native-artifact-traceability-evaluator`)
+        - Reason: Self-evaluation artifacts have committed source run data, a compact report, and a freshness check; broader PR artifact linkage is still partial. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/evidence.md; docs/foundation-self-evaluation.md Self-Evaluation Artifacts and Current Baseline: Artifact paths and regeneration commands are documented.
         - Why not 10/10:
-          - Artifact linkage: -0.18
-            - Incomplete artifact linkage: -0.18
+          - Artifact linkage: -0.09
+            - Incomplete artifact linkage: -0.09
               - Reason: Run folder, JSON, and HTML artifacts are committed, but they are not linked to CI runs, screenshots, PR template fields, or issue acceptance criteria.
               - Evidence:
                 - docs/evidence.md; README.md Self-Evaluation Artifacts: Artifact paths are documented.
               - Recommendation [medium]: Link report artifacts to PR evidence and validation output.
-      - Known issue awareness evaluator (fail · 1.2 / 10 · medium · `ai-native-known-issue-awareness-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-known-issue-capture, missing-discoverability, incomplete-prevention-linkage.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Known issue awareness evaluator (fail · 0.6 / 10 · medium · `ai-native-known-issue-awareness-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-known-issue-capture, missing-discoverability, incomplete-prevention-linkage. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/evidence.md Recurrence Prevention: The repo defines how durable misses should become tests, evals, skills, or docs.
         - Why not 10/10:
-          - Known issue capture: -0.40
-            - Missing known issue capture: -0.40
+          - Known issue capture: -0.20
+            - Missing known issue capture: -0.20
               - Reason: No known-issues document or registry exists for repeated eval, report, browser, or real-agent failure modes.
               - Evidence:
                 - docs/evidence.md Evidence Surfaces: Known issue registry is absent.
               - Recommendation [high]: Add docs/known-issues.md when recurring failure patterns appear.
-          - Known issue discoverability: -0.35
-            - Missing known issue discoverability: -0.35
+          - Known issue discoverability: -0.17
+            - Missing known issue discoverability: -0.17
               - Reason: There is no searchable known-issue location linked from AGENTS.md or README.
               - Evidence:
                 - AGENTS.md; README.md repo guidance: Known issue routing is not present.
               - Recommendation [high]: Link the known-issue registry from AGENTS.md.
-          - Prevention linkage: -0.13
-            - Incomplete prevention linkage: -0.13
+          - Prevention linkage: -0.07
+            - Incomplete prevention linkage: -0.07
               - Reason: Recurrence-prevention policy exists, but known issues are not linked to tests, evals, or fixes because the registry is absent.
               - Evidence:
                 - docs/evidence.md Recurrence Prevention: Policy exists without issue cards.
               - Recommendation [medium]: Require known issue cards to link prevention artifacts.
-      - Recurrence prevention evaluator (fail · 2.9 / 10 · medium · `ai-native-recurrence-prevention-evaluator`)
-        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-miss-capture, incomplete-durable-prevention, incomplete-feedback-loop.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+      - Recurrence prevention evaluator (fail · 1.4 / 10 · medium · `ai-native-recurrence-prevention-evaluator`)
+        - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: missing-miss-capture, incomplete-durable-prevention, incomplete-feedback-loop. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
         - Evidence:
           - docs/evidence.md; .agents/skills/**/evals/eval.yaml Recurrence Prevention and skill evals: The project prefers tests/evals/skill updates for durable misses.
         - Why not 10/10:
-          - Miss capture: -0.40
-            - Missing miss capture: -0.40
+          - Miss capture: -0.20
+            - Missing miss capture: -0.20
               - Reason: There is no durable miss ledger recording previous AI/review/tool misses and their prevention artifact.
               - Evidence:
                 - docs/evidence.md Recurrence Prevention: The process exists but no ledger exists.
               - Recommendation [high]: Add a miss ledger when durable failures are discovered.
-          - Durable prevention: -0.18
-            - Incomplete durable prevention: -0.18
+          - Durable prevention: -0.09
+            - Incomplete durable prevention: -0.09
               - Reason: The repo has many tests and evals, but there is no explicit policy requiring every repeated miss to become a specific test/eval/skill update before closeout.
               - Evidence:
                 - docs/evidence.md Recurrence Prevention: Preferred order is documented but not enforced.
               - Recommendation [medium]: Add PR checklist enforcement for recurrence-prevention follow-up.
-          - Feedback loop: -0.13
-            - Incomplete feedback loop: -0.13
+          - Feedback loop: -0.07
+            - Incomplete feedback loop: -0.07
               - Reason: No workflow ties self-eval findings back into issues, tasks, or future baseline refreshes.
               - Evidence:
                 - .ai-native-eval/artifacts/reports/self-eval-20260614-foundation.json self-eval report: Findings exist in report but are not linked to follow-up tracking.
               - Recommendation [medium]: Create follow-up issues for major self-eval deductions.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
   - BMAD Method evaluator (not_applicable · n/a · high · `bmad-method-evaluator`)
     - Reason: Disabled: This baseline evaluates ai-native foundation maturity and AI Native Eval system quality; BMAD adoption is out of scope for this repository self-evaluation.
     - Disabled: This baseline evaluates ai-native foundation maturity and AI Native Eval system quality; BMAD adoption is out of scope for this repository self-evaluation.
-  - AI Native Eval self evaluator (partial · 6.6 / 10 · high · `ai-native-eval-self-evaluator`)
-    - Rubric quality evaluator (partial · 5.8 / 10 · medium · `ai-native-eval-rubric-quality-evaluator`)
-      - Reason: AI Native Eval now has structured leaf rubrics with full group budgets and validation tests, but the meta-rubric layer is new and not yet backed by real historical repair cycles. Applied deductions: incomplete-rubric-operability, unlinked-rubric-operability-proof, incomplete-repair-guidance.
+  - AI Native Eval self evaluator (fail · 3.3 / 10 · high · `ai-native-eval-self-evaluator`)
+    - Rubric quality evaluator (fail · 2.9 / 10 · medium · `ai-native-eval-rubric-quality-evaluator`)
+      - Reason: AI Native Eval now has structured leaf rubrics with full group budgets and validation tests, but the meta-rubric layer is new and not yet backed by real historical repair cycles. Applied deductions: incomplete-rubric-operability, unlinked-rubric-operability-proof, incomplete-repair-guidance. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
       - Evidence:
         - .agents/skills/*-evaluator/SKILL.md; tests/skill-packaging.test.mjs Deduction Groups and leaf rubric tests: Leaf evaluator skills define deduction groups and packaging tests require budget and rubric structure.
         - .agents/skills/ai-native-eval-rubric-quality-evaluator/SKILL.md AI Native Eval Rubric Quality Evaluator: The evaluator-system-specific rubric quality evaluator is newly introduced in this change.
+        - tests/skill-packaging.test.mjs; .agents/skills/*-evaluator/SKILL.md leaf evaluator rubrics reserve half the score for recent change follow-through: Packaging tests require every leaf rubric to reserve 0.5 budget for recent-change follow-through and to treat unavailable GitHub evidence as absent for GitHub-hosted workflows.
       - Why not 10/10:
-        - Rubric operability: -0.27
-          - Incomplete rubric operability: -0.18
+        - Rubric operability: -0.14
+          - Incomplete rubric operability: -0.09
             - Reason: The repo has structured deduction groups, but several evaluator rubrics were generated from common templates and have not yet been calibrated against real false-positive or false-negative evaluation examples.
             - Evidence:
               - .agents/skills/*-evaluator/SKILL.md; self-evaluations/foundation-20260614/run/evaluators/*.json deduction groups and committed evaluator outputs: Rubrics are present and used, but the baseline does not include calibration cases showing where each rubric was tightened from observed misses.
             - Recommendation [high]: Add calibration examples for high-impact evaluator rubrics, especially cases where a deduction should and should not apply.
-          - Unlinked rubric operability proof: -0.09
+          - Unlinked rubric operability proof: -0.04
             - Reason: Tests prove the presence of rubric structure, but they do not yet prove that representative evaluator outputs exercise every important rubric branch.
             - Evidence:
               - tests/skill-packaging.test.mjs; .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts rubric structure and folder validation tests: Tests validate rubric shape and selected folder fixtures, not broad branch coverage for all evaluator rubrics.
             - Recommendation [medium]: Add targeted fixture outputs for representative pass, partial, fail, and invalid-deduction paths across the most important rubrics.
-        - Repair guidance quality: -0.15
-          - Incomplete repair guidance: -0.15
+        - Repair guidance quality: -0.07
+          - Incomplete repair guidance: -0.07
             - Reason: Applied deductions include recommendations, but the report does not yet connect all recommendations to a durable issue/task creation or targeted repair workflow.
             - Evidence:
               - self-evaluations/foundation-20260614/report.md; .agents/skills/ai-native-eval/scripts/eval/src/renderMarkdown.ts Why not 10/10 and markdown report: Reports list recommendations, but the repo has no workflow that converts self-eval deductions into tracked follow-up work.
             - Recommendation [medium]: Add a follow-up workflow for converting important self-eval deductions into issues or task specs.
-    - Aggregation integrity evaluator (partial · 5.7 / 10 · high · `ai-native-eval-aggregation-integrity-evaluator`)
-      - Reason: The deterministic tool owns aggregation, folder validation, and config snapshots, but legacy score fallback and config-source ordering still need stricter proof. Applied deductions: incomplete-deterministic-score-path, unproven-deterministic-repeatability, incomplete-config-auditability.
+        - Recent change follow-through: -0.50
+          - No recent change evidence: -0.50
+            - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+            - Evidence:
+              - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+            - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Aggregation integrity evaluator (fail · 2.9 / 10 · high · `ai-native-eval-aggregation-integrity-evaluator`)
+      - Reason: The deterministic tool owns aggregation, folder validation, and config snapshots, but legacy score fallback and config-source ordering still need stricter proof. Applied deductions: incomplete-deterministic-score-path, unproven-deterministic-repeatability, incomplete-config-auditability. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
       - Evidence:
         - .agents/skills/ai-native-eval/scripts/eval/src/aggregate.ts; .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts buildReport and validateFolderReport: The tool validates folders and calculates normalized report scores from evaluator nodes.
         - .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts deterministic aggregation and folder validation tests: Tests cover nested aggregation, deduction scoring, disabled outputs, filename mismatches, and folder rendering.
+        - .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts; .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts validateLeafPlugin and folder validation reports all evaluator output errors: Folder validation rejects missing rubric group judgments, and the invalid fixture test covers missing recent-change follow-through.
       - Why not 10/10:
-        - Deterministic score path: -0.30
-          - Incomplete deterministic score path: -0.20
+        - Deterministic score path: -0.15
+          - Incomplete deterministic score path: -0.10
             - Reason: New evaluator outputs use rubric judgments, but the tool still keeps a legacy pointsEarned path for already-normalized tree JSON, so the guardrail relies on skill guidance and folder validation for new leaf outputs.
             - Evidence:
               - .agents/skills/ai-native-eval/SKILL.md; .agents/skills/ai-native-eval/scripts/eval/src/aggregate.ts Scoring and legacy/manual fallback: The skill says pointsEarned is legacy/manual fallback only, while the aggregator still supports legacy inputs when deductionGroups are absent.
             - Recommendation [medium]: Add an explicit validation mode that rejects legacy score fields for folder-based evaluator outputs.
-          - Unproven deterministic repeatability: -0.10
+          - Unproven deterministic repeatability: -0.05
             - Reason: Tests cover deterministic calculations, but there is no snapshot-style repeatability test proving byte-stable report JSON or markdown from the same self-evaluation folder across repeated renders.
             - Evidence:
               - .agents/skills/ai-native-eval/scripts/eval/tests/aggregate.test.ts; tools/check-self-eval-fresh.mjs tool tests and self-eval freshness check: Freshness checks protect the committed report, but the test suite does not explicitly compare repeated render outputs from identical inputs.
             - Recommendation [medium]: Add a repeat-render test for the committed self-evaluation folder or a representative fixture folder.
-        - Config auditability: -0.13
-          - Incomplete config auditability: -0.13
+        - Config auditability: -0.07
+          - Incomplete config auditability: -0.07
             - Reason: Run snapshots record config sources and hashes, but config source ordering is produced through parallel config reads and is not yet explicitly tested as a stable audit contract.
             - Evidence:
               - .agents/skills/ai-native-eval/scripts/eval/src/config.ts; self-evaluations/foundation-20260614/run/run.json resolveEffectiveConfig and configSources: Config sources are recorded, but there is no dedicated test asserting stable source ordering in run snapshots.
             - Recommendation [medium]: Make config source ordering explicit and add a test for project/person/explicit source order.
-    - Plugin boundary integrity evaluator (partial · 8.2 / 10 · high · `ai-native-eval-plugin-boundary-integrity-evaluator`)
-      - Reason: The plugin graph uses direct-child manifests, configured additional roots, and disabled subtree validation, but external-package discovery is still out of scope. Applied deductions: incomplete-hot-plug-config.
+        - Recent change follow-through: -0.50
+          - No recent change evidence: -0.50
+            - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+            - Evidence:
+              - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+            - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.
+    - Plugin boundary integrity evaluator (fail · 4.1 / 10 · high · `ai-native-eval-plugin-boundary-integrity-evaluator`)
+      - Reason: The plugin graph uses direct-child manifests, configured additional roots, and disabled subtree validation, but external-package discovery is still out of scope. Applied deductions: incomplete-hot-plug-config. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.
       - Evidence:
         - docs/architecture.md; .agents/skills/ai-native-eval/scripts/eval/src/folderReport.ts Skill Pack Boundary and runtime graph validation: Docs and validation code define recursive direct-child resolution without a central canonical hierarchy.
         - .ai-native-eval/config.json; self-evaluations/foundation-20260614/run/run.json additionalRoots and rootPluginIds: This repository adds ai-native-eval-self-evaluator through project config rather than built-in root code.
       - Why not 10/10:
-        - Hot-plug config: -0.18
-          - Incomplete hot-plug config: -0.18
+        - Hot-plug config: -0.09
+          - Incomplete hot-plug config: -0.09
             - Reason: Project config can add roots, and this self-evaluation uses that path, but true external package discovery is still a documented non-goal rather than an implemented plugin installation flow.
             - Evidence:
               - docs/architecture.md; .ai-native-eval/config.json Current Non-Goals and additionalRoots: The project supports configured additional roots but does not yet implement external package discovery.
             - Recommendation [medium]: When plugin distribution becomes in scope, add external pack discovery/install proof without editing built-in root skill code.
+        - Recent change follow-through: -0.50
+          - No recent change evidence: -0.50
+            - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this practice.
+            - Evidence:
+              - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this practice to recent PR-equivalent changes.
+            - Recommendation [high]: Record a recent-change sample in each evaluator judgment and cite the PR, issue, commit range, checks, reviews, and artifacts that prove the practice was followed.

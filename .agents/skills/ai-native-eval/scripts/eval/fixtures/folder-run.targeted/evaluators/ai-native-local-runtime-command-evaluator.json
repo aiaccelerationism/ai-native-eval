@@ -14,5 +14,26 @@
       "summary": "Project-owned start and test scripts are present."
     }
   ],
-  "deductions": []
+  "deductions": [
+    {
+      "groupId": "runtime-entrypoints",
+      "deductionId": "missing-runtime-entrypoints",
+      "applies": false
+    },
+    {
+      "groupId": "scriptability",
+      "deductionId": "missing-scriptability",
+      "applies": false
+    },
+    {
+      "groupId": "runtime-command-validation",
+      "deductionId": "missing-runtime-command-validation",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
+    }
+  ]
 }

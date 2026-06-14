@@ -26,6 +26,21 @@
         "summary": "Add a short next-step section linking contribution workflow, issue expectations, and agent guidance.",
         "priority": "medium"
       }
+    },
+    {
+      "groupId": "repo-purpose",
+      "deductionId": "missing-repo-purpose",
+      "applies": false
+    },
+    {
+      "groupId": "first-run-path",
+      "deductionId": "missing-first-run-path",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

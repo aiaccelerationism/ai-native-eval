@@ -36,6 +36,16 @@
         "summary": "Add reset or cleanup guidance when local state exists.",
         "priority": "low"
       }
+    },
+    {
+      "groupId": "machine-local-boundaries",
+      "deductionId": "missing-machine-local-boundaries",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
     }
   ]
 }

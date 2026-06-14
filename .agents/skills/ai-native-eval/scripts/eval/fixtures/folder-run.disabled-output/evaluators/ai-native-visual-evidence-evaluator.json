@@ -2,5 +2,26 @@
   "pluginId": "ai-native-visual-evidence-evaluator",
   "confidence": "high",
   "reason": "This output should be rejected because its parent subtree is disabled.",
-  "deductions": []
+  "deductions": [
+    {
+      "groupId": "visual-proof-presence",
+      "deductionId": "missing-visual-proof-presence",
+      "applies": false
+    },
+    {
+      "groupId": "visual-proof-quality",
+      "deductionId": "missing-visual-proof-quality",
+      "applies": false
+    },
+    {
+      "groupId": "visual-proof-linkage",
+      "deductionId": "missing-visual-proof-linkage",
+      "applies": false
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": false
+    }
+  ]
 }
