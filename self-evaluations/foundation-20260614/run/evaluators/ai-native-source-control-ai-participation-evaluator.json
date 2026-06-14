@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-source-control-ai-participation-evaluator",
+  "confidence": "medium",
+  "reason": "Issue and PR templates now include AI participation surfaces, but there is no configured AI reviewer or recent PR evidence showing AI-authored planning, AI review, repair, and merge readiness. Recent-change follow-through is deducted.",
+  "evidence": [
+    {
+      "source": ".github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md",
+      "locator": "AI participation plan and AI Participation Self-Assessment",
+      "summary": "Issue and PR templates include AI participation fields."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "source-control-ai-configuration",
+      "deductionId": "incomplete-source-control-ai-configuration",
+      "applies": true,
+      "reason": "Templates ask for AI participation, but there is no AI reviewer automation or required source-control check proving AI review happened.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md; .github/workflows/ci.yml",
+          "locator": "Review Surface and CI",
+          "summary": "PR evidence fields and deterministic CI exist, but no AI reviewer check is configured."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add an AI reviewer/evaluator status field or automated check for source-control AI participation.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "source-control-ai-execution",
+      "deductionId": "missing-source-control-ai-execution",
+      "applies": true,
+      "reason": "The committed baseline does not cite recent issues or PRs proving AI planning, review, repair, and validation participation.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/report.md",
+          "locator": "self-eval report",
+          "summary": "The report does not link recent GitHub issue/PR examples for AI source-control participation."
+        }
+      ],
+      "recommendation": {
+        "summary": "Cite recent issues, PRs, AI review comments, and repair evidence in future self-evaluations.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "source-control-ai-reviewability",
+      "deductionId": "incomplete-source-control-ai-reviewability",
+      "applies": true,
+      "reason": "The PR template has AI participation sections, but recent PR evidence is not yet available to prove reviewers can audit AI participation.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md",
+          "locator": "AI Participation Self-Assessment",
+          "summary": "The review surface exists as a template."
+        }
+      ],
+      "recommendation": {
+        "summary": "Populate AI participation fields in real PRs and link AI review outputs.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}

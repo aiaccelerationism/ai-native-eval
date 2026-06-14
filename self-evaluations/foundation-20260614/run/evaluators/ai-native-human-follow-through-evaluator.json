@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-human-follow-through-evaluator",
+  "confidence": "medium",
+  "reason": "Human review and gate expectations are documented and templates now name human follow-through, but there is no recent evidence proving humans consistently follow the process or that agents enforce missing human inputs. Recent-change follow-through is deducted.",
+  "evidence": [
+    {
+      "source": "docs/reviewer-contract.md; AGENTS.md; .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md",
+      "locator": "Review Contract and Human Follow-Through",
+      "summary": "Human review/gate expectations exist in docs and templates."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "human-follow-through-configuration",
+      "deductionId": "incomplete-human-follow-through-configuration",
+      "applies": true,
+      "reason": "Human follow-through expectations exist, but enforcement for missing human context, review signals, or skip-gate rationale is not automated.",
+      "evidence": [
+        {
+          "source": "docs/reviewer-contract.md; .github/pull_request_template.md",
+          "locator": "Review Gates and Human Follow-Through",
+          "summary": "Expectations are documented but not enforced by a check."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add review checks or policy for missing human follow-through fields.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "human-follow-through-execution",
+      "deductionId": "missing-human-follow-through-execution",
+      "applies": true,
+      "reason": "The baseline does not cite recent PRs proving humans supplied required context, review verdicts, and gate rationale.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/report.md",
+          "locator": "report evidence",
+          "summary": "No recent human follow-through sample is linked."
+        }
+      ],
+      "recommendation": {
+        "summary": "Cite recent human review and gate evidence in self-evaluation outputs.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "agent-enforcement-of-human-follow-through",
+      "deductionId": "missing-agent-enforcement-of-human-follow-through",
+      "applies": true,
+      "reason": "There is no recent evidence that agents pushed back when humans omitted required process evidence.",
+      "evidence": [
+        {
+          "source": "AGENTS.md; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "agent instructions and outputs",
+          "summary": "Instructions exist, but enforcement examples are missing."
+        }
+      ],
+      "recommendation": {
+        "summary": "Require agents to record pushback or low-confidence status when human follow-through is missing.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}

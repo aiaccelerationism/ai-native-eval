@@ -2,15 +2,15 @@
 
 - Scope: ai-native-eval foundation and evaluator-system self-evaluation
 - Generated: 2026-06-14T06:42:37.499Z
-- Score: 3.1 / 10
-- Level: 3
+- Score: 2.8 / 10
+- Level: 2
 - Confidence: high
 - Repo commit: `working-tree-self-eval-20260614`
 
 ## Plugin Resolution
 
 - Roots: `ai-native-foundation-evaluator`, `bmad-method-evaluator`, `ai-native-eval-self-evaluator`
-- Resolved: 44 plugin(s)
+- Resolved: 51 plugin(s)
 - Disabled: `bmad-method-evaluator`, `bmad-analysis-evaluator`, `bmad-product-brief-evaluator`, `bmad-planning-evaluator`, `bmad-prd-quality-evaluator`, `bmad-solutioning-evaluator`, `bmad-architecture-readiness-evaluator`, `bmad-epic-story-breakdown-evaluator`, `bmad-implementation-evaluator`, `bmad-story-context-quality-evaluator`, `bmad-core-practices-evaluator`
 
 ## Run Configuration
@@ -21,8 +21,183 @@
 
 ## Evaluation Tree
 
-- ai-native-eval foundation and evaluator-system self-evaluation (fail · 3.1 / 10 · high)
-  - AI-native foundation evaluator (fail · 3.0 / 10 · high · `ai-native-foundation-evaluator`)
+- ai-native-eval foundation and evaluator-system self-evaluation (fail · 2.8 / 10 · high)
+  - AI-native foundation evaluator (fail · 2.3 / 10 · high · `ai-native-foundation-evaluator`)
+    - AI participation evaluator (fail · 1.3 / 10 · medium · `ai-native-ai-participation-evaluator`)
+      - Agent thread participation evaluator (fail · 1.5 / 10 · medium · `ai-native-agent-thread-participation-evaluator`)
+        - Reason: Agent thread expectations exist in AGENTS.md and PR evidence requirements, but the repo does not yet preserve a durable per-PR agent-thread record with bootstrap, skills, commands, repair loops, and closeout. Recent-change follow-through is deducted because the baseline lacks per-evaluator proof from recent PR-equivalent changes.
+        - Evidence:
+          - AGENTS.md; .github/pull_request_template.md Thread Closeout and AI Participation Self-Assessment: Agent closeout and PR evidence surfaces exist, with new AI participation fields in the PR template.
+        - Why not 10/10:
+          - Agent thread configuration: -0.10
+            - Incomplete agent thread configuration: -0.10
+              - Reason: Agent closeout is documented, but there is no durable thread artifact or required PR field for bootstrap, repair-loop, and continuation state.
+              - Evidence:
+                - AGENTS.md; .github/pull_request_template.md Thread Closeout: Closeout expectations exist but do not create a structured thread artifact.
+              - Recommendation [medium]: Add a structured thread summary or PR field for bootstrap, skills, commands, repair loops, and handoff state.
+          - Agent thread execution: -0.20
+            - Missing agent thread execution: -0.20
+              - Reason: The committed baseline does not include recent PR/thread examples showing agent-thread execution records.
+              - Evidence:
+                - self-evaluations/foundation-20260614/run/evaluators self-eval outputs: The baseline contains evaluator outputs but not linked agent-thread records for recent PRs.
+              - Recommendation [high]: Record agent-thread execution evidence in substantive PRs.
+          - Agent thread reviewability: -0.05
+            - Incomplete agent thread reviewability: -0.05
+              - Reason: PR template fields can expose AI participation, but there is not yet a proven review surface linking agent actions, human decisions, and thread evidence.
+              - Evidence:
+                - .github/pull_request_template.md AI Participation Self-Assessment and Human-AI Collaboration Trace: The template now creates a place for this evidence.
+              - Recommendation [medium]: Populate the new PR fields and link agent thread evidence from recent changes.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.
+      - Source control AI participation evaluator (fail · 1.5 / 10 · medium · `ai-native-source-control-ai-participation-evaluator`)
+        - Reason: Issue and PR templates now include AI participation surfaces, but there is no configured AI reviewer or recent PR evidence showing AI-authored planning, AI review, repair, and merge readiness. Recent-change follow-through is deducted.
+        - Evidence:
+          - .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md AI participation plan and AI Participation Self-Assessment: Issue and PR templates include AI participation fields.
+        - Why not 10/10:
+          - Source control AI configuration: -0.10
+            - Incomplete source control AI configuration: -0.10
+              - Reason: Templates ask for AI participation, but there is no AI reviewer automation or required source-control check proving AI review happened.
+              - Evidence:
+                - .github/pull_request_template.md; .github/workflows/ci.yml Review Surface and CI: PR evidence fields and deterministic CI exist, but no AI reviewer check is configured.
+              - Recommendation [medium]: Add an AI reviewer/evaluator status field or automated check for source-control AI participation.
+          - Source control AI execution: -0.20
+            - Missing source control AI execution: -0.20
+              - Reason: The committed baseline does not cite recent issues or PRs proving AI planning, review, repair, and validation participation.
+              - Evidence:
+                - self-evaluations/foundation-20260614/report.md self-eval report: The report does not link recent GitHub issue/PR examples for AI source-control participation.
+              - Recommendation [high]: Cite recent issues, PRs, AI review comments, and repair evidence in future self-evaluations.
+          - Source control AI reviewability: -0.05
+            - Incomplete source control AI reviewability: -0.05
+              - Reason: The PR template has AI participation sections, but recent PR evidence is not yet available to prove reviewers can audit AI participation.
+              - Evidence:
+                - .github/pull_request_template.md AI Participation Self-Assessment: The review surface exists as a template.
+              - Recommendation [medium]: Populate AI participation fields in real PRs and link AI review outputs.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.
+      - Skill activation depth evaluator (fail · 1.5 / 10 · medium · `ai-native-skill-activation-depth-evaluator`)
+        - Reason: The repo has skill routing and skill evals, and templates now ask for skill activation, but recent PR-equivalent evidence does not yet prove early skill activation or low user prompting burden. Recent-change follow-through is deducted.
+        - Evidence:
+          - .agents/skills/**/SKILL.md; .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md skills and AI participation fields: Skills exist and issue/PR templates now ask for expected or activated skills.
+        - Why not 10/10:
+          - Skill activation configuration: -0.10
+            - Incomplete skill activation configuration: -0.10
+              - Reason: Templates now ask for skills, but there is no blocking rule requiring no-skill-needed justification or skill eval updates for repeated misses.
+              - Evidence:
+                - .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md AI participation plan and Skills activated: Skill fields exist but are not enforced by a check.
+              - Recommendation [medium]: Require no-skill-needed justification and durable skill updates for recurring misses.
+          - Skill activation execution: -0.20
+            - Missing skill activation execution: -0.20
+              - Reason: The baseline does not cite recent PRs showing relevant skills were selected early and shaped implementation or review.
+              - Evidence:
+                - self-evaluations/foundation-20260614/run/evaluators self-eval outputs: Outputs do not link recent PR skill activation examples.
+              - Recommendation [high]: Record skill activation evidence in recent PRs and self-evaluation outputs.
+          - Skill activation learning: -0.05
+            - Incomplete skill activation learning: -0.05
+              - Reason: Skill evals exist, but this baseline does not yet link missed or late skill activation to specific durable skill repairs.
+              - Evidence:
+                - tests/skill-packaging.test.mjs; .agents/skills/**/evals skill evals: Skill eval infrastructure exists.
+              - Recommendation [medium]: Link late skill activation findings to skill or eval updates.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.
+      - AI self-assessment loop evaluator (fail · 1.0 / 10 · medium · `ai-native-ai-self-assessment-loop-evaluator`)
+        - Reason: Issue and PR templates now define AI self-assessment expectations, but recent issue/PR evidence does not yet show the loop being executed or feeding improvements. Recent-change follow-through is deducted.
+        - Evidence:
+          - .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md AI self-assessment expectations and AI Participation Self-Assessment: Templates now ask for trigger quality, missed triggers, user prompting burden, and follow-through evidence.
+        - Why not 10/10:
+          - AI self-assessment configuration: -0.10
+            - Incomplete AI self-assessment configuration: -0.10
+              - Reason: Self-assessment fields exist, but there is no check that requires them to be completed before merge.
+              - Evidence:
+                - .github/pull_request_template.md AI Participation Self-Assessment: Fields exist in the PR template.
+              - Recommendation [medium]: Add a review expectation or check that PR self-assessment fields are completed.
+          - AI self-assessment execution: -0.20
+            - Missing AI self-assessment execution: -0.20
+              - Reason: No recent issue or PR evidence in the committed baseline proves AI self-assessment was performed.
+              - Evidence:
+                - self-evaluations/foundation-20260614/report.md Evaluation Tree: The report lacks recent AI self-assessment examples.
+              - Recommendation [high]: Populate AI self-assessment sections in substantive PRs.
+          - AI self-assessment learning: -0.10
+            - Missing AI self-assessment learning: -0.10
+              - Reason: The baseline does not show AI self-assessment findings becoming template, skill, or evaluator repairs.
+              - Evidence:
+                - self-evaluations/foundation-20260614/run/evaluators self-eval outputs: No self-assessment loop repair examples are cited.
+              - Recommendation [medium]: Convert recurring self-assessment misses into durable skill, template, or evaluator updates.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.
+      - Human follow-through evaluator (fail · 1.0 / 10 · medium · `ai-native-human-follow-through-evaluator`)
+        - Reason: Human review and gate expectations are documented and templates now name human follow-through, but there is no recent evidence proving humans consistently follow the process or that agents enforce missing human inputs. Recent-change follow-through is deducted.
+        - Evidence:
+          - docs/reviewer-contract.md; AGENTS.md; .github/ISSUE_TEMPLATE/evaluator-change.yml; .github/pull_request_template.md Review Contract and Human Follow-Through: Human review/gate expectations exist in docs and templates.
+        - Why not 10/10:
+          - Human follow-through configuration: -0.10
+            - Incomplete human follow-through configuration: -0.10
+              - Reason: Human follow-through expectations exist, but enforcement for missing human context, review signals, or skip-gate rationale is not automated.
+              - Evidence:
+                - docs/reviewer-contract.md; .github/pull_request_template.md Review Gates and Human Follow-Through: Expectations are documented but not enforced by a check.
+              - Recommendation [medium]: Add review checks or policy for missing human follow-through fields.
+          - Human follow-through execution: -0.20
+            - Missing human follow-through execution: -0.20
+              - Reason: The baseline does not cite recent PRs proving humans supplied required context, review verdicts, and gate rationale.
+              - Evidence:
+                - self-evaluations/foundation-20260614/report.md report evidence: No recent human follow-through sample is linked.
+              - Recommendation [high]: Cite recent human review and gate evidence in self-evaluation outputs.
+          - Agent enforcement of human follow-through: -0.10
+            - Missing agent enforcement of human follow-through: -0.10
+              - Reason: There is no recent evidence that agents pushed back when humans omitted required process evidence.
+              - Evidence:
+                - AGENTS.md; self-evaluations/foundation-20260614/run/evaluators agent instructions and outputs: Instructions exist, but enforcement examples are missing.
+              - Recommendation [high]: Require agents to record pushback or low-confidence status when human follow-through is missing.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.
+      - Human-AI collaboration trace evaluator (fail · 1.5 / 10 · medium · `ai-native-human-ai-collaboration-trace-evaluator`)
+        - Reason: PR templates now include a Human-AI Collaboration Trace, but recent evidence does not yet show the full loop from human request through agent action, AI review, repair, validation, and merge. Recent-change follow-through is deducted.
+        - Evidence:
+          - .github/pull_request_template.md; docs/reviewer-contract.md Human-AI Collaboration Trace and Review Contract: The PR template now asks for collaboration trace evidence.
+        - Why not 10/10:
+          - Collaboration trace configuration: -0.10
+            - Incomplete collaboration trace configuration: -0.10
+              - Reason: The PR template has a collaboration trace section, but issue templates and checks do not yet enforce all stages of the loop.
+              - Evidence:
+                - .github/pull_request_template.md; .github/ISSUE_TEMPLATE/evaluator-change.yml Human-AI Collaboration Trace: PR fields exist; issue fields cover AI participation but not the full trace.
+              - Recommendation [medium]: Require collaboration trace fields from issue planning through PR closeout.
+          - Collaboration trace execution: -0.20
+            - Missing collaboration trace execution: -0.20
+              - Reason: The baseline does not cite recent PRs showing the full human-AI loop through review, repair, validation, and merge.
+              - Evidence:
+                - self-evaluations/foundation-20260614/report.md Evaluation Tree: No recent collaboration trace sample is linked.
+              - Recommendation [high]: Populate collaboration trace sections in substantive PRs and cite them in self-evaluation.
+          - Collaboration trace reviewability: -0.05
+            - Incomplete collaboration trace reviewability: -0.05
+              - Reason: The collaboration trace is configured in the template but not yet proven easy to audit in actual PRs.
+              - Evidence:
+                - .github/pull_request_template.md Human-AI Collaboration Trace: The section is present but not yet backed by recent examples.
+              - Recommendation [medium]: Use structured collaboration trace fields in recent PRs so reviewers can audit them quickly.
+          - Recent change follow-through: -0.50
+            - No recent change evidence: -0.50
+              - Reason: The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.
+              - Evidence:
+                - git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators recent commits and per-leaf evaluator outputs: Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes.
+              - Recommendation [high]: Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.
     - Repo operability evaluator (fail · 3.1 / 10 · high · `ai-native-repo-operability-evaluator`)
       - Local runtime command evaluator (fail · 4.3 / 10 · high · `ai-native-local-runtime-command-evaluator`)
         - Reason: Strict self-evaluation: documentation is credited only as a baseline; missing executable enforcement, templates, CI, durable artifacts, or history-backed proof is deducted where applicable. Applied deductions: incomplete-runtime-command-validation. Recent-change follow-through is now explicitly deducted where the committed baseline lacks per-evaluator proof from the latest PR-equivalent changes.

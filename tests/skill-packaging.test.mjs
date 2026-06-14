@@ -44,6 +44,13 @@ test("fine-grained evaluator pack covers workflow surfaces", async () => {
     "ai-native-eval-rubric-quality-evaluator",
     "ai-native-eval-aggregation-integrity-evaluator",
     "ai-native-eval-plugin-boundary-integrity-evaluator",
+    "ai-native-ai-participation-evaluator",
+    "ai-native-agent-thread-participation-evaluator",
+    "ai-native-source-control-ai-participation-evaluator",
+    "ai-native-skill-activation-depth-evaluator",
+    "ai-native-ai-self-assessment-loop-evaluator",
+    "ai-native-human-follow-through-evaluator",
+    "ai-native-human-ai-collaboration-trace-evaluator",
     "ai-native-local-runtime-command-evaluator",
     "ai-native-local-environment-reproducibility-evaluator",
     "ai-native-repo-thread-bootstrap-evaluator",
@@ -88,6 +95,7 @@ test("fine-grained evaluator pack covers workflow surfaces", async () => {
     [
       "ai-native-foundation-evaluator",
       [
+        "ai-native-ai-participation-evaluator",
         "ai-native-repo-operability-evaluator",
         "ai-native-docs-evaluator",
         "ai-native-agent-readiness-evaluator",
@@ -96,6 +104,17 @@ test("fine-grained evaluator pack covers workflow surfaces", async () => {
         "ai-native-product-ux-evidence-evaluator",
         "ai-native-architecture-evaluator",
         "ai-native-evidence-evaluator"
+      ]
+    ],
+    [
+      "ai-native-ai-participation-evaluator",
+      [
+        "ai-native-agent-thread-participation-evaluator",
+        "ai-native-source-control-ai-participation-evaluator",
+        "ai-native-skill-activation-depth-evaluator",
+        "ai-native-ai-self-assessment-loop-evaluator",
+        "ai-native-human-follow-through-evaluator",
+        "ai-native-human-ai-collaboration-trace-evaluator"
       ]
     ],
     [
@@ -142,6 +161,39 @@ test("fine-grained evaluator pack covers workflow surfaces", async () => {
       assert.match(body, new RegExp(`"pluginId": "${child}"`), `${parent} -> ${child}`);
     }
   }
+});
+
+test("foundation gives AI participation forty percent weight", async () => {
+  const foundationBody = await readFile(
+    ".agents/skills/ai-native-foundation-evaluator/SKILL.md",
+    "utf8"
+  );
+  const manifest = JSON.parse(
+    foundationBody.match(/```json\n([\s\S]*?)\n```/)?.[1] ?? "{}"
+  );
+  const totalWeight = manifest.directChildren.reduce(
+    (total, child) => total + child.weight,
+    0
+  );
+  const aiParticipation = manifest.directChildren.find(
+    (child) => child.pluginId === "ai-native-ai-participation-evaluator"
+  );
+
+  assert.ok(aiParticipation);
+  assert.equal(totalWeight, 10);
+  assert.equal(aiParticipation.weight, 4);
+  assert.equal(aiParticipation.weight / totalWeight, 0.4);
+
+  const [issueTemplate, prTemplate] = await Promise.all([
+    readFile(".github/ISSUE_TEMPLATE/evaluator-change.yml", "utf8"),
+    readFile(".github/pull_request_template.md", "utf8")
+  ]);
+  assert.match(issueTemplate, /AI participation plan/);
+  assert.match(issueTemplate, /AI self-assessment expectations/);
+  assert.match(issueTemplate, /Human follow-through expectations/);
+  assert.match(prTemplate, /AI Participation Self-Assessment/);
+  assert.match(prTemplate, /Human Follow-Through/);
+  assert.match(prTemplate, /Human-AI Collaboration Trace/);
 });
 
 test("leaf evaluator skills define their own deduction group rubrics", async () => {
@@ -233,7 +285,7 @@ test("leaf evaluator rubrics reserve half the score for recent change follow-thr
     assert.equal(Math.round(totalBudget * 1000) / 1000, 1, path);
   }
 
-  assert.ok(rubricPaths.length >= 40);
+  assert.ok(rubricPaths.length >= 46);
 });
 
 test("self evaluator checks recent-change scoring safeguards", async () => {
@@ -302,7 +354,7 @@ test("every skill owns a skillgrade eval case", async () => {
     .filter((name) => !name.startsWith("_"))
     .sort();
 
-  assert.equal(skillNames.length, 57);
+  assert.equal(skillNames.length, 64);
 
   for (const skill of skillNames) {
     const evalYamlPath = `.agents/skills/${skill}/evals/eval.yaml`;

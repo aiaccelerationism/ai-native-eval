@@ -48,3 +48,28 @@ Link or name any relevant report, screenshot, trace, eval run, issue, or review 
 
 - 
 
+## AI Participation Self-Assessment
+
+- Trigger quality:
+- Skills activated:
+- Missed early triggers:
+- User prompting burden:
+- Agent initiative:
+- AI reviewer/evaluator participation:
+- Follow-through evidence:
+
+## Human Follow-Through
+
+- Human-provided context or decision:
+- Human review signal:
+- Skipped human gate and rationale:
+- Agent pushback for missing human follow-through:
+
+## Human-AI Collaboration Trace
+
+- Human request or issue context:
+- Agent actions:
+- AI review or evaluator findings:
+- Repairs:
+- Validation:
+- Merge decision evidence:

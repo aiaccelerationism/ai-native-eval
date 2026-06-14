@@ -1,0 +1,82 @@
+{
+  "pluginId": "ai-native-agent-thread-participation-evaluator",
+  "confidence": "medium",
+  "reason": "Agent thread expectations exist in AGENTS.md and PR evidence requirements, but the repo does not yet preserve a durable per-PR agent-thread record with bootstrap, skills, commands, repair loops, and closeout. Recent-change follow-through is deducted because the baseline lacks per-evaluator proof from recent PR-equivalent changes.",
+  "evidence": [
+    {
+      "source": "AGENTS.md; .github/pull_request_template.md",
+      "locator": "Thread Closeout and AI Participation Self-Assessment",
+      "summary": "Agent closeout and PR evidence surfaces exist, with new AI participation fields in the PR template."
+    }
+  ],
+  "deductions": [
+    {
+      "groupId": "agent-thread-configuration",
+      "deductionId": "incomplete-agent-thread-configuration",
+      "applies": true,
+      "reason": "Agent closeout is documented, but there is no durable thread artifact or required PR field for bootstrap, repair-loop, and continuation state.",
+      "evidence": [
+        {
+          "source": "AGENTS.md; .github/pull_request_template.md",
+          "locator": "Thread Closeout",
+          "summary": "Closeout expectations exist but do not create a structured thread artifact."
+        }
+      ],
+      "recommendation": {
+        "summary": "Add a structured thread summary or PR field for bootstrap, skills, commands, repair loops, and handoff state.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "agent-thread-execution",
+      "deductionId": "missing-agent-thread-execution",
+      "applies": true,
+      "reason": "The committed baseline does not include recent PR/thread examples showing agent-thread execution records.",
+      "evidence": [
+        {
+          "source": "self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "self-eval outputs",
+          "summary": "The baseline contains evaluator outputs but not linked agent-thread records for recent PRs."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record agent-thread execution evidence in substantive PRs.",
+        "priority": "high"
+      }
+    },
+    {
+      "groupId": "agent-thread-reviewability",
+      "deductionId": "incomplete-agent-thread-reviewability",
+      "applies": true,
+      "reason": "PR template fields can expose AI participation, but there is not yet a proven review surface linking agent actions, human decisions, and thread evidence.",
+      "evidence": [
+        {
+          "source": ".github/pull_request_template.md",
+          "locator": "AI Participation Self-Assessment and Human-AI Collaboration Trace",
+          "summary": "The template now creates a place for this evidence."
+        }
+      ],
+      "recommendation": {
+        "summary": "Populate the new PR fields and link agent thread evidence from recent changes.",
+        "priority": "medium"
+      }
+    },
+    {
+      "groupId": "recent-change-follow-through",
+      "deductionId": "no-recent-change-evidence",
+      "applies": true,
+      "reason": "The committed self-evaluation does not link this evaluator to a sampled set of the latest five PR-equivalent substantive changes, so current human/agent follow-through cannot be verified for this AI participation practice.",
+      "evidence": [
+        {
+          "source": "git log --oneline -n 12; self-evaluations/foundation-20260614/run/evaluators",
+          "locator": "recent commits and per-leaf evaluator outputs",
+          "summary": "Local history exposes fewer than five substantive change refs and the committed evaluator outputs do not map this AI participation practice to recent PR-equivalent changes."
+        }
+      ],
+      "recommendation": {
+        "summary": "Record a recent-change AI participation sample in each evaluator judgment and cite the issue, PR, review, thread, skills, human decisions, and artifacts that prove the practice was followed.",
+        "priority": "high"
+      }
+    }
+  ]
+}

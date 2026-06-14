@@ -47,10 +47,45 @@ body:
     validations:
       required: true
   - type: textarea
+    id: ai_participation
+    attributes:
+      label: AI participation plan
+      description: Which agent, reviewer, or skill-backed workflow should participate, and how should the PR prove it?
+      placeholder: |
+        - Expected agent/thread: Codex
+        - Skills expected to activate:
+        - AI reviewer or evaluator expected:
+        - Evidence expected in PR:
+    validations:
+      required: true
+  - type: textarea
+    id: ai_self_assessment
+    attributes:
+      label: AI self-assessment expectations
+      description: What should the agent self-assess about trigger quality, missed skill activation, user prompting burden, and AI-native follow-through?
+      placeholder: |
+        - Trigger quality to assess:
+        - Missed early triggers to watch for:
+        - User prompting burden to report:
+        - Follow-up if AI participation is weak:
+    validations:
+      required: true
+  - type: textarea
+    id: human_follow_through
+    attributes:
+      label: Human follow-through expectations
+      description: What must humans provide or review, and what should the agent do if humans skip it?
+      placeholder: |
+        - Human-owned context or decision:
+        - Required human review signal:
+        - Required skip-gate rationale:
+        - Agent pushback expected if missing:
+    validations:
+      required: true
+  - type: textarea
     id: review
     attributes:
       label: Reviewer expectations
       description: Any human review, live-agent eval, browser check, or skip-gate requirement.
     validations:
       required: true
-
