@@ -6,8 +6,10 @@ import type {
   DeductionGroupRubricInput,
   DeductionInput,
   EffectiveEvalConfigSnapshot,
+  EvaluationContext,
   EvaluationNodeInput,
   EvaluationReport,
+  EvaluatorChildRef,
   EvaluatorPluginManifest,
   LeafEvaluatorOutput,
   ReportUiLanguage
@@ -19,6 +21,7 @@ export interface FolderRunConfig {
   language?: string;
   uiLanguage?: ReportUiLanguage;
   scope?: string;
+  evaluationContext?: EvaluationContext;
   effectiveConfig?: EffectiveEvalConfigSnapshot;
   configSources?: EffectiveEvalConfigSnapshot["configSources"];
   rootPluginIds: string[];
@@ -47,6 +50,7 @@ interface RuntimeGraph {
   disabledRoots: Set<string>;
   disabledInfo: Map<string, { reason: string; source: string }>;
   rootOrigins: Map<string, "built-in" | "additional">;
+  evaluatorConfigs: Map<string, NonNullable<EffectiveEvalConfigSnapshot["evaluatorConfigs"]>[number]>;
 }
 
 const manifestFencePattern = /## Plugin Manifest[\s\S]*?```json\s*([\s\S]*?)```/;
@@ -92,6 +96,7 @@ export async function buildReportFromFolder(input: {
     language: loaded.config.language,
     uiLanguage: loaded.config.uiLanguage,
     scope: loaded.config.scope,
+    evaluationContext: loaded.config.evaluationContext,
     root,
     pluginResolution: {
       rootPluginIds: loaded.config.rootPluginIds,
@@ -241,7 +246,7 @@ function validateRuntimeGraph(loaded: FolderLoadResult, errors: string[]): void 
       errors.push(`plugin ${pluginId}: referenced by runtime graph but skill is not installed`);
       continue;
     }
-    const children = skill.manifest.directChildren ?? [];
+    const children = effectiveChildren(pluginId, skill, graph);
     if (children.length === 0) {
       validateLeafPlugin(pluginId, skill, loaded.outputs.get(pluginId), errors);
     }
@@ -371,7 +376,7 @@ function buildNodeFromPlugin(
     };
   }
 
-  const children = skill.manifest.directChildren ?? [];
+  const children = effectiveChildren(pluginId, skill, graph);
   if (children.length > 0) {
     return {
       id: pluginId,
@@ -445,13 +450,17 @@ function mergeRubricWithOutput(
 
 function collectResolvedPluginIds(
   rootPluginIds: string[],
-  skills: Map<string, SkillDefinition>
+  skills: Map<string, SkillDefinition>,
+  graph?: RuntimeGraph
 ): Set<string> {
   const resolved = new Set<string>();
   const visit = (pluginId: string): void => {
     if (resolved.has(pluginId)) return;
     resolved.add(pluginId);
-    const children = skills.get(pluginId)?.manifest.directChildren ?? [];
+    const skill = skills.get(pluginId);
+    const children = skill && graph
+      ? effectiveChildren(pluginId, skill, graph)
+      : skill?.manifest.directChildren ?? [];
     for (const child of children) visit(child.pluginId);
   };
   for (const pluginId of rootPluginIds) visit(pluginId);
@@ -462,6 +471,12 @@ function buildRuntimeGraph(loaded: FolderLoadResult): RuntimeGraph {
   const disabledInfo = new Map<string, { reason: string; source: string }>();
   const disabledRoots = new Set<string>();
   const rootOrigins = new Map<string, "built-in" | "additional">();
+  const evaluatorConfigs = new Map(
+    (loaded.config?.effectiveConfig?.evaluatorConfigs ?? []).map((config) => [
+      config.pluginId,
+      config
+    ])
+  );
   for (const root of loaded.config?.effectiveConfig?.roots ?? []) {
     rootOrigins.set(root.pluginId, root.origin);
   }
@@ -481,10 +496,16 @@ function buildRuntimeGraph(loaded: FolderLoadResult): RuntimeGraph {
       | { rootPluginId: string; reason: string; source: string }
       | undefined
   ): void => {
+    const evaluatorConfig = evaluatorConfigs.get(pluginId);
     const ownDisabled = disabledInfo.get(pluginId);
+    const disabledByEvaluatorConfig = evaluatorConfig?.enabled === false
+      ? { reason: "Disabled by evaluator config", source: evaluatorConfig.source }
+      : undefined;
     const disabledContext = inheritedDisabled ?? (ownDisabled
       ? { rootPluginId: pluginId, reason: ownDisabled.reason, source: ownDisabled.source }
-      : undefined);
+      : disabledByEvaluatorConfig
+        ? { rootPluginId: pluginId, reason: disabledByEvaluatorConfig.reason, source: disabledByEvaluatorConfig.source }
+        : undefined);
     if (disabledContext) {
       disabled.add(pluginId);
       disabledInfo.set(pluginId, {
@@ -494,9 +515,36 @@ function buildRuntimeGraph(loaded: FolderLoadResult): RuntimeGraph {
     } else {
       enabled.add(pluginId);
     }
-    const children = loaded.skills.get(pluginId)?.manifest.directChildren ?? [];
+    const skill = loaded.skills.get(pluginId);
+    const children = skill
+      ? effectiveChildren(pluginId, skill, {
+          enabled,
+          disabled,
+          disabledRoots,
+          disabledInfo,
+          rootOrigins,
+          evaluatorConfigs
+        })
+      : [];
     for (const child of children) {
-      visit(child.pluginId, disabledContext);
+      const disabledChild = evaluatorConfig?.disabledChildren?.find(
+        (item) => item.pluginId === child.pluginId
+      );
+      const childDisabledContext = disabledContext ?? (disabledChild
+        ? {
+            rootPluginId: child.pluginId,
+            reason: disabledChild.reason,
+            source: disabledChild.source
+          }
+        : undefined);
+      if (disabledChild) {
+        disabledRoots.add(child.pluginId);
+        disabledInfo.set(child.pluginId, {
+          reason: disabledChild.reason,
+          source: disabledChild.source
+        });
+      }
+      visit(child.pluginId, childDisabledContext);
     }
   };
 
@@ -504,7 +552,7 @@ function buildRuntimeGraph(loaded: FolderLoadResult): RuntimeGraph {
     visit(pluginId, undefined);
   }
 
-  return { enabled, disabled, disabledRoots, disabledInfo, rootOrigins };
+  return { enabled, disabled, disabledRoots, disabledInfo, rootOrigins, evaluatorConfigs };
 }
 
 function nearestDisabledRoot(
@@ -513,10 +561,30 @@ function nearestDisabledRoot(
   skills: Map<string, SkillDefinition>
 ): string | undefined {
   for (const root of graph.disabledRoots) {
-    const descendants = collectResolvedPluginIds([root], skills);
+    const descendants = collectResolvedPluginIds([root], skills, graph);
     if (descendants.has(pluginId)) return root;
   }
   return undefined;
+}
+
+function effectiveChildren(
+  pluginId: string,
+  skill: SkillDefinition,
+  graph: RuntimeGraph
+): EvaluatorChildRef[] {
+  const children = [...(skill.manifest.directChildren ?? [])];
+  const config = graph.evaluatorConfigs.get(pluginId);
+  for (const child of config?.additionalChildren ?? []) {
+    if (!children.some((candidate) => candidate.pluginId === child.pluginId)) {
+      children.push({
+        pluginId: child.pluginId,
+        weight: child.weight,
+        required: child.required,
+        reason: child.reason
+      });
+    }
+  }
+  return children;
 }
 
 function parseManifest(

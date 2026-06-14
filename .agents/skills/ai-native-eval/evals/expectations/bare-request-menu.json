@@ -1,0 +1,15 @@
+{
+  "output_path": "outputs/bare-request-response.md",
+  "must_contain": [
+    "AI_NATIVE_BARE_REQUEST_MENU",
+    "ai-native-repo-maturity-evaluator",
+    "ai-native-pr-lifecycle-evaluator",
+    "ai-native-issue-lifecycle-evaluator",
+    "ai-native-thread-checkpoint-evaluator",
+    "ai-native-turn-guardrail-evaluator",
+    "ai-native-periodic-health-evaluator"
+  ],
+  "must_match": [
+    "choose|which|select|哪|選"
+  ]
+}

@@ -33,6 +33,7 @@ export function artifactPaths(runId: string, root = ".ai-native-eval/artifacts")
 export function buildIncrementalManifest(input: {
   manifestId: string;
   generatedAt: string;
+  evaluationContext?: EvaluationReport["evaluationContext"];
   baseCommit?: string;
   headCommit?: string;
   changedFiles: string[];
@@ -43,6 +44,7 @@ export function buildIncrementalManifest(input: {
     schemaVersion: 1,
     manifestId: input.manifestId,
     generatedAt: input.generatedAt,
+    evaluationContext: input.evaluationContext,
     baseCommit: input.baseCommit,
     headCommit: input.headCommit,
     changedFiles: [...input.changedFiles].sort(),
@@ -93,6 +95,7 @@ export function snapshotFromReport(report: EvaluationReport): object {
     reportId: report.reportId,
     generatedAt: report.generatedAt,
     scope: report.scope,
+    evaluationContext: report.evaluationContext,
     root: report.root,
     summary: report.summary,
     reproducibility: report.reproducibility

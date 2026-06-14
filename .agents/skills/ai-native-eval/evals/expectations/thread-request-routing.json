@@ -1,0 +1,7 @@
+{
+  "output_path": "outputs/thread-routing-response.md",
+  "must_contain": [
+    "AI_NATIVE_THREAD_REQUEST_ROUTE",
+    "ai-native-thread-checkpoint-evaluator"
+  ]
+}

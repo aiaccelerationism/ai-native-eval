@@ -1,0 +1,32 @@
+version: "1"
+
+skill: ..
+
+defaults:
+  agent: codex
+  provider: local
+  trials: 1
+  timeout: 300
+  threshold: 1.0
+
+tasks:
+  - name: ai-native-thread-checkpoint-evaluator-basic-routing
+    instruction: |
+      Read `SKILL.md` for this skill and write the response to
+      `outputs/final-response.md`.
+
+      The response must include the exact marker `AI_NATIVE_SKILL_EVAL_COMPLETE`,
+      the skill name `ai-native-thread-checkpoint-evaluator`, and one concise sentence describing this skill's
+      primary responsibility. Do not modify repository files other than the requested
+      output artifact.
+    workspace:
+      - src: expectations/basic-routing.json
+        dest: expectations/expected.json
+      - src: ../../_eval-support/grade-response.mjs
+        dest: eval-support/grade-response.mjs
+      - src: solutions/basic-routing.sh
+        dest: basic-routing.sh
+    graders:
+      - type: deterministic
+        run: node eval-support/grade-response.mjs expectations/expected.json
+    solution: solutions/basic-routing.sh

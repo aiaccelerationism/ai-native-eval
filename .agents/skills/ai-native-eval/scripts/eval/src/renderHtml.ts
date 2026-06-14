@@ -12,6 +12,7 @@ const translations = {
     score: "Score",
     confidence: "Confidence",
     evaluationTree: "Evaluation Tree",
+    evaluationContext: "Evaluation Context",
     runConfiguration: "Run Configuration",
     reproducibility: "Reproducibility",
     points: "Points",
@@ -32,6 +33,7 @@ const translations = {
     score: "分數",
     confidence: "信心",
     evaluationTree: "評估樹",
+    evaluationContext: "評估情境",
     runConfiguration: "執行設定",
     reproducibility: "可重現資訊",
     points: "點數",
@@ -178,6 +180,7 @@ export function renderHtmlReport(report: EvaluationReport): string {
     <section class="summary">
       ${scoreMetric(tr, report)}
     </section>
+    ${renderEvaluationContext(report, tr)}
     ${renderRunConfiguration(report, tr)}
     <section>
       <h2 data-i18n="evaluationTree">${escapeHtml(tr.evaluationTree)}</h2>
@@ -298,6 +301,38 @@ function scoreMetric(tr: TranslationDictionary, report: EvaluationReport): strin
   )}</span>: ${escapeHtml(report.summary.confidence)}</div></div>`;
 }
 
+function renderEvaluationContext(
+  report: EvaluationReport,
+  tr: TranslationDictionary
+): string {
+  const context = report.evaluationContext;
+  if (!context) return "";
+  const rows = [
+    ["Review type", context.reviewType],
+    ["Target", context.target],
+    ["Target ref", context.targetRef],
+    ["Phase", context.phase],
+    ["Trigger", context.trigger],
+    ["Target surfaces", context.targetSurfaces?.join(", ")],
+    ["Output intents", context.outputIntents?.join(", ")],
+    [
+      "Affects overall score",
+      context.affectsOverallScore === undefined
+        ? undefined
+        : String(context.affectsOverallScore)
+    ],
+    ["Assumption", context.assumption]
+  ].filter((row): row is [string, string] => Boolean(row[1]));
+  return `<section><h2 data-i18n="evaluationContext">${escapeHtml(
+    tr.evaluationContext
+  )}</h2><div class="panel section-body"><table><tbody>${rows
+    .map(
+      ([label, value]) =>
+        `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`
+    )
+    .join("")}</tbody></table></div></section>`;
+}
+
 function renderRunConfiguration(
   report: EvaluationReport,
   tr: TranslationDictionary
@@ -308,6 +343,9 @@ function renderRunConfiguration(
     (root) => root.origin === "additional"
   );
   const disabled = report.runConfig.disabled;
+  const routes = report.runConfig.appliedContextRoutes ?? [];
+  const evaluatorConfigs = report.runConfig.evaluatorConfigs ?? [];
+  const warnings = report.runConfig.warnings ?? [];
   return `<section><h2 data-i18n="runConfiguration">${escapeHtml(
     tr.runConfiguration
   )}</h2><div class="panel section-body config-list">
@@ -330,6 +368,44 @@ function renderRunConfiguration(
             .map(
               (item) =>
                 `<li><code>${escapeHtml(item.pluginId)}</code><br><span class="muted">${escapeHtml(item.reason)} (${escapeHtml(item.source)})</span></li>`
+            )
+            .join("")
+        : `<li class="muted">None</li>`
+    }</ul></div>
+    <div><h3>Context routes</h3><ul>${
+      routes.length > 0
+        ? routes
+            .map(
+              (route) =>
+                `<li><code>${escapeHtml(route.id)}</code><br><span class="muted">${escapeHtml(route.description ?? route.source)}</span></li>`
+            )
+            .join("")
+        : `<li class="muted">None</li>`
+    }</ul></div>
+    <div><h3>Evaluator configs</h3><ul>${
+      evaluatorConfigs.length > 0
+        ? evaluatorConfigs
+            .map((config) => {
+              const details = [
+                config.enabled === false ? "disabled" : "enabled",
+                config.additionalChildren?.length
+                  ? `+${config.additionalChildren.map((child) => child.pluginId).join(", ")}`
+                  : "",
+                config.disabledChildren?.length
+                  ? `-${config.disabledChildren.map((child) => child.pluginId).join(", ")}`
+                  : ""
+              ].filter(Boolean).join(" · ");
+              return `<li><code>${escapeHtml(config.pluginId)}</code><br><span class="muted">${escapeHtml(config.source)} · ${escapeHtml(details)}</span></li>`;
+            })
+            .join("")
+        : `<li class="muted">None</li>`
+    }</ul></div>
+    <div><h3>Warnings</h3><ul>${
+      warnings.length > 0
+        ? warnings
+            .map(
+              (warning) =>
+                `<li><code>${escapeHtml(warning.code)}</code><br><span class="muted">${escapeHtml(warning.message)} (${escapeHtml(warning.source)})</span></li>`
             )
             .join("")
         : `<li class="muted">None</li>`

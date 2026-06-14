@@ -50,3 +50,83 @@ tasks:
       - type: deterministic
         run: node eval-support/grade-response.mjs expectations/expected.json
     solution: solutions/artifact-bundle-default.sh
+  - name: ai-native-eval-bare-request-menu
+    instruction: |
+      Read `SKILL.md` for this skill and write the response to
+      `outputs/bare-request-response.md`.
+
+      Simulate a user who only says "use ai-native-eval" without target or scope.
+      The response must include the exact marker `AI_NATIVE_BARE_REQUEST_MENU`
+      and list the available lifecycle evaluator choices. Do not modify repository
+      files other than the requested output artifact.
+    workspace:
+      - src: expectations/bare-request-menu.json
+        dest: expectations/expected.json
+      - src: ../../_eval-support/grade-response.mjs
+        dest: eval-support/grade-response.mjs
+      - src: solutions/bare-request-menu.sh
+        dest: bare-request-menu.sh
+    graders:
+      - type: deterministic
+        run: node eval-support/grade-response.mjs expectations/expected.json
+    solution: solutions/bare-request-menu.sh
+  - name: ai-native-eval-repo-request-routing
+    instruction: |
+      Read `SKILL.md` for this skill and write the response to
+      `outputs/repo-routing-response.md`.
+
+      Simulate a user who asks to evaluate the whole repository. The response
+      must include the exact marker `AI_NATIVE_REPO_REQUEST_ROUTE` and route
+      directly to the repo maturity evaluator without asking for target choice.
+      Do not modify repository files other than the requested output artifact.
+    workspace:
+      - src: expectations/repo-request-routing.json
+        dest: expectations/expected.json
+      - src: ../../_eval-support/grade-response.mjs
+        dest: eval-support/grade-response.mjs
+      - src: solutions/repo-request-routing.sh
+        dest: repo-request-routing.sh
+    graders:
+      - type: deterministic
+        run: node eval-support/grade-response.mjs expectations/expected.json
+    solution: solutions/repo-request-routing.sh
+  - name: ai-native-eval-pr-request-routing
+    instruction: |
+      Read `SKILL.md` for this skill and write the response to
+      `outputs/pr-routing-response.md`.
+
+      Simulate a user who asks to evaluate a PR. The response must include the
+      exact marker `AI_NATIVE_PR_REQUEST_ROUTE` and route directly to the PR
+      lifecycle evaluator without asking whether the target is a PR. Do not modify
+      repository files other than the requested output artifact.
+    workspace:
+      - src: expectations/pr-request-routing.json
+        dest: expectations/expected.json
+      - src: ../../_eval-support/grade-response.mjs
+        dest: eval-support/grade-response.mjs
+      - src: solutions/pr-request-routing.sh
+        dest: pr-request-routing.sh
+    graders:
+      - type: deterministic
+        run: node eval-support/grade-response.mjs expectations/expected.json
+    solution: solutions/pr-request-routing.sh
+  - name: ai-native-eval-thread-request-routing
+    instruction: |
+      Read `SKILL.md` for this skill and write the response to
+      `outputs/thread-routing-response.md`.
+
+      Simulate a user who asks to evaluate the current thread state. The response
+      must include the exact marker `AI_NATIVE_THREAD_REQUEST_ROUTE` and route
+      directly to the thread checkpoint evaluator. Do not modify repository files
+      other than the requested output artifact.
+    workspace:
+      - src: expectations/thread-request-routing.json
+        dest: expectations/expected.json
+      - src: ../../_eval-support/grade-response.mjs
+        dest: eval-support/grade-response.mjs
+      - src: solutions/thread-request-routing.sh
+        dest: thread-request-routing.sh
+    graders:
+      - type: deterministic
+        run: node eval-support/grade-response.mjs expectations/expected.json
+    solution: solutions/thread-request-routing.sh

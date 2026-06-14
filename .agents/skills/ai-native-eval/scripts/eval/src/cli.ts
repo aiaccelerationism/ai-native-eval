@@ -19,6 +19,7 @@ import {
 import { renderHtmlReport } from "./renderHtml.js";
 import { renderMarkdownReport } from "./renderMarkdown.js";
 import type {
+  EvaluationContext,
   EvaluationNodeInput,
   EvaluationReport,
   ReportUiLanguage
@@ -59,6 +60,7 @@ async function main(): Promise<void> {
     language?: string;
     uiLanguage?: ReportUiLanguage;
     scope?: string;
+    evaluationContext?: EvaluationContext;
     root: EvaluationNodeInput;
     pluginResolution?: EvaluationReport["pluginResolution"];
     executionBatches?: EvaluationReport["executionBatches"];
@@ -71,6 +73,7 @@ async function main(): Promise<void> {
     | undefined;
   if (language) input.language = language;
   if (uiLanguage) input.uiLanguage = uiLanguage;
+  input.evaluationContext = readEvaluationContext(rest, input.evaluationContext);
   const report = buildReport(input);
 
   if (command === "score") {
@@ -88,6 +91,7 @@ async function main(): Promise<void> {
     const manifest = buildIncrementalManifest({
       manifestId: runId,
       generatedAt: report.generatedAt,
+      evaluationContext: report.evaluationContext,
       headCommit: report.reproducibility?.repoCommit,
       changedFiles: readRepeatedOption(rest, "--changed-file")
     });
@@ -136,6 +140,7 @@ async function runInitRunCommand(repoRoot: string, rest: string[]): Promise<void
     language: readOption(rest, "--language"),
     uiLanguage: readOption(rest, "--ui-language") as "en" | "zh-TW" | undefined,
     scope: readOption(rest, "--scope"),
+    evaluationContext: readEvaluationContext(rest),
     repoCommit
   });
   console.log(runPath);
@@ -213,6 +218,7 @@ async function runFolderCommand(
         buildIncrementalManifest({
           manifestId: report.reportId,
           generatedAt: report.generatedAt,
+          evaluationContext: report.evaluationContext,
           headCommit: report.reproducibility?.repoCommit,
           changedFiles: []
         })
@@ -260,9 +266,9 @@ function readOption(args: string[], name: string): string | undefined {
 function usage(): void {
   console.error(`Usage:
   ai-native-eval score <evaluation-tree.json>
-  ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-TW]
-  ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-TW] [--changed-file <path>]...
-  ai-native-eval init-run <repo-root> [--out <run-folder>] [--config <path>] [--project-config <path>] [--person-config <path>]
+  ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-TW] [--review-type event] [--target pull_request] [--phase opened] [--target-surface pr]...
+  ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-TW] [--changed-file <path>]... [--review-type event] [--target pull_request]
+  ai-native-eval init-run <repo-root> [--out <run-folder>] [--config <path>] [--project-config <path>] [--person-config <path>] [--review-type event] [--target pull_request] [--target-ref PR-123] [--phase opened] [--trigger user] [--target-surface pr]...
   ai-native-eval validate-folder <run-folder> [--skills-dir .agents/skills]
   ai-native-eval render-folder <run-folder> [--out <report.html>] [--json-out <report.json>] [--markdown-out <report.md>] [--skills-dir .agents/skills]
 
@@ -280,6 +286,55 @@ function readRepeatedOption(args: string[], name: string): string[] {
     }
   }
   return values;
+}
+
+function readEvaluationContext(
+  args: string[],
+  existing?: EvaluationContext
+): EvaluationContext | undefined {
+  const reviewType = readOption(args, "--review-type");
+  const target = readOption(args, "--target");
+  const targetRef = readOption(args, "--target-ref");
+  const phase = readOption(args, "--phase");
+  const trigger = readOption(args, "--trigger");
+  const assumption = readOption(args, "--assumption");
+  const targetSurfaces = readRepeatedOption(args, "--target-surface");
+  const outputIntents = readRepeatedOption(args, "--output-intent");
+  const affectsOverallScore = readBooleanOption(args, "--affects-overall-score");
+  if (
+    !existing &&
+    !reviewType &&
+    !target &&
+    !targetRef &&
+    !phase &&
+    !trigger &&
+    !assumption &&
+    targetSurfaces.length === 0 &&
+    outputIntents.length === 0 &&
+    affectsOverallScore === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    ...(existing ?? { reviewType: "custom" }),
+    ...(reviewType ? { reviewType } : {}),
+    ...(target ? { target } : {}),
+    ...(targetRef ? { targetRef } : {}),
+    ...(phase ? { phase } : {}),
+    ...(trigger ? { trigger } : {}),
+    ...(targetSurfaces.length > 0 ? { targetSurfaces } : {}),
+    ...(outputIntents.length > 0 ? { outputIntents } : {}),
+    ...(affectsOverallScore !== undefined ? { affectsOverallScore } : {}),
+    ...(assumption ? { assumption } : {})
+  };
+}
+
+function readBooleanOption(args: string[], name: string): boolean | undefined {
+  const value = readOption(args, name);
+  if (value === undefined) return undefined;
+  if (value === "true") return true;
+  if (value === "false") return false;
+  throw new Error(`${name} must be true or false`);
 }
 
 main().catch((error: unknown) => {

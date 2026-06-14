@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/final-response.md",
+  "must_contain": [
+    "AI_NATIVE_SKILL_EVAL_COMPLETE",
+    "ai-native-pr-lifecycle-evaluator"
+  ],
+  "must_match": [
+    "PR|pull request|pre_merge|closeout|review"
+  ]
+}

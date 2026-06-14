@@ -10,6 +10,18 @@ export type Confidence = "low" | "medium" | "high";
 
 export type ReportUiLanguage = "en" | "zh-TW";
 
+export interface EvaluationContext {
+  reviewType: string;
+  target?: string;
+  targetRef?: string;
+  phase?: string;
+  trigger?: string;
+  targetSurfaces?: string[];
+  outputIntents?: string[];
+  affectsOverallScore?: boolean;
+  assumption?: string;
+}
+
 export interface EvidenceLink {
   id?: string;
   source: string;
@@ -167,6 +179,7 @@ export interface EvaluationReport {
   language?: string;
   uiLanguage?: ReportUiLanguage;
   scope: string;
+  evaluationContext?: EvaluationContext;
   root: EvaluationNodeResult;
   summary: EvalSummary;
   pluginResolution?: PluginResolution;
@@ -186,6 +199,7 @@ export interface EvaluatorChildRef {
   pluginId: string;
   weight?: number;
   required?: boolean;
+  reason?: string;
 }
 
 export interface EvaluatorExtensionPoint {
@@ -220,10 +234,47 @@ export interface EvalConfigDisabled {
   reason: string;
 }
 
-export interface EvalConfig {
-  schemaVersion: number;
+export interface EvalEvaluatorConfig {
+  enabled?: boolean;
+  additionalChildren?: EvaluatorChildRef[];
+  disabledChildren?: EvalConfigDisabled[];
+  settings?: Record<string, unknown>;
+}
+
+export interface EvalContextRouteMatch {
+  reviewType?: string;
+  target?: string;
+  phase?: string;
+  trigger?: string;
+  targetSurface?: string;
+}
+
+export interface EvalContextRoute {
+  id: string;
+  description?: string;
+  match: EvalContextRouteMatch;
+  scope?: string;
   additionalRoots?: EvalConfigRoot[];
   disabled?: EvalConfigDisabled[];
+  outputIntents?: string[];
+  affectsOverallScore?: boolean;
+}
+
+export interface EvalConfig {
+  schemaVersion: number;
+  evaluators?: Record<string, EvalEvaluatorConfig>;
+  /**
+   * @deprecated Use evaluators[pluginId].additionalChildren instead.
+   */
+  additionalRoots?: EvalConfigRoot[];
+  /**
+   * @deprecated Use evaluators[pluginId].disabledChildren or enabled:false instead.
+   */
+  disabled?: EvalConfigDisabled[];
+  /**
+   * @deprecated Route to evaluator skills directly and configure them under evaluators[pluginId].
+   */
+  contextRoutes?: EvalContextRoute[];
 }
 
 export interface EvalConfigSource {
@@ -245,10 +296,42 @@ export interface ResolvedDisabledPlugin {
   source: string;
 }
 
+export interface ResolvedEvaluatorChildRef extends EvaluatorChildRef {
+  source: string;
+}
+
+export interface ResolvedEvaluatorConfig {
+  pluginId: string;
+  source: string;
+  enabled?: boolean;
+  additionalChildren?: ResolvedEvaluatorChildRef[];
+  disabledChildren?: ResolvedDisabledPlugin[];
+  settings?: Record<string, unknown>;
+}
+
+export interface ConfigWarning {
+  code: string;
+  source: string;
+  message: string;
+}
+
+export interface ResolvedContextRoute {
+  id: string;
+  source: string;
+  description?: string;
+  scope?: string;
+  outputIntents?: string[];
+  affectsOverallScore?: boolean;
+}
+
 export interface EffectiveEvalConfigSnapshot {
   schemaVersion: number;
   configSources: EvalConfigSource[];
   builtInRootPluginIds: string[];
+  evaluationContext?: EvaluationContext;
+  appliedContextRoutes?: ResolvedContextRoute[];
+  evaluatorConfigs?: ResolvedEvaluatorConfig[];
+  warnings?: ConfigWarning[];
   roots: ResolvedRootPlugin[];
   disabled: ResolvedDisabledPlugin[];
 }
@@ -289,6 +372,7 @@ export interface IncrementalManifest {
   schemaVersion: number;
   manifestId: string;
   generatedAt: string;
+  evaluationContext?: EvaluationContext;
   baseCommit?: string;
   headCommit?: string;
   changedFiles: string[];

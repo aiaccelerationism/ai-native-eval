@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/final-response.md",
+  "must_contain": [
+    "AI_NATIVE_SKILL_EVAL_COMPLETE",
+    "ai-native-repo-maturity-evaluator"
+  ],
+  "must_match": [
+    "repo|repository|maturity|baseline|incremental"
+  ]
+}

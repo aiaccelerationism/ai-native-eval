@@ -1,0 +1,10 @@
+{
+  "output_path": "outputs/repo-routing-response.md",
+  "must_contain": [
+    "AI_NATIVE_REPO_REQUEST_ROUTE",
+    "ai-native-repo-maturity-evaluator"
+  ],
+  "must_not_contain": [
+    "ai-native-pr-lifecycle-evaluator"
+  ]
+}

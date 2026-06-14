@@ -22,7 +22,16 @@ The evaluation should answer:
 - Preserve per-evaluator output records even when one agent runs multiple plugins.
 - Aggregate normalized evaluation nodes deterministically into score, confidence, maturity level, and report artifacts.
 
-Built-in top-level evaluator packs are `ai-native-foundation-evaluator` and `bmad-method-evaluator`. These are pack roots, not a registry of descendants. The eval should not know the fine-grained evaluators below those packs.
+Built-in top-level lifecycle evaluator packs are:
+
+- `ai-native-repo-maturity-evaluator`
+- `ai-native-pr-lifecycle-evaluator`
+- `ai-native-issue-lifecycle-evaluator`
+- `ai-native-thread-checkpoint-evaluator`
+- `ai-native-turn-guardrail-evaluator`
+- `ai-native-periodic-health-evaluator`
+
+These are entry roots, not a registry of descendants. The eval should not know the fine-grained evaluators below those packs. Broad foundation packs such as `ai-native-foundation-evaluator` and `bmad-method-evaluator` are children of lifecycle packs, not the default entrypoint for every request.
 
 ## Evidence
 
@@ -36,29 +45,82 @@ Inspect evidence that is available in the current environment:
 
 If access is missing, emit `missing` evidence nodes and lower confidence. For ordinary non-history evidence, do not score unavailable GitHub/CI history as a factual failure unless the review scope explicitly requires it. For recent-change follow-through, unavailable GitHub access is not neutral: when issue, PR, review, check, artifact, or human-gate evidence is expected to live in GitHub, treat missing GitHub access as absent recent-change evidence and apply the relevant recent-change deduction.
 
-## Workflow
+## Evaluation Context And Routing
 
-Choose the review type first:
+Choose the evaluation context before resolving evaluator detail. The orchestrator
+owns intent recognition and dispatch; evaluator packs own scoring rules, evidence
+expectations, and lifecycle-specific defaults.
+
+Built-in contexts are examples, not a closed taxonomy:
 
 - **Baseline review**: use when no previous state exists, state is stale, or the user asks for a full evaluation.
 - **Incremental review**: use when `.ai-native-eval/state.json` or prior snapshots exist. Inspect changed files and external cursors first, re-evaluate affected nodes, carry forward unchanged nodes, and re-aggregate the full tree.
-- **Event review**: use for one PR, issue, milestone, workflow run, or completed task. State whether the event should affect the overall evaluation now or wait for more evidence.
+- **Event review**: use for one issue, PR, milestone, workflow run, commit group, or completed task. State whether the event should affect the overall evaluation now or wait for more evidence.
+- **Thread review**: use for an agent thread checkpoint, closeout, or handoff where the evidence is the collaboration trace rather than only repo files.
+- **Turn review**: use for a single user request or agent response where the main question is whether the agent should enforce repo workflow, ask for clarification, or record evidence before continuing.
+- **Periodic review**: use for scheduled or recurring health checks that may sample evidence without being tied to a single PR or issue.
+- **Custom review**: use when a project config defines another lifecycle such as release candidate, incident response, design gate, customer escalation, migration, or security review.
+
+Only ask when the user gives a bare invocation such as "use ai-native-eval" with
+no target, scope, or context. In that case, stop and list these choices:
+
+1. Repository maturity evaluation.
+2. PR lifecycle evaluation.
+3. Issue lifecycle evaluation.
+4. Agent thread checkpoint evaluation.
+5. Single-turn guardrail evaluation.
+6. Periodic health evaluation.
+
+Do not ask when the target is already clear. "Evaluate this repo" routes to
+`ai-native-repo-maturity-evaluator`; "evaluate this PR" routes to
+`ai-native-pr-lifecycle-evaluator`; "evaluate this issue" routes to
+`ai-native-issue-lifecycle-evaluator`; "evaluate this thread" routes to
+`ai-native-thread-checkpoint-evaluator`; "evaluate this user request/turn" routes
+to `ai-native-turn-guardrail-evaluator`; "run a periodic health check" routes to
+`ai-native-periodic-health-evaluator`.
+
+If the target is clear but phase is absent, use the target evaluator's default
+phase and state the assumption before proceeding. Ask only when the missing phase
+would cause a high-cost run, public comment, durable artifact promotion, or
+misleading score.
+
+The context may include:
+
+- `reviewType`: baseline, incremental, event, thread, turn, periodic, or a project-specific value.
+- `target`: repo, issue, pull_request, workflow_run, agent_thread, user_turn, or a project-specific value.
+- `targetRef`: the issue number, PR number, branch, thread id, run id, or other handle when available.
+- `phase`: intake, opened, active, review, pre_merge, post_merge, closeout, follow_up, or a project-specific value.
+- `trigger`: user, agent, github, schedule, manual, or a project-specific value.
+- `targetSurfaces`: the evidence surfaces this run should emphasize.
+- `outputIntents`: artifact, markdown, comment, advisory, blocking, score_update, or project-specific outputs.
+- `affectsOverallScore`: whether this run should update the repository maturity view or remain a targeted advisory record.
+
+Read project, person, and explicit config for `evaluators[pluginId]`. Each
+lifecycle evaluator owns its `additionalChildren`, `disabledChildren`, and
+`settings`. The orchestrator must not interpret evaluator-specific `settings`;
+it records them in the effective config and lets the selected evaluator skill
+own their meaning. Legacy global `additionalRoots`, `disabled`, and
+`contextRoutes` may still be read for compatibility, but they are deprecated and
+must be reported as warnings.
+
+## Workflow
 
 Default steps:
 
 1. Determine scope, repo root, current commit, and available evidence surfaces.
-2. Read previous eval state if present.
-3. Resolve the effective eval config from built-in roots, optional person config, optional project config, and optional explicit override config.
-4. Build the recent-change sample before scoring leaf evaluators. Use the latest five PR-equivalent substantive changes when available, record which evidence source was used, and note when fewer than five exist. If GitHub access is unavailable for a GitHub-hosted workflow, do not infer PR, issue, review, check, artifact, or human-gate compliance from local commits alone; score the missing GitHub evidence as absent recent-change follow-through.
-5. Write a run folder with `run.json` as the audit snapshot for this exact evaluation.
-6. Resolve installed evaluator plugins through direct child references from the run snapshot.
-7. Group resolved plugins into execution batches; default to a single agent batch unless evidence size, risk, or user request justifies fan-out.
-8. Write each enabled leaf evaluator's judgment to its own JSON file under the run folder.
-9. Validate the run folder against the run snapshot, installed evaluator manifests, and leaf skill rubrics before rendering.
-10. Carry forward unchanged leaf outputs on incremental runs.
-11. Aggregate recursively and deterministically only after validation passes.
-12. Produce a static HTML report and optional JSON report artifact.
-13. Persist append-only artifacts only when writing is allowed.
+2. Determine the evaluation context and state the assumption when it is not obvious.
+3. Read previous eval state if present.
+4. Resolve the effective eval config from the selected lifecycle root, optional person config, optional project config, optional explicit override config, and evaluator-specific config under `evaluators[pluginId]`.
+5. Build the recent-change sample before scoring leaf evaluators when the selected context requires history. Use the latest five PR-equivalent substantive changes when available, record which evidence source was used, and note when fewer than five exist. If GitHub access is unavailable for a GitHub-hosted workflow, do not infer PR, issue, review, check, artifact, or human-gate compliance from local commits alone; score the missing GitHub evidence as absent recent-change follow-through.
+6. Write a run folder with `run.json` as the audit snapshot for this exact evaluation.
+7. Resolve installed evaluator plugins through direct child references from the run snapshot.
+8. Group resolved plugins into execution batches; default to a single agent batch unless evidence size, risk, or user request justifies fan-out.
+9. Write each enabled leaf evaluator's judgment to its own JSON file under the run folder.
+10. Validate the run folder against the run snapshot, installed evaluator manifests, and leaf skill rubrics before rendering.
+11. Carry forward unchanged leaf outputs on incremental runs.
+12. Aggregate recursively and deterministically only after validation passes.
+13. Produce a static HTML report and optional JSON report artifact.
+14. Persist append-only artifacts only when writing is allowed.
 
 ## Bundled Tool
 
@@ -106,17 +168,19 @@ The preferred workflow accepts a folder with `run.json` and per-leaf evaluator o
     ...
 ```
 
-`run.json` declares `rootPluginIds`, report metadata, language, scope, reproducibility, and the effective config snapshot for this evaluation. The snapshot should record built-in roots, additional roots, disabled plugins or subtrees, config sources, and a config hash.
+`run.json` declares `rootPluginIds`, report metadata, language, scope, evaluation context, reproducibility, and the effective config snapshot for this evaluation. The snapshot should record the selected lifecycle root, evaluator-specific config, disabled plugins or subtrees, deprecated config warnings, config sources, and a config hash.
 
 Config resolution is deterministic:
 
-- Built-in top-level evaluator roots are enabled by default.
-- The built-in roots are `ai-native-foundation-evaluator` and `bmad-method-evaluator`.
+- The default built-in root is `ai-native-repo-maturity-evaluator`.
+- Context targets select lifecycle roots: repo -> `ai-native-repo-maturity-evaluator`, PR -> `ai-native-pr-lifecycle-evaluator`, issue -> `ai-native-issue-lifecycle-evaluator`, thread -> `ai-native-thread-checkpoint-evaluator`, turn -> `ai-native-turn-guardrail-evaluator`, periodic -> `ai-native-periodic-health-evaluator`.
 - Optional person config can add roots or disable plugins.
 - Optional project config is read from `<repo>/.ai-native-eval/config.json` unless an explicit project config path is supplied.
 - Optional explicit config is a one-run override.
-- Additional roots are appended after built-in roots.
-- Disabled plugin ids disable that plugin and its runtime-resolved descendants. Disabled nodes appear in the report as `not_applicable`, do not require evaluator output, and do not affect score.
+- `evaluators[pluginId].additionalChildren` adds children only under that evaluator.
+- `evaluators[pluginId].disabledChildren` disables children only for that evaluator's runtime tree.
+- `evaluators[pluginId].settings` is persisted without interpretation by the core tool.
+- Legacy global `additionalRoots`, `disabled`, and `contextRoutes` are deprecated compatibility fields and should produce non-fatal warnings.
 
 Each leaf evaluator JSON must contain only judgments against that evaluator's own `SKILL.md` `ai-native-deduction-groups` rubric. It must not repeat or redefine the rubric.
 
