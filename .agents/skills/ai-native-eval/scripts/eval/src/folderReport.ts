@@ -12,6 +12,7 @@ import type {
   EvaluatorChildRef,
   EvaluatorPluginManifest,
   LeafEvaluatorOutput,
+  PolicyRuleDefinition,
   ReportUiLanguage
 } from "./types.js";
 
@@ -35,6 +36,7 @@ export interface FolderValidationResult {
 interface SkillDefinition {
   manifest: EvaluatorPluginManifest;
   rubric?: DeductionGroupRubricInput[];
+  policyRules?: PolicyRuleDefinition[];
 }
 
 interface FolderLoadResult {
@@ -56,6 +58,8 @@ interface RuntimeGraph {
 const manifestFencePattern = /## Plugin Manifest[\s\S]*?```json\s*([\s\S]*?)```/;
 const rubricFencePattern =
   /```ai-native-deduction-groups\s*([\s\S]*?)```/;
+const policyRulesFencePattern =
+  /```ai-native-policy-rules\s*([\s\S]*?)```/;
 
 export async function validateFolderReport(input: {
   runFolder: string;
@@ -105,6 +109,7 @@ export async function buildReportFromFolder(input: {
       disabledPluginIds: Array.from(graph.disabled)
     },
     runConfig: loaded.config.effectiveConfig,
+    policyRules: collectPolicyRules(graph, loaded.skills),
     reproducibility: loaded.config.reproducibility
   });
 }
@@ -168,7 +173,8 @@ async function readSkillDefinitions(
           const manifest = parseManifest(body, skillPath, errors);
           if (!manifest) return;
           const rubric = parseRubric(body, skillPath, errors);
-          skills.set(manifest.pluginId, { manifest, rubric });
+          const policyRules = parsePolicyRules(body, skillPath, manifest.pluginId, errors);
+          skills.set(manifest.pluginId, { manifest, rubric, policyRules });
         } catch (error) {
           errors.push(`${skillPath}: ${formatReadOrParseError(error)}`);
         }
@@ -618,6 +624,40 @@ function parseRubric(
     errors.push(`${skillPath}: invalid ai-native-deduction-groups JSON: ${formatReadOrParseError(error)}`);
     return undefined;
   }
+}
+
+function parsePolicyRules(
+  body: string,
+  skillPath: string,
+  ownerPluginId: string,
+  errors: string[]
+): PolicyRuleDefinition[] | undefined {
+  const match = body.match(policyRulesFencePattern);
+  if (!match) return undefined;
+  try {
+    const rules = JSON.parse(match[1]) as PolicyRuleDefinition[];
+    return rules.map((rule) => ({
+      ...rule,
+      ownerPluginId: rule.ownerPluginId ?? ownerPluginId
+    }));
+  } catch (error) {
+    errors.push(`${skillPath}: invalid ai-native-policy-rules JSON: ${formatReadOrParseError(error)}`);
+    return undefined;
+  }
+}
+
+function collectPolicyRules(
+  graph: RuntimeGraph,
+  skills: Map<string, SkillDefinition>
+): PolicyRuleDefinition[] {
+  const rules: PolicyRuleDefinition[] = [];
+  for (const pluginId of graph.enabled) {
+    const skill = skills.get(pluginId);
+    for (const rule of skill?.policyRules ?? []) {
+      rules.push(rule);
+    }
+  }
+  return rules;
 }
 
 function formatReadOrParseError(error: unknown): string {

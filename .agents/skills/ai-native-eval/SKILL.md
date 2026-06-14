@@ -124,6 +124,13 @@ own their meaning. Legacy global `additionalRoots`, `disabled`, and
 `contextRoutes` may still be read for compatibility, but they are deprecated and
 must be reported as warnings.
 
+Lifecycle evaluators may also declare ESLint-style policy rules in their own
+`SKILL.md` with severity `off`, `warn`, or `error`. User config can override
+those rules under `evaluators[pluginId].settings.rules` using either
+`"rule-id": "warn"` or `"rule-id": ["error", { "threshold": 10 }]`. A triggered
+`error` makes the report policy status `blocked`, while the numeric score stays
+unchanged. The orchestrator must not keep a central policy-rule registry.
+
 ## Workflow
 
 Default steps:
@@ -202,6 +209,7 @@ Config resolution is deterministic:
 - `evaluators[pluginId].additionalChildren` adds children only under that evaluator.
 - `evaluators[pluginId].disabledChildren` disables children only for that evaluator's runtime tree.
 - `evaluators[pluginId].settings` is persisted without interpretation by the core tool.
+- `evaluators[pluginId].settings.rules` may override evaluator-declared policy rules with ESLint-style `off`, `warn`, or `error` severity. The tool can evaluate generic rule conditions such as `scoreBelow`, but rule ownership stays with the evaluator pack.
 - Legacy global `additionalRoots`, `disabled`, and `contextRoutes` are deprecated compatibility fields and should produce non-fatal warnings.
 
 Each leaf evaluator JSON must contain only judgments against that evaluator's own `SKILL.md` `ai-native-deduction-groups` rubric. It must not repeat or redefine the rubric.

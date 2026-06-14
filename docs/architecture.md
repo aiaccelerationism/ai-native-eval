@@ -69,6 +69,15 @@ evaluator skill owns. Legacy global `additionalRoots`, `disabled`, and
 warnings. The orchestrator may know the six lifecycle entry roots, but evaluator
 packs still own lifecycle-specific rubrics, direct children, and evidence rules.
 
+Lifecycle evaluator packs may declare policy rules in their own `SKILL.md` using
+an `ai-native-policy-rules` JSON fence. Policy rules follow the ESLint severity
+model: `off`, `warn`, or `error`. User config can override evaluator-owned rules
+under `evaluators[pluginId].settings.rules` with either `"rule-id": "warn"` or
+`"rule-id": ["error", { "threshold": 10 }]`. The core tool may evaluate generic
+conditions such as `scoreBelow` against the already-resolved evaluation tree, but
+it must not own a central policy-rule registry. A triggered `error` makes the
+report policy status `blocked`; numeric scores are not changed by policy rules.
+
 Trigger modes are integration metadata, not a central runtime registry. The
 orchestrator may default explicit non-periodic targets to `one_shot` and
 explicit periodic targets to `periodic`, then pass trigger metadata through to

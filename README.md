@@ -57,6 +57,7 @@ The report gives humans and agents the same review surface:
 - Source-controlled config for enabling, disabling, reweighting, or adding evaluator packs.
 - Incremental evaluations that can reuse prior evidence instead of starting from zero every time.
 - Trigger metadata for one-shot, turn-inline, self-iteration, periodic, or external-event integrations, while external systems remain responsible for hooks, schedulers, comments, and repair loops.
+- ESLint-style policy rules with `off`, `warn`, and `error` severities, so reports can show blocked/error conditions without changing the numeric score.
 
 ## Built-In Evaluator Packs
 

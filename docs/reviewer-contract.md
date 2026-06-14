@@ -12,13 +12,14 @@ Every substantive PR should include:
 - Any evaluator rubric ids added, removed, or changed.
 - Any changes to built-in root behavior, config resolution, disabled subtree handling, or report rendering.
 - Any trigger metadata behavior changed, including defaults, CLI flags, report display, or evaluator-owned `settings.triggers`.
+- Any policy rule behavior changed, including evaluator-declared `ai-native-policy-rules`, ESLint-style `settings.rules` overrides, report badges, or blocked/warn summary counts.
 - Whether `self-evaluations/**` artifacts were regenerated.
 - Which gates were skipped and why the skip is safe.
 
 ## Severity
 
 - P0: deterministic scoring, validation, or config behavior is wrong; disabled evaluators can still affect score; reports can render invalid inputs; skill contracts contradict tool behavior.
-- P1: a supported workflow is missing test coverage; required human E2E evidence is absent; report output is misleading; trigger metadata is dropped or interpreted by the wrong layer; evaluator outputs use invented deduction ids; README or docs route agents incorrectly.
+- P1: a supported workflow is missing test coverage; required human E2E evidence is absent; report output is misleading; policy rules change numeric score; trigger metadata is dropped or interpreted by the wrong layer; evaluator outputs use invented deduction ids; README or docs route agents incorrectly.
 - P2: wording, discoverability, minor report polish, or missing low-risk examples.
 
 ## Review Gates

@@ -22,7 +22,8 @@ import { renderMarkdownReport } from "../src/renderMarkdown.js";
 import type {
   EvaluationNodeInput,
   EvaluationReport,
-  EvaluatorPluginManifest
+  EvaluatorPluginManifest,
+  PolicyRuleDefinition
 } from "../src/types.js";
 
 test("aggregates an arbitrarily nested evaluation tree deterministically", async () => {
@@ -269,6 +270,144 @@ test("deduction groups score leaves deterministically without fallback points", 
   assert.equal(partial?.deductionGroups?.[0]?.pointsLost, 0.6);
   assert.equal(partial?.deductionGroups?.[0]?.capped, true);
   assert.equal(partial?.deductionGroups?.[1]?.pointsLost, 0.2);
+});
+
+test("policy rules add ESLint-style error overlays without changing score", () => {
+  const policyRules: PolicyRuleDefinition[] = [
+    {
+      id: "pr-readiness-min-score",
+      ownerPluginId: "ai-native-pr-lifecycle-evaluator",
+      targetPluginId: "ai-native-pr-readiness-evaluator",
+      condition: "scoreBelow",
+      defaultSeverity: "error",
+      defaultOptions: { threshold: 10 },
+      message: "PR readiness must be perfect before merge."
+    }
+  ];
+  const report = buildReport({
+    generatedAt: "fixed",
+    root: {
+      id: "root",
+      label: "Root",
+      children: [
+        {
+          id: "ai-native-pr-lifecycle-evaluator",
+          label: "PR lifecycle",
+          pluginId: "ai-native-pr-lifecycle-evaluator",
+          children: [
+            {
+              id: "ai-native-pr-readiness-evaluator",
+              label: "PR readiness",
+              pluginId: "ai-native-pr-readiness-evaluator",
+              status: "partial",
+              pointsAvailable: 1,
+              pointsEarned: 0.8
+            }
+          ]
+        }
+      ]
+    },
+    policyRules
+  });
+
+  assert.equal(report.summary.score0To10, 8);
+  assert.equal(report.policy?.status, "blocked");
+  assert.equal(report.policy?.errorCount, 1);
+  assert.equal(report.policy?.warnCount, 0);
+  assert.equal(report.policy?.results[0]?.status, "triggered");
+  const target = findNode(report.root, "ai-native-pr-readiness-evaluator");
+  assert.equal(target.policyResults?.[0]?.severity, "error");
+  const html = renderHtmlReport(report);
+  const markdown = renderMarkdownReport(report);
+  assert.match(html, /BLOCKED/);
+  assert.match(html, /policy-error/);
+  assert.match(markdown, /Policy: BLOCKED/);
+  assert.match(markdown, /ERROR `pr-readiness-min-score`/);
+});
+
+test("policy rule config can downgrade to warn or disable with off", () => {
+  const policyRules: PolicyRuleDefinition[] = [
+    {
+      id: "pr-readiness-min-score",
+      ownerPluginId: "ai-native-pr-lifecycle-evaluator",
+      targetPluginId: "ai-native-pr-readiness-evaluator",
+      condition: "scoreBelow",
+      defaultSeverity: "error",
+      defaultOptions: { threshold: 10 },
+      message: "PR readiness must meet the configured minimum."
+    },
+    {
+      id: "artifact-traceability-min-score",
+      ownerPluginId: "ai-native-pr-lifecycle-evaluator",
+      targetPluginId: "ai-native-artifact-traceability-evaluator",
+      condition: "scoreBelow",
+      defaultSeverity: "warn",
+      defaultOptions: { threshold: 8 },
+      message: "Artifact traceability should meet review quality."
+    }
+  ];
+  const root: EvaluationNodeInput = {
+    id: "root",
+    label: "Root",
+    children: [
+      {
+        id: "ai-native-pr-readiness-evaluator",
+        label: "PR readiness",
+        pluginId: "ai-native-pr-readiness-evaluator",
+        status: "partial",
+        pointsAvailable: 1,
+        pointsEarned: 0.7
+      },
+      {
+        id: "ai-native-artifact-traceability-evaluator",
+        label: "Artifact traceability",
+        pluginId: "ai-native-artifact-traceability-evaluator",
+        status: "partial",
+        pointsAvailable: 1,
+        pointsEarned: 0.6
+      }
+    ]
+  };
+
+  const downgraded = buildReport({
+    generatedAt: "fixed",
+    root,
+    policyRules,
+    runConfig: {
+      schemaVersion: 1,
+      configSources: [{ kind: "project", found: true }],
+      builtInRootPluginIds: ["ai-native-pr-lifecycle-evaluator"],
+      roots: [
+        {
+          pluginId: "ai-native-pr-lifecycle-evaluator",
+          origin: "built-in",
+          source: "built-in"
+        }
+      ],
+      disabled: [],
+      evaluatorConfigs: [
+        {
+          pluginId: "ai-native-pr-lifecycle-evaluator",
+          source: "project",
+          settings: {
+            rules: {
+              "pr-readiness-min-score": ["warn", { threshold: 8 }],
+              "artifact-traceability-min-score": "off"
+            }
+          }
+        }
+      ]
+    }
+  });
+
+  assert.equal(downgraded.summary.score0To10, 6.5);
+  assert.equal(downgraded.policy?.status, "warn");
+  assert.equal(downgraded.policy?.errorCount, 0);
+  assert.equal(downgraded.policy?.warnCount, 1);
+  assert.deepEqual(
+    downgraded.policy?.results.map((result) => result.ruleId),
+    ["pr-readiness-min-score"]
+  );
 });
 
 test("deduction group validation prevents fallback scoring gaps", () => {
@@ -1071,6 +1210,12 @@ test("per-evaluator config can add and disable children under the selected pack"
     assert.equal(added.disabledSource, "project");
     assert.match(html, /Evaluator configs/);
     assert.match(html, /ai-native-local-runtime-command-evaluator/);
+    assert.equal(report.policy?.status, "pass");
+    assert.ok(
+      report.policy?.results.some(
+        (result) => result.ruleId === "pr-readiness-min-score"
+      )
+    );
     assert.deepEqual(
       report.runConfig?.evaluatorConfigs?.[0]?.settings?.triggers,
       {

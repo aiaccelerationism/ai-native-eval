@@ -9,7 +9,13 @@ import type {
   EvaluationNodeResult,
   EvaluationReport,
   EvaluationStatus,
-  EvalSummary
+  EvalSummary,
+  PolicyRuleConfig,
+  PolicyRuleDefinition,
+  PolicyRuleOptions,
+  PolicyRuleResult,
+  PolicySeverity,
+  PolicySummary
 } from "./types.js";
 
 const confidenceOrder: Record<Confidence, number> = {
@@ -30,9 +36,15 @@ export function buildReport(input: {
   runConfig?: EvaluationReport["runConfig"];
   executionBatches?: EvaluationReport["executionBatches"];
   evaluatorRuns?: EvaluationReport["evaluatorRuns"];
+  policyRules?: PolicyRuleDefinition[];
   reproducibility?: EvaluationReport["reproducibility"];
 }): EvaluationReport {
-  const root = aggregateNode(input.root);
+  const aggregatedRoot = aggregateNode(input.root);
+  const policy = input.policyRules?.length
+    ? evaluatePolicyRules(aggregatedRoot, input.policyRules, input.runConfig)
+    : undefined;
+  const root = annotatePolicyResults(aggregatedRoot, policy?.results ?? []);
+  const summary = summarize(root);
   return {
     reportId: input.reportId ?? stableReportId(root),
     generatedAt: input.generatedAt ?? new Date().toISOString(),
@@ -41,11 +53,15 @@ export function buildReport(input: {
     scope: input.scope ?? "repository",
     evaluationContext: input.evaluationContext,
     root,
-    summary: summarize(root),
+    summary: {
+      ...summary,
+      ...(policy ? { policy } : {})
+    },
     pluginResolution: input.pluginResolution,
     runConfig: input.runConfig,
     executionBatches: input.executionBatches,
     evaluatorRuns: input.evaluatorRuns,
+    ...(policy ? { policy } : {}),
     reproducibility: input.reproducibility
   };
 }
@@ -241,6 +257,148 @@ export function summarize(root: EvaluationNodeResult): EvalSummary {
     dimensions: collectDimensions(root),
     lostPoints: collectLostPoints(root).slice(0, 20)
   };
+}
+
+function evaluatePolicyRules(
+  root: EvaluationNodeResult,
+  definitions: PolicyRuleDefinition[],
+  runConfig: EvaluationReport["runConfig"]
+): PolicySummary {
+  const results: PolicyRuleResult[] = [];
+  for (const definition of definitions) {
+    const resolved = resolvePolicyRule(definition, runConfig);
+    if (resolved.severity === "off") continue;
+    const target = findPolicyTarget(root, definition);
+    const actualScore0To10 = target?.score0To10;
+    const status = isPolicyTriggered(definition, resolved.options, target)
+      ? "triggered"
+      : "passed";
+    results.push({
+      ruleId: definition.id,
+      label: definition.label,
+      ownerPluginId: definition.ownerPluginId,
+      targetPluginId: definition.targetPluginId,
+      targetNodeId: definition.targetNodeId,
+      targetLabel: target?.label,
+      severity: resolved.severity,
+      status,
+      condition: definition.condition,
+      threshold: resolved.options.threshold,
+      actualScore0To10,
+      message: definition.message
+    });
+  }
+  const triggered = results.filter((result) => result.status === "triggered");
+  const errorCount = triggered.filter((result) => result.severity === "error").length;
+  const warnCount = triggered.filter((result) => result.severity === "warn").length;
+  return {
+    status: errorCount > 0 ? "blocked" : warnCount > 0 ? "warn" : "pass",
+    errorCount,
+    warnCount,
+    triggeredCount: triggered.length,
+    results
+  };
+}
+
+function resolvePolicyRule(
+  definition: PolicyRuleDefinition,
+  runConfig: EvaluationReport["runConfig"]
+): { severity: PolicySeverity; options: PolicyRuleOptions } {
+  const ownerConfig = runConfig?.evaluatorConfigs?.find(
+    (config) => config.pluginId === definition.ownerPluginId
+  );
+  const rules = ownerConfig?.settings?.rules;
+  const override =
+    rules && typeof rules === "object" && !Array.isArray(rules)
+      ? (rules as Record<string, PolicyRuleConfig>)[definition.id]
+      : undefined;
+  const overrideSeverity =
+    typeof override === "string"
+      ? parsePolicySeverity(override)
+      : Array.isArray(override)
+        ? parsePolicySeverity(override[0])
+        : undefined;
+  if (typeof override === "string" && overrideSeverity) {
+    return {
+      severity: overrideSeverity,
+      options: definition.defaultOptions ?? {}
+    };
+  }
+  if (Array.isArray(override) && overrideSeverity) {
+    const [, options] = override;
+    return {
+      severity: overrideSeverity,
+      options: {
+        ...(definition.defaultOptions ?? {}),
+        ...validPolicyOptions(options)
+      }
+    };
+  }
+  return {
+    severity: definition.defaultSeverity,
+    options: definition.defaultOptions ?? {}
+  };
+}
+
+function parsePolicySeverity(value: unknown): PolicySeverity | undefined {
+  return value === "off" || value === "warn" || value === "error"
+    ? value
+    : undefined;
+}
+
+function validPolicyOptions(value: unknown): PolicyRuleOptions {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const options = value as PolicyRuleOptions;
+  return {
+    ...(Number.isFinite(options.threshold) ? { threshold: options.threshold } : {})
+  };
+}
+
+function isPolicyTriggered(
+  definition: PolicyRuleDefinition,
+  options: PolicyRuleOptions,
+  target: EvaluationNodeResult | undefined
+): boolean {
+  if (!target || target.status === "not_applicable") return false;
+  if (definition.condition === "scoreBelow") {
+    const threshold = options.threshold;
+    if (!Number.isFinite(threshold)) return false;
+    return target.score0To10 === null || target.score0To10 < (threshold as number);
+  }
+  return false;
+}
+
+function findPolicyTarget(
+  root: EvaluationNodeResult,
+  definition: PolicyRuleDefinition
+): EvaluationNodeResult | undefined {
+  if (definition.targetNodeId) {
+    return [...walk(root)].find((node) => node.id === definition.targetNodeId);
+  }
+  if (definition.targetPluginId) {
+    return [...walk(root)].find((node) => node.pluginId === definition.targetPluginId);
+  }
+  return undefined;
+}
+
+function annotatePolicyResults(
+  root: EvaluationNodeResult,
+  results: PolicyRuleResult[]
+): EvaluationNodeResult {
+  const triggered = results.filter((result) => result.status === "triggered");
+  const visit = (node: EvaluationNodeResult): EvaluationNodeResult => {
+    const nodeResults = triggered.filter(
+      (result) =>
+        (result.targetNodeId && result.targetNodeId === node.id) ||
+        (result.targetPluginId && result.targetPluginId === node.pluginId)
+    );
+    return {
+      ...node,
+      ...(nodeResults.length > 0 ? { policyResults: nodeResults } : {}),
+      children: node.children.map(visit)
+    };
+  };
+  return visit(root);
 }
 
 function collectDimensions(root: EvaluationNodeResult): DimensionScore[] {
