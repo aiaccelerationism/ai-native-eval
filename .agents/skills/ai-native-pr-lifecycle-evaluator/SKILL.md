@@ -34,6 +34,36 @@ This is a grouping evaluator. It emits scored evaluation nodes from direct child
 
 This evaluator owns only the direct children above. Use it when the user asks to evaluate a PR, pull request, merge readiness, review evidence, or PR closeout.
 
+## Policy Rules
+
+```ai-native-policy-rules
+[
+  {
+    "id": "pr-readiness-min-score",
+    "label": "PR readiness minimum score",
+    "targetPluginId": "ai-native-pr-readiness-evaluator",
+    "condition": "scoreBelow",
+    "defaultSeverity": "error",
+    "defaultOptions": {
+      "threshold": 10
+    },
+    "message": "PR readiness must meet the configured minimum before treating the PR lifecycle check as unblocked."
+  }
+]
+```
+
+Policy severity follows the ESLint model: `off`, `warn`, or `error`. A triggered
+`error` makes the report policy status `blocked`, but it does not change the
+numeric score. Override rules under
+`evaluators["ai-native-pr-lifecycle-evaluator"].settings.rules`, for example:
+
+```json
+{
+  "pr-readiness-min-score": ["warn", { "threshold": 8 }],
+  "thread-closeout-min-score": "off"
+}
+```
+
 ## Config Namespace
 
 Configure this evaluator under `evaluators["ai-native-pr-lifecycle-evaluator"]`.

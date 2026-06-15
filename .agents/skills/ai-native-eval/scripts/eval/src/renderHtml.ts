@@ -10,6 +10,7 @@ const translations = {
     reportTitle: "AI Native Eval Report",
     generated: "generated",
     score: "Score",
+    policy: "Policy",
     confidence: "Confidence",
     evaluationTree: "Evaluation Tree",
     evaluationContext: "Evaluation Context",
@@ -21,6 +22,7 @@ const translations = {
     action: "Action",
     evidence: "Evidence",
     whyNot10: "Why Not 10/10",
+    policyRules: "Policy Rules",
     cappedAt: "Capped at",
     recommendedActions: "Recommended Actions",
     improvementReferences: "Improvement References",
@@ -31,6 +33,7 @@ const translations = {
     reportTitle: "AI Native 段位報告",
     generated: "產生於",
     score: "分數",
+    policy: "Policy",
     confidence: "信心",
     evaluationTree: "評估樹",
     evaluationContext: "評估情境",
@@ -42,6 +45,7 @@ const translations = {
     action: "操作",
     evidence: "證據",
     whyNot10: "為什麼不是 10/10",
+    policyRules: "Policy 規則",
     cappedAt: "上限",
     recommendedActions: "建議動作",
     improvementReferences: "改善參考",
@@ -76,7 +80,7 @@ export function renderHtmlReport(report: EvaluationReport): string {
     .language-switch select:hover { background: #f9fafb; }
     .language-switch select:focus { outline: 2px solid #84caff; outline-offset: 2px; }
     .section-body { margin-top: 12px; }
-    .summary { display: grid; grid-template-columns: minmax(220px, 360px); gap: 12px; margin: 20px 0 24px; }
+    .summary { display: grid; grid-template-columns: repeat(2, minmax(220px, 360px)); gap: 12px; margin: 20px 0 24px; }
     .metric, .panel { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04); }
     .metric { padding: 16px 18px; }
     .metric .label { color: #667085; font-size: 12px; text-transform: uppercase; }
@@ -114,6 +118,8 @@ export function renderHtmlReport(report: EvaluationReport): string {
     .node-badge { border: 1px solid #d0d5dd; border-radius: 999px; color: #475467; font-size: 11px; padding: 1px 6px; background: #fff; }
     .node-badge.additional { background: #eef4ff; border-color: #b2ccff; color: #175cd3; }
     .node-badge.disabled { background: #f2f4f7; border-color: #d0d5dd; color: #475467; }
+    .node-badge.policy-error { background: #fee4e2; border-color: #fecdca; color: #b42318; }
+    .node-badge.policy-warn { background: #fef0c7; border-color: #fedf89; color: #93370d; }
     .config-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
     .config-list h3 { color: #667085; font-size: 11px; font-weight: 700; text-transform: uppercase; }
     .config-list ul { padding-left: 0; list-style: none; }
@@ -179,6 +185,7 @@ export function renderHtmlReport(report: EvaluationReport): string {
     </header>
     <section class="summary">
       ${scoreMetric(tr, report)}
+      ${policyMetric(tr, report)}
     </section>
     ${renderEvaluationContext(report, tr)}
     ${renderRunConfiguration(report, tr)}
@@ -299,6 +306,20 @@ function scoreMetric(tr: TranslationDictionary, report: EvaluationReport): strin
   )}</div><div class="value">${escapeHtml(displayScore10(report.root.score0To10))}</div><div class="subvalue"><span data-i18n="confidence">${escapeHtml(
     tr.confidence
   )}</span>: ${escapeHtml(report.summary.confidence)}</div></div>`;
+}
+
+function policyMetric(tr: TranslationDictionary, report: EvaluationReport): string {
+  const policy = report.policy;
+  const status = policy?.status ?? "pass";
+  const value = status === "blocked" ? "BLOCKED" : status.toUpperCase();
+  const subvalue = policy
+    ? `${policy.errorCount} error · ${policy.warnCount} warning`
+    : "0 error · 0 warning";
+  return `<div class="metric"><div class="label" data-i18n="policy">${escapeHtml(
+    tr.policy
+  )}</div><div class="value">${escapeHtml(value)}</div><div class="subvalue">${escapeHtml(
+    subvalue
+  )}</div></div>`;
 }
 
 function renderEvaluationContext(
@@ -473,6 +494,7 @@ function renderNodeRows(
         ${node.kind ? `<span class="node-kind">${escapeHtml(node.kind)}</span>` : ""}
         ${node.origin === "additional" ? `<span class="node-badge additional">additional</span>` : ""}
         ${node.disabledReason ? `<span class="node-badge disabled">disabled</span>` : ""}
+        ${renderPolicyBadges(node)}
       </div>
       <div class="node-sub"><code>${escapeHtml(node.id)}</code>${node.dimension ? ` · ${escapeHtml(node.dimension)}` : ""}</div>
     </td>
@@ -489,6 +511,7 @@ function renderNodeRows(
     )}">
       <td colspan="6"><div class="node-detail">
         ${node.reason ? `<p>${escapeHtml(node.reason)}</p>` : ""}
+        ${renderPolicyResults(node, tr)}
         ${renderDeductions(node, tr, repoUrl)}
         ${renderEvidence(node, repoUrl, tr)}
         ${renderRecommendations(node, tr)}
@@ -507,11 +530,44 @@ function renderNodeRows(
 function hasNodeDetail(node: EvaluationNodeResult): boolean {
   return Boolean(
     node.reason ||
+      (node.policyResults && node.policyResults.length > 0) ||
       hasAppliedDeductions(node) ||
       (node.evidence && node.evidence.length > 0) ||
       (node.recommendations && node.recommendations.length > 0) ||
       (node.references && node.references.length > 0)
   );
+}
+
+function renderPolicyBadges(node: EvaluationNodeResult): string {
+  if (!node.policyResults?.length) return "";
+  const severities = [...new Set(node.policyResults.map((result) => result.severity))];
+  return severities
+    .sort((a, b) => severityOrder(a) - severityOrder(b))
+    .map(
+      (severity) =>
+        `<span class="node-badge policy-${escapeAttr(severity)}">${escapeHtml(severity.toUpperCase())}</span>`
+    )
+    .join("");
+}
+
+function severityOrder(severity: "error" | "warn"): number {
+  return severity === "error" ? 0 : 1;
+}
+
+function renderPolicyResults(
+  node: EvaluationNodeResult,
+  tr: TranslationDictionary
+): string {
+  if (!node.policyResults?.length) return "";
+  return `<h3 data-i18n="policyRules">${escapeHtml(tr.policyRules)}</h3><ul>${node.policyResults
+    .map((result) => {
+      const actual = result.actualScore0To10 === null || result.actualScore0To10 === undefined
+        ? "n/a"
+        : displayScore10(result.actualScore0To10);
+      const threshold = result.threshold === undefined ? "n/a" : result.threshold;
+      return `<li><strong>${escapeHtml(result.severity.toUpperCase())}</strong> <code>${escapeHtml(result.ruleId)}</code>: ${escapeHtml(result.message)} <span class="muted">(${escapeHtml(actual)} &lt; ${escapeHtml(String(threshold))})</span></li>`;
+    })
+    .join("")}</ul>`;
 }
 
 function hasAppliedDeductions(node: EvaluationNodeResult): boolean {

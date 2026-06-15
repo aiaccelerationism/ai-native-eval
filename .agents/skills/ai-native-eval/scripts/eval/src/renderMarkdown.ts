@@ -13,6 +13,11 @@ export function renderMarkdownReport(report: EvaluationReport): string {
   lines.push(`- Score: ${formatScore(report.summary.score0To10)}`);
   lines.push(`- Level: ${report.summary.level0To10 ?? "n/a"}`);
   lines.push(`- Confidence: ${report.summary.confidence}`);
+  if (report.policy) {
+    lines.push(
+      `- Policy: ${report.policy.status.toUpperCase()} (${report.policy.errorCount} error, ${report.policy.warnCount} warning)`
+    );
+  }
   if (report.reproducibility?.repoCommit) {
     lines.push(`- Repo commit: \`${report.reproducibility.repoCommit}\``);
   }
@@ -20,6 +25,7 @@ export function renderMarkdownReport(report: EvaluationReport): string {
   renderEvaluationContext(lines, report);
   renderPluginResolution(lines, report);
   renderRunConfig(lines, report);
+  renderPolicySummary(lines, report);
   lines.push("## Evaluation Tree");
   lines.push("");
   renderNode(lines, report.root, 0);
@@ -147,11 +153,51 @@ function renderNode(
   if (node.disabledReason) {
     lines.push(`${prefix}  - Disabled: ${node.disabledReason}`);
   }
+  renderPolicyResults(lines, node, prefix);
   renderEvidence(lines, node, prefix);
   renderRecommendations(lines, node, prefix);
   renderDeductions(lines, node.deductionGroups, prefix);
   for (const child of node.children) {
     renderNode(lines, child, depth + 1);
+  }
+}
+
+function renderPolicySummary(lines: string[], report: EvaluationReport): void {
+  const policy = report.policy;
+  if (!policy || policy.results.length === 0) return;
+  lines.push("## Policy Rules");
+  lines.push("");
+  lines.push(`- Status: ${policy.status.toUpperCase()}`);
+  lines.push(`- Errors: ${policy.errorCount}`);
+  lines.push(`- Warnings: ${policy.warnCount}`);
+  const triggered = policy.results.filter((result) => result.status === "triggered");
+  if (triggered.length > 0) {
+    lines.push("- Triggered:");
+    for (const result of triggered) {
+      const target = result.targetLabel ?? result.targetPluginId ?? result.targetNodeId ?? "unknown target";
+      lines.push(
+        `  - ${result.severity.toUpperCase()} \`${result.ruleId}\` on ${target}: ${result.message}`
+      );
+    }
+  }
+  lines.push("");
+}
+
+function renderPolicyResults(
+  lines: string[],
+  node: EvaluationNodeResult,
+  prefix: string
+): void {
+  if (!node.policyResults?.length) return;
+  lines.push(`${prefix}  - Policy rules:`);
+  for (const result of node.policyResults) {
+    const actual = result.actualScore0To10 === null || result.actualScore0To10 === undefined
+      ? "n/a"
+      : result.actualScore0To10.toFixed(1);
+    const threshold = result.threshold === undefined ? "n/a" : result.threshold;
+    lines.push(
+      `${prefix}    - ${result.severity.toUpperCase()} \`${result.ruleId}\`: ${result.message} (${actual} < ${threshold})`
+    );
   }
 }
 

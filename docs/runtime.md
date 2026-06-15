@@ -160,6 +160,10 @@ Project config should scope evaluator-specific behavior by plugin id:
       "settings": {
         "defaultPhase": "opened",
         "outputMode": "advisory",
+        "rules": {
+          "pr-readiness-min-score": ["error", { "threshold": 10 }],
+          "thread-closeout-min-score": "off"
+        },
         "triggers": {
           "external_event": {
             "events": ["pull_request.opened", "pull_request.synchronize"]
@@ -177,6 +181,9 @@ Project config should scope evaluator-specific behavior by plugin id:
 
 The core tool persists `settings.triggers` as evaluator-owned configuration. The
 selected evaluator skill, not the orchestrator, decides what those settings mean.
+`settings.rules` follows the ESLint shape. Severity is `off`, `warn`, or
+`error`; a triggered `error` makes the rendered policy status `blocked` while
+leaving the numeric score unchanged.
 
 Legacy global `additionalRoots`, `disabled`, and `contextRoutes` are still read
 for compatibility, but generated reports show non-fatal deprecation warnings.

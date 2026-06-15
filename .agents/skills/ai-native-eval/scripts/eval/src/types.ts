@@ -86,6 +86,57 @@ export interface DeductionGroupRubricInput {
   deductions: DeductionRubricInput[];
 }
 
+export type PolicySeverity = "off" | "warn" | "error";
+
+export type PolicyStatus = "passed" | "triggered";
+
+export type PolicySummaryStatus = "pass" | "warn" | "blocked";
+
+export type PolicyRuleCondition = "scoreBelow";
+
+export interface PolicyRuleOptions {
+  threshold?: number;
+}
+
+export interface PolicyRuleDefinition {
+  id: string;
+  label?: string;
+  ownerPluginId?: string;
+  targetPluginId?: string;
+  targetNodeId?: string;
+  condition: PolicyRuleCondition;
+  defaultSeverity: PolicySeverity;
+  defaultOptions?: PolicyRuleOptions;
+  message: string;
+}
+
+export type PolicyRuleConfig =
+  | PolicySeverity
+  | [PolicySeverity, PolicyRuleOptions];
+
+export interface PolicyRuleResult {
+  ruleId: string;
+  label?: string;
+  ownerPluginId?: string;
+  targetPluginId?: string;
+  targetNodeId?: string;
+  targetLabel?: string;
+  severity: Exclude<PolicySeverity, "off">;
+  status: PolicyStatus;
+  condition: PolicyRuleCondition;
+  threshold?: number;
+  actualScore0To10?: number | null;
+  message: string;
+}
+
+export interface PolicySummary {
+  status: PolicySummaryStatus;
+  errorCount: number;
+  warnCount: number;
+  triggeredCount: number;
+  results: PolicyRuleResult[];
+}
+
 export interface EvaluatorDeductionJudgment {
   groupId: string;
   deductionId: string;
@@ -146,6 +197,7 @@ export interface EvaluationNodeInput {
   recommendations?: Recommendation[];
   references?: ImprovementReference[];
   deductionGroups?: DeductionGroupInput[];
+  policyResults?: PolicyRuleResult[];
   carriedForwardFrom?: string;
   disabledReason?: string;
   disabledSource?: string;
@@ -181,6 +233,7 @@ export interface EvalSummary {
   level0To10: number | null;
   confidence: Confidence;
   dimensions: DimensionScore[];
+  policy?: PolicySummary;
   lostPoints: Array<{
     nodeId: string;
     label: string;
@@ -202,6 +255,7 @@ export interface EvaluationReport {
   runConfig?: EffectiveEvalConfigSnapshot;
   executionBatches?: EvaluationBatch[];
   evaluatorRuns?: EvaluatorRunRecord[];
+  policy?: PolicySummary;
   reproducibility?: {
     repoUrl?: string;
     repoCommit?: string;
@@ -231,6 +285,7 @@ export interface EvaluatorPluginManifest {
   dimension?: string;
   directChildren?: EvaluatorChildRef[];
   extensionPoints?: EvaluatorExtensionPoint[];
+  policyRules?: PolicyRuleDefinition[];
 }
 
 export interface PluginResolution {
