@@ -1,5 +1,7 @@
 ![AI Native Eval](docs/assets/ai-native-eval-title.jpg)
 
+*Eval is all you need* — 当 AI agent 有清晰的评估目标可以优化时，它会变得明显更好。
+
 [English](README.md) | 中文
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)

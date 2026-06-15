@@ -1,5 +1,7 @@
 ![AI Native Eval](docs/assets/ai-native-eval-title.jpg)
 
+*Eval is all you need* — AI agents get dramatically better when they have a clear evaluation target to optimize against.
+
 English | [中文](README_CN.md)
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)
