@@ -1,5 +1,7 @@
 ![AI Native Eval](docs/assets/ai-native-eval-title.jpg)
 
+*Eval is all you need* — 当 AI agent 有清晰的评估目标可以优化时，它会变得明显更好。
+
 [English](README.md) | 中文
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)
@@ -8,7 +10,7 @@
 
 **让仓库变得 AI-Native** - 一个以证据为核心的评估与修复系统，帮助 AI agent 理解、评分并改进仓库的开发工作流，直到人类与 agent 可以持续交付可审查、高质量的变更。
 
-**为自我改进的仓库而生。** 获取确定性的 `0.0 / 10` AI-native 成熟度评分，清楚看到仓库为什么还不是 `10 / 10`，并把修复路径交给 agent 一轮轮执行。
+**为自我改进的仓库而生。** 获取确定性的 `0.0 / 10` AI-native 成熟度评分，清楚看到仓库为什么还不是 `10 / 10`，并把修复路径交给 agent 一轮轮执行。你可以运行完整仓库评估，也可以只评估当前关心的时机：PR、issue、agent thread、单次 user turn，或周期性健康检查。
 
 ## 为什么选择 ai-native-eval？
 
@@ -17,6 +19,8 @@
 - **AI-native 评分**：为仓库生成 `0.0 / 10` 成熟度评分。
 - **为什么不是 10/10**：明确列出哪些有证据支撑的扣分项阻止仓库达到满分。
 - **Agent 修复循环**：把建议转化为 agent 可以执行的修复任务。
+- **评估正确的范围**：运行完整仓库评估，或只针对 PR、issue、agent thread、单次 user turn、周期性健康检查。
+- **工作流策略信号**：用 `warn` 或 `error` 标记重要问题，同时保留原本的数字评分。
 - **全生命周期覆盖**：评估文档、agent 指令、issue、PR、CI、测试、运行命令、审查产物与历史证据。
 - **确定性聚合**：最终分数由 evaluator rubric 计算而来。
 - **可插拔 evaluator**：支持内置、BMAD 或项目自定义 evaluator 包。
@@ -35,54 +39,67 @@ Evaluate my repository with ai-native-eval from https://github.com/aiacceleratio
 
 ```text
 Score: 8.2 / 10
-AI-native foundation: 8.2 / 10
-  Local runtime and commands: 8.6 / 10
-  Agent readiness: 8.7 / 10
-  GitHub workflow: 7.8 / 10
-  Evidence and artifact discipline: 7.6 / 10
+Policy: BLOCKED (1 error · 1 warning)
+Selected evaluator pack: ai-native-pr-lifecycle-evaluator
+PR lifecycle: 8.2 / 10
+  PR readiness: 8.0 / 10 [ERROR]
+  Required checks: 9.0 / 10
+  Acceptance proof: 7.6 / 10 [WARN]
     Why not 10/10:
-      - Runtime failure recovery steps are not complete.
-      - Evaluator findings are not always converted into tracked follow-up work.
-      - Report screenshots or traces are not consistently linked from PR evidence.
+      - PR evidence does not link every acceptance criterion to proof.
+      - The closeout plan does not name the post-merge follow-up owner.
+      - Visual or trace evidence is missing for the changed user-facing path.
 ```
 
 报告会让人类和 agent 看到同一个审查界面：
 
-- 仓库的 `0.0 / 10` AI-native 成熟度评分。
-- 覆盖文档、agent readiness、GitHub 工作流、CI/测试、本地运行、证据质量、架构、BMAD 采用情况与可选 evaluator 包的嵌套 evaluator 树。
+- 选定范围的 `0.0 / 10` AI-native 成熟度评分。
+- 针对完整仓库、PR、issue、thread、turn、periodic 或项目自定义评估上下文选择的 evaluator pack。
+- 覆盖文档、agent readiness、GitHub 工作流、CI/测试、本地运行、证据质量、架构、BMAD 采用情况、生命周期工作流检查与可选 evaluator 包的嵌套 evaluator 树。
 - 有证据支持的 "Why not 10/10" 扣分说明。
 - 可转化为 agent 修复任务的建议。
 - 静态 HTML 与紧凑 Markdown 输出。
 - 可提交到源码中的配置，用于启用、禁用、重新加权或新增 evaluator 包。
 - 可复用历史证据的增量评估，避免每次从零开始。
+- one-shot、turn-inline、self-iteration、periodic、external-event 等触发元数据；hook、scheduler、评论发布和修复循环仍由外部系统负责。
+- ESLint 风格的 policy rules，支持 `off`、`warn`、`error`，因此报告可以显示 blocked 或 warning 状态，同时不改变数字评分。
 
 ## 内置 Evaluator 包
 
-`ai-native-eval` 自带面向通用 AI-native 仓库 readiness 与 BMAD Method 采用情况的 evaluator 包。
+`ai-native-eval` 自带 lifecycle 入口包，以及面向通用 AI-native 仓库基础能力和 BMAD Method 采用情况的可复用 evaluator 包。
 
 | 包 | 用途 |
 | --- | --- |
+| `ai-native-repo-maturity-evaluator` | 完整仓库 baseline 与增量仓库级审查。 |
+| `ai-native-pr-lifecycle-evaluator` | PR opened、review、pre-merge、post-merge 与 closeout 评估。 |
+| `ai-native-issue-lifecycle-evaluator` | Issue intake、planning、follow-up 与 handoff 评估。 |
+| `ai-native-thread-checkpoint-evaluator` | Agent thread checkpoint、handoff、协作轨迹与 closeout 评估。 |
+| `ai-native-turn-guardrail-evaluator` | 单次 user turn 或 agent response 的 guardrail 评估。 |
+| `ai-native-periodic-health-evaluator` | 周期性或临时的仓库健康度与漂移评估。 |
 | `ai-native-foundation-evaluator` | 通用 AI-native 仓库基础能力：可运行性、文档、agent readiness、GitHub 工作流、CI/测试 gate、产品 UX 证据、架构与证据纪律。 |
 | `bmad-method-evaluator` | BMAD Method 采用情况与产物成熟度。 |
 
-仓库可以使用内置包，添加项目自定义 evaluator 包，或禁用与当前工作流无关的评估区域。
+仓库可以使用内置包，添加项目自定义 evaluator 包，或禁用与当前工作流无关的评估区域。根 `ai-native-eval` skill 只负责选择第一层 pack；每个 pack 自己管理它的 child evaluators、phase 默认值、policy rules 与 evaluator-specific settings。
 
 ## 工作原理
 
 评估流程被设计为可重复、可审计：
 
 1. 解析评估范围、仓库根目录、当前 commit 与可用证据。
-2. 如果存在历史评估状态，则读取它。
-3. 从内置 roots、可选用户配置、项目配置与本次运行覆盖项中解析有效配置。
-4. 写入包含 `run.json` 的运行目录，作为本次评估的审计快照。
-5. 通过 direct child references 解析已安装的 evaluator 插件。
-6. 在有意义时把 evaluator 分成执行批次。
-7. 为每个启用的叶子 evaluator 写入独立 JSON 判断文件。
-8. 根据运行快照、已安装 manifest 与叶子 rubric 验证运行目录。
-9. 确定性聚合 normalized evaluator nodes。
-10. 渲染静态 HTML，并可选输出 Markdown/JSON 产物。
+2. 判断评估上下文：完整 baseline、增量运行、issue/PR 事件、thread checkpoint、user turn、periodic scan，或项目自定义 lifecycle。
+3. 如果存在历史评估状态，则读取它。
+4. 从选定 lifecycle root、可选用户配置、项目配置、本次运行覆盖项，以及 `evaluators[pluginId]` 下的 evaluator-specific config 中解析有效配置。
+5. 写入包含 `run.json` 的运行目录，作为本次评估的审计快照。
+6. 通过 direct child references 解析已安装的 evaluator 插件。
+7. 在有意义时把 evaluator 分成执行批次。
+8. 为每个启用的叶子 evaluator 写入独立 JSON 判断文件。
+9. 根据运行快照、已安装 manifest 与叶子 rubric 验证运行目录。
+10. 确定性聚合 normalized evaluator nodes。
+11. 渲染静态 HTML，并可选输出 Markdown/JSON 产物。
 
 验证会在渲染前捕捉不一致的 evaluator 输出，避免损坏或不完整的运行结果被包装成看似可靠的报告。
+
+如果用户只说 "use ai-native-eval" 这类空白请求，root skill 会询问要使用哪一个 evaluator pack。如果请求已经明确目标，例如 repo、PR、issue、thread、turn 或 periodic check，它会直接 route，并在 phase 未指定时使用该 pack 的默认 phase。
 
 ## 评分
 
@@ -96,12 +113,13 @@ AI-native foundation: 8.2 / 10
 - 如果叶子节点不是 `10.0 / 10`，它必须通过已应用的扣分项说明原因。
 - 父节点分数是适用子节点的加权平均。
 - Confidence 与分数分离，用于表达证据覆盖度。
+- Policy rules 与分数分离。规则可以在分数低于配置阈值时把结果标记为 `warn` 或 `error`；`error` 会在报告中显示为 blocked，但数字评分不被改写。
 
 高分需要文档、issue/PR、CI/测试、产物与工作流历史中反复出现的证据。只有漂亮文档不应该产生高置信度的 `10 / 10`。
 
 ## 报告
 
-内置 TypeScript renderer 会从同一棵评分用 evaluation tree 生成可钻取的 HTML 报告。报告包含嵌套节点结果、证据链接、建议、改进引用、可复制的修复提示词与可复现性元数据。
+内置 TypeScript renderer 会从同一棵评分用 evaluation tree 生成可钻取的 HTML 报告。报告包含嵌套节点结果、证据链接、建议、改进引用、可复制的修复提示词、policy status、selected evaluator pack、evaluation context、trigger metadata、evaluator config 与可复现性元数据。
 
 ## 配置与持久化
 
@@ -124,7 +142,9 @@ AI-native foundation: 8.2 / 10
       manifest.json
 ```
 
-当 `config.json`、`state.json` 与小型 evidence ledger 定义共享项目策略或持久评估状态时，可以纳入源码管理。普通评估默认会在 `artifacts/` 下写入带时间戳的生成 bundle，方便把完整 run 作为一个目录复制、附加、审查或删除。默认情况下，`artifacts/` 下的生成输出会被忽略。需要成为仓库历史一部分的已审查报告，应提升到稳定的已提交证据目录。
+当 `config.json`、`state.json` 与小型 evidence ledger 定义共享项目策略或持久评估状态时，可以纳入源码管理。Evaluator-specific config 位于 `evaluators[pluginId]`，每个 pack 可以接收自己的 `additionalChildren`、`disabledChildren` 与 `settings`。旧的 global `additionalRoots`、`disabled`、`contextRoutes` 字段仍会为了相容性被读取，但报告会显示 non-fatal deprecation warnings。
+
+普通评估默认会在 `artifacts/` 下写入带时间戳的生成 bundle，方便把完整 run 作为一个目录复制、附加、审查或删除。默认情况下，`artifacts/` 下的生成输出会被忽略。需要成为仓库历史一部分的已审查报告，应提升到稳定的已提交证据目录。
 
 ## 仓库结构
 
@@ -144,6 +164,12 @@ ai-native-eval/
             fixtures/
             tests/
       ai-native-foundation-evaluator/
+      ai-native-repo-maturity-evaluator/
+      ai-native-pr-lifecycle-evaluator/
+      ai-native-issue-lifecycle-evaluator/
+      ai-native-thread-checkpoint-evaluator/
+      ai-native-turn-guardrail-evaluator/
+      ai-native-periodic-health-evaluator/
       bmad-method-evaluator/
       _eval-support/
         bin/codex
@@ -161,11 +187,12 @@ ai-native-eval/
 
 本仓库会评估自身，并发布严格的 baseline 报告。
 
-- Score: `2.8 / 10`
-- Level: `2`
+- Score: `3.4 / 10`
+- Level: `3`
 - Confidence: `high`
-- Scope: foundation maturity plus AI Native Eval evaluator-system quality；本次自评估禁用了 `bmad-method-evaluator`。
+- Scope: foundation maturity plus AI Native Eval evaluator-system quality and research readiness；本次自评估禁用了 `bmad-method-evaluator`。
 - AI participation: foundation 评分现在保留 40% 给 AI 参与度，包括 agent threads、source control AI participation、skill activation、AI self-assessment、human follow-through 与 collaboration trace。
+- Research readiness: 仓库现在有 research plan、pilot protocol 与 metrics/data schema；严格扣分仍保留给尚未执行的 pilot 和 recent-change follow-through。
 - Recent-change evidence: 因为 baseline 尚未把每个 evaluator 连接到最近五个 PR 等级实质变更的遵循证据，所以会严格扣分。
 - Run folder: `self-evaluations/foundation-20260614/run/`
 - Compact report: [self-evaluations/foundation-20260614/report.md](self-evaluations/foundation-20260614/report.md)
@@ -209,6 +236,7 @@ pnpm score:example
 pnpm persist:example
 pnpm self-eval:validate
 pnpm self-eval:render
+pnpm test:human
 ```
 
 ## 贡献

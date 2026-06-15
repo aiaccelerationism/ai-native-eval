@@ -83,9 +83,15 @@ export function renderHtmlReport(report: EvaluationReport): string {
     .summary { display: grid; grid-template-columns: repeat(2, minmax(220px, 360px)); gap: 12px; margin: 20px 0 24px; }
     .metric, .panel { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04); }
     .metric { padding: 16px 18px; }
+    .metric.good { background: #ecfdf3; border-color: #abefc6; }
+    .metric.warn { background: #fffaeb; border-color: #fedf89; }
+    .metric.bad { background: #fef3f2; border-color: #fecdca; }
     .metric .label { color: #667085; font-size: 12px; text-transform: uppercase; }
     .metric .value { font-size: 34px; font-weight: 750; margin-top: 8px; font-variant-numeric: tabular-nums; }
     .metric .subvalue { color: #667085; font-size: 13px; font-weight: 600; margin-top: 4px; text-transform: capitalize; }
+    .metric.good .value { color: #067647; }
+    .metric.warn .value { color: #93370d; }
+    .metric.bad .value { color: #b42318; }
     .panel { padding: 16px; }
     .tree-panel { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; margin-top: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04); }
     .tree-table { width: 100%; border-collapse: collapse; margin: 0; table-layout: fixed; }
@@ -187,12 +193,12 @@ export function renderHtmlReport(report: EvaluationReport): string {
       ${scoreMetric(tr, report)}
       ${policyMetric(tr, report)}
     </section>
-    ${renderEvaluationContext(report, tr)}
     ${renderRunConfiguration(report, tr)}
     <section>
       <h2 data-i18n="evaluationTree">${escapeHtml(tr.evaluationTree)}</h2>
       <div class="tree-panel">${renderTreeTable(report.root, report.reproducibility?.repoUrl, tr)}</div>
     </section>
+    ${renderEvaluationContext(report, tr)}
     <section>
       <h2 data-i18n="reproducibility">${escapeHtml(tr.reproducibility)}</h2>
       <div class="panel section-body"><pre>${escapeHtml(JSON.stringify(report.reproducibility ?? {}, null, 2))}</pre></div>
@@ -301,7 +307,7 @@ export function renderHtmlReport(report: EvaluationReport): string {
 }
 
 function scoreMetric(tr: TranslationDictionary, report: EvaluationReport): string {
-  return `<div class="metric"><div class="label" data-i18n="score">${escapeHtml(
+  return `<div class="metric ${escapeAttr(scoreMetricClass(report.root.score0To10))}"><div class="label" data-i18n="score">${escapeHtml(
     tr.score
   )}</div><div class="value">${escapeHtml(displayScore10(report.root.score0To10))}</div><div class="subvalue"><span data-i18n="confidence">${escapeHtml(
     tr.confidence
@@ -315,11 +321,24 @@ function policyMetric(tr: TranslationDictionary, report: EvaluationReport): stri
   const subvalue = policy
     ? `${policy.errorCount} error · ${policy.warnCount} warning`
     : "0 error · 0 warning";
-  return `<div class="metric"><div class="label" data-i18n="policy">${escapeHtml(
+  return `<div class="metric ${escapeAttr(policyMetricClass(status))}"><div class="label" data-i18n="policy">${escapeHtml(
     tr.policy
   )}</div><div class="value">${escapeHtml(value)}</div><div class="subvalue">${escapeHtml(
     subvalue
   )}</div></div>`;
+}
+
+function scoreMetricClass(score: number | null): "good" | "warn" | "bad" {
+  if (score === null) return "warn";
+  if (score >= 8) return "good";
+  if (score >= 6) return "warn";
+  return "bad";
+}
+
+function policyMetricClass(status: "pass" | "warn" | "blocked"): "good" | "warn" | "bad" {
+  if (status === "blocked") return "bad";
+  if (status === "warn") return "warn";
+  return "good";
 }
 
 function renderEvaluationContext(

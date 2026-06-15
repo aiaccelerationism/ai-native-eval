@@ -1,5 +1,7 @@
 ![AI Native Eval](docs/assets/ai-native-eval-title.jpg)
 
+*Eval is all you need* — AI agents get dramatically better when they have a clear evaluation target to optimize against.
+
 English | [中文](README_CN.md)
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)
@@ -8,7 +10,7 @@ English | [中文](README_CN.md)
 
 **Make Repositories AI-Native** — An evidence-driven evaluation and repair system that helps AI agents understand, score, and improve your repository's development workflow until humans and agents can repeatedly ship reviewable, high-quality work together.
 
-**Built for self-improving repos.** Get a deterministic `0.0 / 10` AI-native maturity score, see exactly why the repo is not `10 / 10`, and give agents the repair path they need to improve the repo run after run.
+**Built for self-improving repos.** Get a deterministic `0.0 / 10` AI-native maturity score, see exactly why the repo is not `10 / 10`, and give agents the repair path they need to improve the repo run after run. Run the full repo evaluation, or target the moment you care about: a PR, issue, agent thread, user turn, or periodic health check.
 
 ## Why ai-native-eval?
 
@@ -17,8 +19,9 @@ Traditional repo checks tell you whether code builds. `ai-native-eval` asks whet
 - **AI-native score**: get a `0.0 / 10` maturity score for the repository.
 - **Why not 10/10**: see exactly which evidence-backed deductions kept the repo from a perfect score.
 - **Agent repair loop**: turn recommendations into tasks an agent can execute.
+- **Evaluate the right scope**: run a full repo review, or target a PR, issue, agent thread, single user turn, or periodic health check.
+- **Workflow policy signals**: mark important findings as `warn` or `error` without hiding the underlying score.
 - **Lifecycle coverage**: evaluate docs, agent instructions, issues, PRs, CI, tests, runtime commands, review artifacts, and historical evidence.
-- **Targeted lifecycle checks**: route issue, PR, thread, turn, periodic, or project-specific evaluation contexts without always running a full repository review.
 - **Deterministic aggregation**: final scores are computed from evaluator rubrics.
 - **Pluggable evaluators**: add built-in, BMAD, or project-specific evaluator packs.
 
@@ -36,28 +39,30 @@ Evaluate my repository with ai-native-eval from https://github.com/aiacceleratio
 
 ```text
 Score: 8.2 / 10
-AI-native foundation: 8.2 / 10
-  Local runtime and commands: 8.6 / 10
-  Agent readiness: 8.7 / 10
-  GitHub workflow: 7.8 / 10
-  Evidence and artifact discipline: 7.6 / 10
+Policy: BLOCKED (1 error · 1 warning)
+Selected evaluator pack: ai-native-pr-lifecycle-evaluator
+PR lifecycle: 8.2 / 10
+  PR readiness: 8.0 / 10 [ERROR]
+  Required checks: 9.0 / 10
+  Acceptance proof: 7.6 / 10 [WARN]
     Why not 10/10:
-      - Runtime failure recovery steps are not complete.
-      - Evaluator findings are not always converted into tracked follow-up work.
-      - Report screenshots or traces are not consistently linked from PR evidence.
+      - PR evidence does not link every acceptance criterion to proof.
+      - The closeout plan does not name the post-merge follow-up owner.
+      - Visual or trace evidence is missing for the changed user-facing path.
 ```
 
 The report gives humans and agents the same review surface:
 
-- A `0.0 / 10` AI-native maturity score for the repository.
-- A nested evaluator tree covering docs, agent readiness, GitHub workflow, CI/tests, local runtime, evidence quality, architecture, BMAD adoption, and optional evaluator packs.
+- A `0.0 / 10` AI-native maturity score for the selected scope.
+- A selected evaluator pack for full repo, PR, issue, thread, turn, periodic, or project-specific evaluation contexts.
+- A nested evaluator tree covering docs, agent readiness, GitHub workflow, CI/tests, local runtime, evidence quality, architecture, BMAD adoption, lifecycle workflow checks, and optional evaluator packs.
 - Evidence-backed "Why not 10/10" deductions.
 - Recommendations that can become agent repair tasks.
 - Static HTML and compact Markdown output.
 - Source-controlled config for enabling, disabling, reweighting, or adding evaluator packs.
 - Incremental evaluations that can reuse prior evidence instead of starting from zero every time.
-- Trigger metadata for one-shot, turn-inline, self-iteration, periodic, or external-event integrations, while external systems remain responsible for hooks, schedulers, comments, and repair loops.
-- ESLint-style policy rules with `off`, `warn`, and `error` severities, so reports can show blocked/error conditions without changing the numeric score.
+- Trigger metadata for one-shot, turn-inline, self-iteration, periodic, or external-event integrations; external systems remain responsible for hooks, schedulers, comments, and repair loops.
+- ESLint-style policy rules with `off`, `warn`, and `error` severities, so reports can show blocked or warning conditions without changing the numeric score.
 
 ## Built-In Evaluator Packs
 
@@ -74,7 +79,7 @@ The report gives humans and agents the same review surface:
 | `ai-native-foundation-evaluator` | General AI-native repo foundation: operability, docs, agent readiness, GitHub workflow, CI/test gates, product UX evidence, architecture, and evidence discipline. |
 | `bmad-method-evaluator` | BMAD Method adoption and artifact maturity. |
 
-A repo can use the built-in packs, add project-specific evaluator packs, or disable evaluator areas that are not relevant to its workflow.
+A repo can use the built-in packs, add project-specific evaluator packs, or disable evaluator areas that are not relevant to its workflow. The root `ai-native-eval` skill only selects the first-level pack; each pack owns its own child evaluators, phase defaults, policy rules, and evaluator-specific settings.
 
 ## How It Works
 
@@ -94,6 +99,8 @@ The eval flow is designed to be repeatable and auditable.
 
 Validation catches inconsistent evaluator outputs before rendering, so broken or incomplete runs do not quietly become polished reports.
 
+For a bare request such as "use ai-native-eval", the root skill asks which evaluator pack to use. If the request already names the target, such as a repo, PR, issue, thread, turn, or periodic check, it routes directly and uses that pack's default phase when the phase is not specified.
+
 ## Scoring
 
 Scores are computed from evaluator rubrics.
@@ -106,12 +113,13 @@ Scores are computed from evaluator rubrics.
 - If a leaf is not `10.0 / 10`, it must explain why through applied deductions.
 - Parent scores are weighted averages of applicable child scores.
 - Confidence is separate from score and reflects evidence coverage.
+- Policy rules are separate from score. A rule can mark a result as `warn` or `error` when a score falls below its configured threshold; `error` shows as blocked in reports, but the numeric score remains unchanged.
 
 High scores require repeated evidence across docs, issues/PRs, CI/tests, artifacts, and workflow history. Polished docs alone should not create a high-confidence `10 / 10`.
 
 ## Reports
 
-The bundled TypeScript renderer produces a drill-down HTML report from the same evaluation tree used for scoring. The report includes nested node results, evidence links, recommendations, improvement references, copyable repair prompts, and reproducibility metadata.
+The bundled TypeScript renderer produces a drill-down HTML report from the same evaluation tree used for scoring. The report includes nested node results, evidence links, recommendations, improvement references, copyable repair prompts, policy status, selected evaluator pack, evaluation context, trigger metadata, evaluator config, and reproducibility metadata.
 
 ## Configuration And Persistence
 
@@ -134,7 +142,9 @@ Repos being evaluated may store eval state under:
       manifest.json
 ```
 
-`config.json`, `state.json`, and small evidence ledgers may be source-controlled when they define shared project policy or durable evaluation state. A normal evaluation writes a timestamped generated bundle under `artifacts/` by default, so the complete run can be copied, attached, reviewed, or removed as one directory. Generated output under `artifacts/` is ignored by default. Promote reviewed reports into a stable committed evidence folder when they should become part of the repo history.
+`config.json`, `state.json`, and small evidence ledgers may be source-controlled when they define shared project policy or durable evaluation state. Evaluator-specific config lives under `evaluators[pluginId]`, where a pack can receive its own `additionalChildren`, `disabledChildren`, and `settings`. Legacy global `additionalRoots`, `disabled`, and `contextRoutes` fields are still read for compatibility, but reports surface non-fatal deprecation warnings.
+
+A normal evaluation writes a timestamped generated bundle under `artifacts/` by default, so the complete run can be copied, attached, reviewed, or removed as one directory. Generated output under `artifacts/` is ignored by default. Promote reviewed reports into a stable committed evidence folder when they should become part of the repo history.
 
 ## Repo Layout
 

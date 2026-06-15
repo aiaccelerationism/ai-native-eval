@@ -1,9 +1,103 @@
 {
   "reportId": "example-report",
-  "generatedAt": "2026-06-13T00:00:00.000Z",
-  "language": "zh-TW",
+  "generatedAt": "2026-06-15T00:00:00.000Z",
+  "language": "en",
   "uiLanguage": "en",
-  "scope": "example repository",
+  "scope": "example PR lifecycle evaluation",
+  "evaluationContext": {
+    "reviewType": "event",
+    "target": "pull_request",
+    "targetRef": "PR-128",
+    "phase": "pre_merge",
+    "trigger": "user",
+    "triggerMetadata": {
+      "mode": "one_shot",
+      "source": "user"
+    },
+    "targetSurfaces": ["pr", "checks", "agent-thread"],
+    "outputIntents": ["html", "markdown", "repair-prompt"],
+    "affectsOverallScore": false,
+    "assumption": "Phase was not specified by the user, so the PR lifecycle evaluator used its default pre-merge review posture."
+  },
+  "runConfig": {
+    "schemaVersion": 1,
+    "configSources": [
+      {
+        "kind": "built-in",
+        "found": true
+      },
+      {
+        "kind": "project",
+        "path": ".ai-native-eval/config.json",
+        "found": true
+      }
+    ],
+    "builtInRootPluginIds": ["ai-native-pr-lifecycle-evaluator"],
+    "evaluationContext": {
+      "reviewType": "event",
+      "target": "pull_request",
+      "targetRef": "PR-128",
+      "phase": "pre_merge",
+      "trigger": "user",
+      "triggerMetadata": {
+        "mode": "one_shot",
+        "source": "user"
+      },
+      "targetSurfaces": ["pr", "checks", "agent-thread"],
+      "outputIntents": ["html", "markdown", "repair-prompt"],
+      "affectsOverallScore": false
+    },
+    "roots": [
+      {
+        "pluginId": "ai-native-pr-lifecycle-evaluator",
+        "origin": "built-in",
+        "source": "built-in",
+        "reason": "Target pull_request routes to the PR lifecycle evaluator pack."
+      }
+    ],
+    "disabled": [],
+    "evaluatorConfigs": [
+      {
+        "pluginId": "ai-native-pr-lifecycle-evaluator",
+        "source": "project",
+        "enabled": true,
+        "settings": {
+          "defaultPhase": "pre_merge",
+          "rules": {
+            "pr-readiness-min-score": ["error", { "threshold": 8.5 }],
+            "acceptance-proof-min-score": ["warn", { "threshold": 8 }]
+          }
+        }
+      }
+    ],
+    "warnings": []
+  },
+  "policyRules": [
+    {
+      "id": "pr-readiness-min-score",
+      "label": "PR readiness minimum score",
+      "ownerPluginId": "ai-native-pr-lifecycle-evaluator",
+      "targetPluginId": "ai-native-pr-readiness-evaluator",
+      "condition": "scoreBelow",
+      "defaultSeverity": "error",
+      "defaultOptions": {
+        "threshold": 8.5
+      },
+      "message": "PR readiness is below the configured merge bar."
+    },
+    {
+      "id": "acceptance-proof-min-score",
+      "label": "Acceptance proof minimum score",
+      "ownerPluginId": "ai-native-pr-lifecycle-evaluator",
+      "targetPluginId": "ai-native-acceptance-proof-evaluator",
+      "condition": "scoreBelow",
+      "defaultSeverity": "warn",
+      "defaultOptions": {
+        "threshold": 8
+      },
+      "message": "Acceptance proof is weak enough to require reviewer attention."
+    }
+  ],
   "reproducibility": {
     "repoUrl": "https://github.com/example/ai-native-eval",
     "repoCommit": "example",
@@ -12,91 +106,102 @@
     "scoringModelVersion": "tree-v1"
   },
   "root": {
-    "id": "root",
-    "label": "Repo AI-native maturity",
+    "id": "ai-native-pr-lifecycle-evaluator",
+    "label": "PR lifecycle evaluator",
     "kind": "eval",
+    "pluginId": "ai-native-pr-lifecycle-evaluator",
+    "dimension": "pr_lifecycle",
     "children": [
       {
-        "id": "docs",
-        "label": "Documentation evaluator",
+        "id": "ai-native-pr-readiness-evaluator",
+        "label": "PR readiness",
         "kind": "evaluator",
-        "dimension": "documentation_onboarding",
-        "weight": 1,
-        "children": [
+        "pluginId": "ai-native-pr-readiness-evaluator",
+        "dimension": "pr_lifecycle",
+        "status": "partial",
+        "confidence": "high",
+        "pointsAvailable": 2,
+        "pointsEarned": 1.6,
+        "reason": "The PR explains the change and links checks, but it does not connect every acceptance criterion to proof.",
+        "evidence": [
           {
-            "id": "docs.runtime",
-            "label": "Runtime docs rule group",
-            "kind": "rule_group",
-            "weight": 1,
-            "children": [
-              {
-                "id": "docs.runtime.command-exists",
-                "label": "Local runtime command is documented",
-                "kind": "rule",
-                "dimension": "documentation_onboarding",
-                "status": "pass",
-                "confidence": "high",
-                "pointsAvailable": 0.8,
-                "evidence": [
-                  {
-                    "source": "README.md",
-                    "locator": "runtime section",
-                    "summary": "README 已記錄本機 runtime 啟動指令。"
-                  }
-                ],
-                "references": [
-                  {
-                    "label": "Runtime command checklist",
-                    "source": "ai-native-eval references",
-                    "url": "https://github.com/example/ai-native-eval/blob/main/.agents/skills/ai-native-docs-evaluator/SKILL.md",
-                    "summary": "補齊指令、預期輸出與失敗處理方式。"
-                  }
-                ]
-              },
-              {
-                "id": "docs.runtime.failure-handling",
-                "label": "Runtime failure handling is documented",
-                "kind": "rule",
-                "dimension": "documentation_onboarding",
-                "status": "partial",
-                "confidence": "medium",
-                "pointsAvailable": 0.6,
-                "reason": "目前 README 有記錄啟動指令，但缺少常見失敗情境與復原方式。",
-                "recommendations": [
-                  {
-                    "summary": "補上預期 port、health check，以及常見啟動失敗的排除步驟。",
-                    "priority": "medium"
-                  }
-                ]
-              }
-            ]
+            "source": "Pull request",
+            "locator": "Description and checks",
+            "summary": "PR summary, command output, and reviewer notes are present."
+          }
+        ],
+        "recommendations": [
+          {
+            "summary": "Link each acceptance criterion to the exact test, screenshot, trace, or reviewer note that proves it.",
+            "priority": "high"
           }
         ]
       },
       {
-        "id": "github",
-        "label": "GitHub workflow evaluator",
+        "id": "ai-native-ci-required-checks-evaluator",
+        "label": "Required checks",
         "kind": "evaluator",
-        "dimension": "issue_readiness",
-        "weight": 1.2,
-        "children": [
+        "pluginId": "ai-native-ci-required-checks-evaluator",
+        "dimension": "ci_tests",
+        "status": "pass",
+        "confidence": "high",
+        "pointsAvailable": 1,
+        "pointsEarned": 0.9,
+        "reason": "Required build and test checks are present, but expensive optional checks are documented outside branch protection."
+      },
+      {
+        "id": "ai-native-review-contract-evaluator",
+        "label": "Review contract",
+        "kind": "evaluator",
+        "pluginId": "ai-native-review-contract-evaluator",
+        "dimension": "review_workflow",
+        "status": "pass",
+        "confidence": "high",
+        "pointsAvailable": 1,
+        "pointsEarned": 0.88,
+        "reason": "Reviewer expectations and merge gates are documented for this PR."
+      },
+      {
+        "id": "ai-native-acceptance-proof-evaluator",
+        "label": "Acceptance proof",
+        "kind": "evaluator",
+        "pluginId": "ai-native-acceptance-proof-evaluator",
+        "dimension": "evidence_traceability",
+        "status": "partial",
+        "confidence": "medium",
+        "pointsAvailable": 1.5,
+        "pointsEarned": 1.14,
+        "reason": "The changed path has command evidence, but the report does not include visual or trace proof for the user-facing behavior.",
+        "recommendations": [
           {
-            "id": "github.issue.acceptance",
-            "label": "Issues include acceptance criteria",
-            "kind": "rule",
-            "dimension": "issue_readiness",
-            "status": "missing",
-            "confidence": "low",
-            "pointsAvailable": 1.2,
-            "reason": "這個範例沒有可用的 GitHub issue 證據，因此只能標記為缺失證據。",
-            "recommendations": [
-              {
-                "summary": "連接 GitHub issue 證據，或在本機限定評估中明確將此 evaluator 排除。",
-                "priority": "high"
-              }
-            ]
+            "summary": "Attach screenshot or trace evidence for the changed user-facing path before merge.",
+            "priority": "medium"
           }
         ]
+      },
+      {
+        "id": "ai-native-artifact-traceability-evaluator",
+        "label": "Artifact traceability",
+        "kind": "evaluator",
+        "pluginId": "ai-native-artifact-traceability-evaluator",
+        "dimension": "evidence_traceability",
+        "status": "partial",
+        "confidence": "medium",
+        "pointsAvailable": 1,
+        "pointsEarned": 0.78,
+        "reason": "The run output is linked, but the closeout plan does not name the post-merge follow-up owner."
+      },
+      {
+        "id": "ai-native-thread-closeout-evaluator",
+        "label": "Thread closeout",
+        "kind": "evaluator",
+        "pluginId": "ai-native-thread-closeout-evaluator",
+        "dimension": "agent_participation",
+        "status": "pass",
+        "confidence": "medium",
+        "pointsAvailable": 1,
+        "pointsEarned": 0.82,
+        "reason": "The agent thread records remaining work and verification, with minor gaps in handoff ownership."
       }
     ]
   }
