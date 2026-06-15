@@ -27,7 +27,86 @@ const translations = {
     recommendedActions: "Recommended Actions",
     improvementReferences: "Improvement References",
     copyAgentPrompt: "Copy agent prompt",
-    language: "Language"
+    language: "Language",
+    error: "error",
+    warning: "warning",
+    reviewType: "Review type",
+    target: "Target",
+    targetRef: "Target ref",
+    phase: "Phase",
+    trigger: "Trigger",
+    triggerMode: "Trigger mode",
+    triggerSource: "Trigger source",
+    triggerEvent: "Trigger event",
+    triggerThreshold: "Trigger threshold",
+    triggerMaxIterations: "Trigger max iterations",
+    triggerOwner: "Trigger owner",
+    triggerOwnerExternal: "External systems own scheduling, enforcement, and iteration loops.",
+    targetSurfaces: "Target surfaces",
+    outputIntents: "Output intents",
+    affectsOverallScore: "Affects overall score",
+    assumption: "Assumption",
+    builtIn: "Built-in",
+    additional: "Additional",
+    disabled: "Disabled",
+    contextRoutes: "Context routes",
+    evaluatorConfigs: "Evaluator configs",
+    warnings: "Warnings",
+    none: "None",
+    enabled: "enabled",
+    recommendation: "Recommendation",
+    reason: "Reason"
+  },
+  "zh-CN": {
+    reportTitle: "AI Native Eval 报告",
+    generated: "生成于",
+    score: "分数",
+    policy: "Policy",
+    confidence: "置信度",
+    evaluationTree: "评估树",
+    evaluationContext: "评估上下文",
+    runConfiguration: "运行配置",
+    reproducibility: "可复现信息",
+    points: "点数",
+    node: "节点",
+    status: "状态",
+    action: "操作",
+    evidence: "证据",
+    whyNot10: "为什么不是 10/10",
+    policyRules: "Policy 规则",
+    cappedAt: "上限",
+    recommendedActions: "建议操作",
+    improvementReferences: "改进参考",
+    copyAgentPrompt: "复制 agent prompt",
+    language: "语言",
+    error: "错误",
+    warning: "警告",
+    reviewType: "评审类型",
+    target: "目标",
+    targetRef: "目标引用",
+    phase: "阶段",
+    trigger: "触发器",
+    triggerMode: "触发模式",
+    triggerSource: "触发来源",
+    triggerEvent: "触发事件",
+    triggerThreshold: "触发阈值",
+    triggerMaxIterations: "触发最大迭代次数",
+    triggerOwner: "触发责任方",
+    triggerOwnerExternal: "外部系统负责调度、执行约束和迭代循环。",
+    targetSurfaces: "目标界面",
+    outputIntents: "输出意图",
+    affectsOverallScore: "影响总分",
+    assumption: "假设",
+    builtIn: "内置",
+    additional: "额外",
+    disabled: "已禁用",
+    contextRoutes: "上下文路由",
+    evaluatorConfigs: "Evaluator 配置",
+    warnings: "警告",
+    none: "无",
+    enabled: "已启用",
+    recommendation: "建议",
+    reason: "原因"
   },
   "zh-TW": {
     reportTitle: "AI Native 段位報告",
@@ -50,7 +129,188 @@ const translations = {
     recommendedActions: "建議動作",
     improvementReferences: "改善參考",
     copyAgentPrompt: "複製 agent prompt",
-    language: "語言"
+    language: "語言",
+    error: "錯誤",
+    warning: "警告",
+    reviewType: "評審類型",
+    target: "目標",
+    targetRef: "目標引用",
+    phase: "階段",
+    trigger: "觸發器",
+    triggerMode: "觸發模式",
+    triggerSource: "觸發來源",
+    triggerEvent: "觸發事件",
+    triggerThreshold: "觸發門檻",
+    triggerMaxIterations: "觸發最大迭代次數",
+    triggerOwner: "觸發責任方",
+    triggerOwnerExternal: "外部系統負責排程、執行約束和迭代循環。",
+    targetSurfaces: "目標介面",
+    outputIntents: "輸出意圖",
+    affectsOverallScore: "影響總分",
+    assumption: "假設",
+    builtIn: "內建",
+    additional: "額外",
+    disabled: "已停用",
+    contextRoutes: "情境路由",
+    evaluatorConfigs: "Evaluator 設定",
+    warnings: "警告",
+    none: "無",
+    enabled: "已啟用",
+    recommendation: "建議",
+    reason: "原因"
+  },
+  es: {
+    reportTitle: "Informe de AI Native Eval",
+    generated: "generado",
+    score: "Puntuación",
+    policy: "Policy",
+    confidence: "Confianza",
+    evaluationTree: "Árbol de evaluación",
+    evaluationContext: "Contexto de evaluación",
+    runConfiguration: "Configuración de ejecución",
+    reproducibility: "Reproducibilidad",
+    points: "Puntos",
+    node: "Nodo",
+    status: "Estado",
+    action: "Acción",
+    evidence: "Evidencia",
+    whyNot10: "Por qué no 10/10",
+    policyRules: "Reglas de policy",
+    cappedAt: "Limitado a",
+    recommendedActions: "Acciones recomendadas",
+    improvementReferences: "Referencias de mejora",
+    copyAgentPrompt: "Copiar prompt del agente",
+    language: "Idioma",
+    error: "error",
+    warning: "advertencia",
+    reviewType: "Tipo de revisión",
+    target: "Objetivo",
+    targetRef: "Referencia del objetivo",
+    phase: "Fase",
+    trigger: "Disparador",
+    triggerMode: "Modo de disparo",
+    triggerSource: "Fuente del disparo",
+    triggerEvent: "Evento del disparo",
+    triggerThreshold: "Umbral del disparo",
+    triggerMaxIterations: "Iteraciones máximas",
+    triggerOwner: "Responsable del disparo",
+    triggerOwnerExternal: "Los sistemas externos controlan programación, cumplimiento y ciclos de iteración.",
+    targetSurfaces: "Superficies objetivo",
+    outputIntents: "Intenciones de salida",
+    affectsOverallScore: "Afecta la puntuación total",
+    assumption: "Suposición",
+    builtIn: "Integrado",
+    additional: "Adicional",
+    disabled: "Deshabilitado",
+    contextRoutes: "Rutas de contexto",
+    evaluatorConfigs: "Configuraciones de evaluador",
+    warnings: "Advertencias",
+    none: "Ninguno",
+    enabled: "habilitado",
+    recommendation: "Recomendación",
+    reason: "Razón"
+  },
+  de: {
+    reportTitle: "AI Native Eval Bericht",
+    generated: "erstellt",
+    score: "Score",
+    policy: "Policy",
+    confidence: "Konfidenz",
+    evaluationTree: "Evaluationsbaum",
+    evaluationContext: "Evaluationskontext",
+    runConfiguration: "Run-Konfiguration",
+    reproducibility: "Reproduzierbarkeit",
+    points: "Punkte",
+    node: "Knoten",
+    status: "Status",
+    action: "Aktion",
+    evidence: "Evidenz",
+    whyNot10: "Warum nicht 10/10",
+    policyRules: "Policy-Regeln",
+    cappedAt: "Begrenzt auf",
+    recommendedActions: "Empfohlene Aktionen",
+    improvementReferences: "Verbesserungsreferenzen",
+    copyAgentPrompt: "Agent-Prompt kopieren",
+    language: "Sprache",
+    error: "Fehler",
+    warning: "Warnung",
+    reviewType: "Review-Typ",
+    target: "Ziel",
+    targetRef: "Zielreferenz",
+    phase: "Phase",
+    trigger: "Trigger",
+    triggerMode: "Trigger-Modus",
+    triggerSource: "Trigger-Quelle",
+    triggerEvent: "Trigger-Ereignis",
+    triggerThreshold: "Trigger-Schwelle",
+    triggerMaxIterations: "Maximale Iterationen",
+    triggerOwner: "Trigger-Verantwortung",
+    triggerOwnerExternal: "Externe Systeme steuern Planung, Durchsetzung und Iterationsschleifen.",
+    targetSurfaces: "Zielflächen",
+    outputIntents: "Ausgabeabsichten",
+    affectsOverallScore: "Beeinflusst Gesamtscore",
+    assumption: "Annahme",
+    builtIn: "Eingebaut",
+    additional: "Zusätzlich",
+    disabled: "Deaktiviert",
+    contextRoutes: "Kontextrouten",
+    evaluatorConfigs: "Evaluator-Konfigurationen",
+    warnings: "Warnungen",
+    none: "Keine",
+    enabled: "aktiviert",
+    recommendation: "Empfehlung",
+    reason: "Grund"
+  },
+  ja: {
+    reportTitle: "AI Native Eval レポート",
+    generated: "生成日時",
+    score: "スコア",
+    policy: "Policy",
+    confidence: "信頼度",
+    evaluationTree: "評価ツリー",
+    evaluationContext: "評価コンテキスト",
+    runConfiguration: "実行設定",
+    reproducibility: "再現性情報",
+    points: "点数",
+    node: "ノード",
+    status: "状態",
+    action: "操作",
+    evidence: "証拠",
+    whyNot10: "10/10 ではない理由",
+    policyRules: "Policy ルール",
+    cappedAt: "上限",
+    recommendedActions: "推奨アクション",
+    improvementReferences: "改善リファレンス",
+    copyAgentPrompt: "agent prompt をコピー",
+    language: "言語",
+    error: "エラー",
+    warning: "警告",
+    reviewType: "レビュー種別",
+    target: "対象",
+    targetRef: "対象参照",
+    phase: "フェーズ",
+    trigger: "トリガー",
+    triggerMode: "トリガーモード",
+    triggerSource: "トリガー元",
+    triggerEvent: "トリガーイベント",
+    triggerThreshold: "トリガーしきい値",
+    triggerMaxIterations: "最大イテレーション",
+    triggerOwner: "トリガー責任",
+    triggerOwnerExternal: "外部システムがスケジューリング、強制、イテレーションループを管理します。",
+    targetSurfaces: "対象サーフェス",
+    outputIntents: "出力意図",
+    affectsOverallScore: "総合スコアへの影響",
+    assumption: "仮定",
+    builtIn: "組み込み",
+    additional: "追加",
+    disabled: "無効",
+    contextRoutes: "コンテキストルート",
+    evaluatorConfigs: "Evaluator 設定",
+    warnings: "警告",
+    none: "なし",
+    enabled: "有効",
+    recommendation: "推奨",
+    reason: "理由"
   }
 } satisfies Record<ReportUiLanguage, Record<string, string>>;
 
@@ -185,7 +445,11 @@ export function renderHtmlReport(report: EvaluationReport): string {
       <label class="language-switch">
         <select data-language-select aria-label="${escapeAttr(tr.language)}" data-i18n-aria-label="language">
           <option value="en"${uiLanguage === "en" ? " selected" : ""}>English</option>
+          <option value="zh-CN"${uiLanguage === "zh-CN" ? " selected" : ""}>简体中文</option>
           <option value="zh-TW"${uiLanguage === "zh-TW" ? " selected" : ""}>繁體中文</option>
+          <option value="es"${uiLanguage === "es" ? " selected" : ""}>Español</option>
+          <option value="de"${uiLanguage === "de" ? " selected" : ""}>Deutsch</option>
+          <option value="ja"${uiLanguage === "ja" ? " selected" : ""}>日本語</option>
         </select>
       </label>
     </header>
@@ -318,14 +582,14 @@ function policyMetric(tr: TranslationDictionary, report: EvaluationReport): stri
   const policy = report.policy;
   const status = policy?.status ?? "pass";
   const value = status === "blocked" ? "BLOCKED" : status.toUpperCase();
-  const subvalue = policy
-    ? `${policy.errorCount} error · ${policy.warnCount} warning`
-    : "0 error · 0 warning";
+  const errorCount = policy?.errorCount ?? 0;
+  const warnCount = policy?.warnCount ?? 0;
+  const subvalue = `${errorCount} <span data-i18n="error">${escapeHtml(
+    tr.error
+  )}</span> · ${warnCount} <span data-i18n="warning">${escapeHtml(tr.warning)}</span>`;
   return `<div class="metric ${escapeAttr(policyMetricClass(status))}"><div class="label" data-i18n="policy">${escapeHtml(
     tr.policy
-  )}</div><div class="value">${escapeHtml(value)}</div><div class="subvalue">${escapeHtml(
-    subvalue
-  )}</div></div>`;
+  )}</div><div class="value">${escapeHtml(value)}</div><div class="subvalue">${subvalue}</div></div>`;
 }
 
 function scoreMetricClass(score: number | null): "good" | "warn" | "bad" {
@@ -348,48 +612,48 @@ function renderEvaluationContext(
   const context = report.evaluationContext;
   if (!context) return "";
   const rows = [
-    ["Review type", context.reviewType],
-    ["Target", context.target],
-    ["Target ref", context.targetRef],
-    ["Phase", context.phase],
-    ["Trigger", context.trigger],
-    ["Trigger mode", context.triggerMetadata?.mode],
-    ["Trigger source", context.triggerMetadata?.source],
-    ["Trigger event", context.triggerMetadata?.event],
+    ["reviewType", context.reviewType],
+    ["target", context.target],
+    ["targetRef", context.targetRef],
+    ["phase", context.phase],
+    ["trigger", context.trigger],
+    ["triggerMode", context.triggerMetadata?.mode],
+    ["triggerSource", context.triggerMetadata?.source],
+    ["triggerEvent", context.triggerMetadata?.event],
     [
-      "Trigger threshold",
+      "triggerThreshold",
       context.triggerMetadata?.threshold === undefined
         ? undefined
         : String(context.triggerMetadata.threshold)
     ],
     [
-      "Trigger max iterations",
+      "triggerMaxIterations",
       context.triggerMetadata?.maxIterations === undefined
         ? undefined
         : String(context.triggerMetadata.maxIterations)
     ],
     [
-      "Trigger owner",
+      "triggerOwner",
       context.triggerMetadata
-        ? "External systems own scheduling, enforcement, and iteration loops."
+        ? tr.triggerOwnerExternal
         : undefined
     ],
-    ["Target surfaces", context.targetSurfaces?.join(", ")],
-    ["Output intents", context.outputIntents?.join(", ")],
+    ["targetSurfaces", context.targetSurfaces?.join(", ")],
+    ["outputIntents", context.outputIntents?.join(", ")],
     [
-      "Affects overall score",
+      "affectsOverallScore",
       context.affectsOverallScore === undefined
         ? undefined
         : String(context.affectsOverallScore)
     ],
-    ["Assumption", context.assumption]
-  ].filter((row): row is [string, string] => Boolean(row[1]));
+    ["assumption", context.assumption]
+  ].filter((row): row is [TranslationKey, string] => Boolean(row[1]));
   return `<section><h2 data-i18n="evaluationContext">${escapeHtml(
     tr.evaluationContext
   )}</h2><div class="panel section-body"><table><tbody>${rows
     .map(
-      ([label, value]) =>
-        `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`
+      ([key, value]) =>
+        `<tr><th data-i18n="${escapeAttr(key)}">${escapeHtml(tr[key])}</th><td>${escapeHtml(value)}</td></tr>`
     )
     .join("")}</tbody></table></div></section>`;
 }
@@ -410,10 +674,10 @@ function renderRunConfiguration(
   return `<section><h2 data-i18n="runConfiguration">${escapeHtml(
     tr.runConfiguration
   )}</h2><div class="panel section-body config-list">
-    <div><h3>Built-in</h3><ul>${builtIn
+    <div><h3 data-i18n="builtIn">${escapeHtml(tr.builtIn)}</h3><ul>${builtIn
       .map((root) => `<li><code>${escapeHtml(root.pluginId)}</code></li>`)
       .join("")}</ul></div>
-    <div><h3>Additional</h3><ul>${
+    <div><h3 data-i18n="additional">${escapeHtml(tr.additional)}</h3><ul>${
       additional.length > 0
         ? additional
             .map(
@@ -421,9 +685,9 @@ function renderRunConfiguration(
                 `<li><code>${escapeHtml(root.pluginId)}</code>${root.reason ? ` <span class="muted">${escapeHtml(root.reason)}</span>` : ""}</li>`
             )
             .join("")
-        : `<li class="muted">None</li>`
+        : `<li class="muted" data-i18n="none">${escapeHtml(tr.none)}</li>`
     }</ul></div>
-    <div><h3>Disabled</h3><ul>${
+    <div><h3 data-i18n="disabled">${escapeHtml(tr.disabled)}</h3><ul>${
       disabled.length > 0
         ? disabled
             .map(
@@ -431,9 +695,9 @@ function renderRunConfiguration(
                 `<li><code>${escapeHtml(item.pluginId)}</code><br><span class="muted">${escapeHtml(item.reason)} (${escapeHtml(item.source)})</span></li>`
             )
             .join("")
-        : `<li class="muted">None</li>`
+        : `<li class="muted" data-i18n="none">${escapeHtml(tr.none)}</li>`
     }</ul></div>
-    <div><h3>Context routes</h3><ul>${
+    <div><h3 data-i18n="contextRoutes">${escapeHtml(tr.contextRoutes)}</h3><ul>${
       routes.length > 0
         ? routes
             .map(
@@ -441,14 +705,14 @@ function renderRunConfiguration(
                 `<li><code>${escapeHtml(route.id)}</code><br><span class="muted">${escapeHtml(route.description ?? route.source)}</span></li>`
             )
             .join("")
-        : `<li class="muted">None</li>`
+        : `<li class="muted" data-i18n="none">${escapeHtml(tr.none)}</li>`
     }</ul></div>
-    <div><h3>Evaluator configs</h3><ul>${
+    <div><h3 data-i18n="evaluatorConfigs">${escapeHtml(tr.evaluatorConfigs)}</h3><ul>${
       evaluatorConfigs.length > 0
         ? evaluatorConfigs
             .map((config) => {
               const details = [
-                config.enabled === false ? "disabled" : "enabled",
+                config.enabled === false ? tr.disabled : tr.enabled,
                 config.additionalChildren?.length
                   ? `+${config.additionalChildren.map((child) => child.pluginId).join(", ")}`
                   : "",
@@ -459,9 +723,9 @@ function renderRunConfiguration(
               return `<li><code>${escapeHtml(config.pluginId)}</code><br><span class="muted">${escapeHtml(config.source)} · ${escapeHtml(details)}</span></li>`;
             })
             .join("")
-        : `<li class="muted">None</li>`
+        : `<li class="muted" data-i18n="none">${escapeHtml(tr.none)}</li>`
     }</ul></div>
-    <div><h3>Warnings</h3><ul>${
+    <div><h3 data-i18n="warnings">${escapeHtml(tr.warnings)}</h3><ul>${
       warnings.length > 0
         ? warnings
             .map(
@@ -469,7 +733,7 @@ function renderRunConfiguration(
                 `<li><code>${escapeHtml(warning.code)}</code><br><span class="muted">${escapeHtml(warning.message)} (${escapeHtml(warning.source)})</span></li>`
             )
             .join("")
-        : `<li class="muted">None</li>`
+        : `<li class="muted" data-i18n="none">${escapeHtml(tr.none)}</li>`
     }</ul></div>
   </div></section>`;
 }
@@ -511,8 +775,8 @@ function renderNodeRows(
         <span class="node-label">${escapeHtml(node.label)}</span>
         <a class="anchor-link" href="#${escapeAttr(nodeAnchor(node.id))}" aria-label="Permalink to ${escapeAttr(node.label)}">#</a>
         ${node.kind ? `<span class="node-kind">${escapeHtml(node.kind)}</span>` : ""}
-        ${node.origin === "additional" ? `<span class="node-badge additional">additional</span>` : ""}
-        ${node.disabledReason ? `<span class="node-badge disabled">disabled</span>` : ""}
+        ${node.origin === "additional" ? `<span class="node-badge additional" data-i18n="additional">${escapeHtml(tr.additional)}</span>` : ""}
+        ${node.disabledReason ? `<span class="node-badge disabled" data-i18n="disabled">${escapeHtml(tr.disabled)}</span>` : ""}
         ${renderPolicyBadges(node)}
       </div>
       <div class="node-sub"><code>${escapeHtml(node.id)}</code>${node.dimension ? ` · ${escapeHtml(node.dimension)}` : ""}</div>
@@ -610,7 +874,7 @@ function renderDeductions(
         ? ` <span class="muted">(${escapeHtml(tr.cappedAt)} ${group.budget})</span>`
         : "";
       const deductions = group.appliedDeductions
-        .map((deduction) => renderDeductionItem(deduction, repoUrl))
+        .map((deduction) => renderDeductionItem(deduction, repoUrl, tr))
         .join("");
       return `<li class="deduction-group"><div class="deduction-title">${escapeHtml(group.label)} <span class="muted">-${group.pointsLost}${cap}</span></div><ul class="deduction-list">${deductions}</ul></li>`;
     })
@@ -623,24 +887,26 @@ type AppliedDeduction = NonNullable<
 
 function renderDeductionItem(
   deduction: AppliedDeduction,
-  repoUrl: string | undefined
+  repoUrl: string | undefined,
+  tr: TranslationDictionary
 ): string {
-  const evidence = renderDeductionEvidenceList(deduction.evidence, repoUrl);
+  const evidence = renderDeductionEvidenceList(deduction.evidence, repoUrl, tr);
   const recommendation = deduction.recommendation?.summary
-    ? `<span class="deduction-detail-label">Recommendation</span><p>${escapeHtml(deduction.recommendation.summary)}</p>`
+    ? `<span class="deduction-detail-label" data-i18n="recommendation">${escapeHtml(tr.recommendation)}</span><p>${escapeHtml(deduction.recommendation.summary)}</p>`
     : "";
   const reason = deduction.reason
-    ? `<span class="deduction-detail-label">Reason</span><p>${escapeHtml(deduction.reason)}</p>`
+    ? `<span class="deduction-detail-label" data-i18n="reason">${escapeHtml(tr.reason)}</span><p>${escapeHtml(deduction.reason)}</p>`
     : "";
   return `<li class="deduction-item"><div class="deduction-title">${escapeHtml(deduction.label)} <span class="muted">-${deduction.pointsLost}</span></div><div class="deduction-detail">${reason}${evidence}${recommendation}</div></li>`;
 }
 
 function renderDeductionEvidenceList(
   evidence: EvaluationNodeResult["evidence"],
-  repoUrl: string | undefined
+  repoUrl: string | undefined,
+  tr: TranslationDictionary
 ): string {
   if (!evidence || evidence.length === 0) return "";
-  return `<span class="deduction-detail-label">Evidence</span><ul class="deduction-evidence">${evidence
+  return `<span class="deduction-detail-label" data-i18n="evidence">${escapeHtml(tr.evidence)}</span><ul class="deduction-evidence">${evidence
     .map((item) => {
       const label = item.locator ? `${item.source} ${item.locator}` : item.source;
       const url = item.url ?? synthesizeRepoUrl(item.source, repoUrl);
@@ -731,9 +997,16 @@ function confidenceTone(confidence: string): "good" | "warn" | "bad" | "neutral"
 
 function supportedUiLanguage(language: string | undefined): ReportUiLanguage {
   if (!language) return "en";
-  if (language === "zh-TW" || language.toLowerCase().startsWith("zh")) {
+  const normalized = language.toLowerCase();
+  if (normalized === "zh-cn" || normalized === "zh-hans") {
+    return "zh-CN";
+  }
+  if (normalized === "zh-tw" || normalized === "zh-hant" || normalized === "zh") {
     return "zh-TW";
   }
+  if (normalized === "es" || normalized.startsWith("es-")) return "es";
+  if (normalized === "de" || normalized.startsWith("de-")) return "de";
+  if (normalized === "ja" || normalized.startsWith("ja-")) return "ja";
   return "en";
 }
 

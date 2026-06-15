@@ -105,9 +105,21 @@ test("renders drill-down HTML report with evidence and recommendations", async (
 
   assert.match(html, /AI Native Eval Report/);
   assert.match(html, /AI Native 段位報告/);
+  assert.match(html, /AI Native Eval 报告/);
+  assert.match(html, /Informe de AI Native Eval/);
+  assert.match(html, /AI Native Eval Bericht/);
+  assert.match(html, /AI Native Eval レポート/);
   assert.match(html, /data-language-select/);
   assert.match(html, /<option value="en" selected>English<\/option>/);
+  assert.match(html, /<option value="zh-CN">简体中文<\/option>/);
+  assert.match(html, /<option value="zh-TW">繁體中文<\/option>/);
+  assert.match(html, /<option value="es">Español<\/option>/);
+  assert.match(html, /<option value="de">Deutsch<\/option>/);
+  assert.match(html, /<option value="ja">日本語<\/option>/);
   assert.match(html, /data-i18n="evaluationTree"/);
+  assert.match(html, /data-i18n="reviewType"/);
+  assert.match(html, /data-i18n="builtIn"/);
+  assert.match(html, /data-i18n="none"/);
   assert.match(html, /8\.2 \/ 10/);
   assert.match(html, /BLOCKED/);
   assert.match(html, /policy-error/);
@@ -559,9 +571,9 @@ test("renders applied deductions as why-not-10 evidence", () => {
   const html = renderHtmlReport(report);
 
   assert.match(html, /Why Not 10\/10/);
-  assert.match(html, /deduction-detail-label">Reason/);
-  assert.match(html, /deduction-detail-label">Evidence/);
-  assert.match(html, /deduction-detail-label">Recommendation/);
+  assert.match(html, /data-i18n="reason">Reason/);
+  assert.match(html, /data-i18n="evidence">Evidence/);
+  assert.match(html, /data-i18n="recommendation">Recommendation/);
   assert.match(html, /No durable execution record was found/);
   assert.match(html, /docs\/plan\.md capacity section/);
   assert.match(html, /Capped at 0\.6/);

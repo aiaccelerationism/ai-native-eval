@@ -8,7 +8,7 @@ export type EvaluationStatus =
 
 export type Confidence = "low" | "medium" | "high";
 
-export type ReportUiLanguage = "en" | "zh-TW";
+export type ReportUiLanguage = "en" | "zh-CN" | "zh-TW" | "es" | "de" | "ja";
 
 export type TriggerMode =
   | "one_shot"

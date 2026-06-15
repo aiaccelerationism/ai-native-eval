@@ -2,7 +2,7 @@
 
 *Eval is all you need* — AI agents get dramatically better when they have a clear evaluation target to optimize against.
 
-English | [中文](README_CN.md)
+English | [中文](README_CN.md) | [Español](README_ES.md) | [Deutsch](README_DE.md) | [日本語](README_JA.md)
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)

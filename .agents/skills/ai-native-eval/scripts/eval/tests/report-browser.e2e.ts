@@ -64,6 +64,24 @@ test("browser report e2e opens a CLI-rendered report and exercises basic UI", as
       await page.locator("[data-language-select]").selectOption("zh-TW");
       await assertVisibleText(page, "AI Native 段位報告");
       await assertVisibleText(page, "執行設定");
+      await assertVisibleText(page, "內建");
+
+      await page.locator("[data-language-select]").selectOption("zh-CN");
+      await assertVisibleText(page, "AI Native Eval 报告");
+      await assertVisibleText(page, "运行配置");
+      await assertVisibleText(page, "内置");
+
+      await page.locator("[data-language-select]").selectOption("es");
+      await assertVisibleText(page, "Informe de AI Native Eval");
+      await assertVisibleText(page, "Configuración de ejecución");
+
+      await page.locator("[data-language-select]").selectOption("de");
+      await assertVisibleText(page, "AI Native Eval Bericht");
+      await assertVisibleText(page, "Run-Konfiguration");
+
+      await page.locator("[data-language-select]").selectOption("ja");
+      await assertVisibleText(page, "AI Native Eval レポート");
+      await assertVisibleText(page, "実行設定");
 
       await page.locator("[data-copy-prompt]").first().click();
       assert.deepEqual(pageErrors, []);

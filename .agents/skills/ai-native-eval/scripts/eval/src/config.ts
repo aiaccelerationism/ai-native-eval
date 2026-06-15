@@ -9,6 +9,7 @@ import type {
   EvalConfig,
   EvalContextRoute,
   EvalConfigSource,
+  ReportUiLanguage,
   ResolvedDisabledPlugin,
   ResolvedEvaluatorConfig,
   ResolvedContextRoute,
@@ -41,7 +42,7 @@ export interface InitRunInput {
   reportId?: string;
   generatedAt?: string;
   language?: string;
-  uiLanguage?: "en" | "zh-TW";
+  uiLanguage?: ReportUiLanguage;
   scope?: string;
   evaluationContext?: EvaluationContext;
   repoCommit?: string;
