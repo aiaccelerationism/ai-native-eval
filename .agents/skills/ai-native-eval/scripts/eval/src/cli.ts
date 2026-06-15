@@ -140,7 +140,7 @@ async function runInitRunCommand(repoRoot: string, rest: string[]): Promise<void
     reportId,
     generatedAt,
     language: readOption(rest, "--language"),
-    uiLanguage: readOption(rest, "--ui-language") as "en" | "zh-TW" | undefined,
+    uiLanguage: readOption(rest, "--ui-language") as ReportUiLanguage | undefined,
     scope: readOption(rest, "--scope"),
     evaluationContext: readEvaluationContext(rest),
     repoCommit
@@ -268,8 +268,8 @@ function readOption(args: string[], name: string): string | undefined {
 function usage(): void {
   console.error(`Usage:
   ai-native-eval score <evaluation-tree.json>
-  ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-TW] [--review-type event] [--target pull_request] [--phase opened] [--trigger-mode one_shot] [--target-surface pr]...
-  ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-TW] [--changed-file <path>]... [--review-type event] [--target pull_request] [--trigger-mode one_shot]
+  ai-native-eval render <evaluation-tree.json> --out <report.html> [--language zh-TW] [--ui-language zh-CN|zh-TW|es|de|ja] [--review-type event] [--target pull_request] [--phase opened] [--trigger-mode one_shot] [--target-surface pr]...
+  ai-native-eval persist <evaluation-tree.json> [--root .ai-native-eval/artifacts] [--language zh-TW] [--ui-language zh-CN|zh-TW|es|de|ja] [--changed-file <path>]... [--review-type event] [--target pull_request] [--trigger-mode one_shot]
   ai-native-eval init-run <repo-root> [--out <run-folder>] [--config <path>] [--project-config <path>] [--person-config <path>] [--review-type event] [--target pull_request] [--target-ref PR-123] [--phase opened] [--trigger user] [--trigger-mode external_event] [--trigger-source github] [--trigger-event pull_request.opened] [--threshold 0.85] [--max-iterations 3] [--target-surface pr]...
   ai-native-eval validate-folder <run-folder> [--skills-dir .agents/skills]
   ai-native-eval render-folder <run-folder> [--out <report.html>] [--json-out <report.json>] [--markdown-out <report.md>] [--skills-dir .agents/skills]

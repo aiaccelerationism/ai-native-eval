@@ -2,7 +2,7 @@
 
 *Eval is all you need* — 当 AI agent 有清晰的评估目标可以优化时，它会变得明显更好。
 
-[English](README.md) | 中文
+[English](README.md) | 中文 | [Español](README_ES.md) | [Deutsch](README_DE.md) | [日本語](README_JA.md)
 
 [![CI](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/aiaccelerationism/ai-native-eval/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -30,7 +30,7 @@
 把下面这段提示词交给你的 agent：
 
 ```text
-Evaluate my repository with ai-native-eval from https://github.com/aiaccelerationism/ai-native-eval.
+请使用 ai-native-eval 评估我的仓库：https://github.com/aiaccelerationism/ai-native-eval
 ```
 
 ## 报告预览
