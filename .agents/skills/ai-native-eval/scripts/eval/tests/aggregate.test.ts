@@ -35,9 +35,9 @@ test("aggregates an arbitrarily nested evaluation tree deterministically", async
   const second = buildReport({ root: fixture.root, generatedAt: "fixed" });
 
   assert.deepEqual(first.summary, second.summary);
-  assert.equal(first.summary.level0To10, 3);
-  assert.equal(first.summary.score0To100, 34);
-  assert.equal(first.root.children[0]?.children[0]?.children[1]?.score0To10, 5);
+  assert.equal(first.summary.level0To10, 8);
+  assert.equal(first.summary.score0To100, 82);
+  assert.equal(first.root.children[0]?.score0To10, 8);
 });
 
 test("supports user weight changes without changing evaluator outputs", () => {
@@ -88,12 +88,18 @@ test("renders drill-down HTML report with evidence and recommendations", async (
     root: EvaluationNodeInput;
     language?: string;
     uiLanguage?: EvaluationReport["uiLanguage"];
+    evaluationContext?: EvaluationReport["evaluationContext"];
+    runConfig?: EvaluationReport["runConfig"];
+    policyRules?: PolicyRuleDefinition[];
   };
   const report = buildReport({
     root: fixture.root,
     generatedAt: "fixed",
     language: fixture.language,
-    uiLanguage: fixture.uiLanguage
+    uiLanguage: fixture.uiLanguage,
+    evaluationContext: fixture.evaluationContext,
+    runConfig: fixture.runConfig,
+    policyRules: fixture.policyRules
   });
   const html = renderHtmlReport(report);
 
@@ -102,17 +108,19 @@ test("renders drill-down HTML report with evidence and recommendations", async (
   assert.match(html, /data-language-select/);
   assert.match(html, /<option value="en" selected>English<\/option>/);
   assert.match(html, /data-i18n="evaluationTree"/);
-  assert.match(html, /3\.4 \/ 10/);
+  assert.match(html, /8\.2 \/ 10/);
+  assert.match(html, /BLOCKED/);
+  assert.match(html, /policy-error/);
   assert.doesNotMatch(html, /Dimension Breakdown/);
   assert.doesNotMatch(html, /Lost Points/);
-  assert.match(html, /Runtime docs rule group/);
-  assert.match(html, /目前 README 有記錄啟動指令/);
-  assert.match(html, /README\.md/);
-  assert.match(html, /https:\/\/github\.com\/example\/ai-native-eval\/blob\/main\/README\.md/);
+  assert.match(html, /PR lifecycle evaluator/);
+  assert.match(html, /PR readiness is below the configured merge bar/);
+  assert.match(html, /pull_request/);
+  assert.match(html, /ai-native-pr-lifecycle-evaluator/);
   assert.match(html, /Recommended Actions/);
   assert.match(html, /Copy agent prompt/);
   assert.match(html, /Fix the AI-native eval finding represented by this evaluation subtree/);
-  assert.match(html, /Runtime failure handling is documented/);
+  assert.match(html, /Acceptance proof/);
 });
 
 test("resolves evaluator plugins through direct child references only", async () => {
